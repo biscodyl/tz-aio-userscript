@@ -1455,27 +1455,14 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
             (function(){
               $j("div.help:eq(0)").append("<p><b>Torrentz All-in-One UserScript</b></p><ul>\
 <li>Installed: "+TZO.scriptVersion+"</li>\
+<li>Homepage: <a href='"+TZO.scriptHomepage+"'>"+TZO.scriptHomepage+"</a></li>\
+<li>Github: <a href='https://github.com/elundmark/tz-aio-userscript'>https://github.com/elundmark/tz-aio-userscript</a></li>\
+<li>Report issues here: <a href='https://github.com/elundmark/tz-aio-userscript'>https://github.com/elundmark/tz-aio-userscript/issues</a></li>\
 <li>Built using <a href='http://www.jquery.com/'>jQuery</a>, \
 <a href='http://documentcloud.github.com/underscore/'>underscore.js</a>, \
 <a href='http://www.jstorage.info/'>jStorage</a>, \
 <a href='http://code.google.com/p/jquery-json/'>jQuery JSON Plugin</a> \
 &amp; the <a href='http://benalman.com/projects/jquery-replacetext-plugin/'>jQuery replaceText Plugin</a>.</li>\
-<li>Access all the scripts' settings by clicking 'TzAio' in the menubar at the top.</li>\
-<li>For information, suggestions, comments and more please visit \
-<a href='"+TZO.scriptHomepage+"'>userscripts.org/scripts/show/125001</a> \
-(as soon as I've launched my own webite I'll link you there)</li>\
-<li>Short list of features: Download the torrentfile directly from multiple sources, \
-hide all the Ads and sponsored links, including document.onclick popups, \
-highlight searchresults by category (99.9% accurate), \
-linkify links in the comments, \
-search bar triggered by selection, fully customizable, \
-a \"copy trackers\" button, \
-a super-charged magnetlink, \
-coupled with cutom default trackers to include in the trackerlist, \
-a visible warning for WMV files and reportedly fake files, \
-and some helpful stats about the health of the torrent.</li>\
-Please visit <a href='"+TZO.scriptHomepage+"'>userscripts.org</a> \
-if you've found any bugs or have any suggestions to improve this script. Thx!\
 </ul>");
             })();
           // Searchresults ( The /i page uses ajax so let's skip that
