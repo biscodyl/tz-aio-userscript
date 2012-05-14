@@ -4,6 +4,7 @@
 // @version       2.0.0
 // @date          2012-05-14
 // @author        elundmark
+// @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
 // @namespace     http://elundmark.se/code/tz-aio
 // @homepage      http://userscripts.org/scripts/show/125001
