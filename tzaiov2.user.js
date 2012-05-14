@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.0
-// @date          2012-05-14
+// @version       2.0.1
+// @date          2012-05-15
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -94,7 +94,7 @@
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.0 2012-05-14",
+            scriptVersion    : "Version 2.0.1 2012-05-15",
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
             defTrackerList   : [
@@ -281,7 +281,7 @@ padding-top: 5px;\
 padding-bottom: 5px;\
 position: absolute;\
 top: 0;\
-left: 585px;\
+left: 591px;\
 }\
 ."+base+"_b a."+base+"_dllink em {\
 color: "+e.colors.brown+";\
@@ -322,6 +322,9 @@ background-color: "+e.colors.tzblue+";\
 ."+base+"_b h2 span::-moz-selection, #copy_tr_textarea textarea::-moz-selection {\
 color: "+e.colors.white+";\
 background-color: "+e.colors.tzblue+";\
+}\
+#copy_tr_textarea textarea:focus {\
+  outline:none;\
 }\
 ."+base+"_b div.download h2 {\
 position: relative;\
