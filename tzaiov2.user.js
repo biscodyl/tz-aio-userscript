@@ -8,6 +8,8 @@
 // @namespace     http://elundmark.se/code/tz-aio
 // @homepage      http://userscripts.org/scripts/show/125001
 // @updateURL     https://userscripts.org/scripts/source/125001.meta.js
+// @downloadURL   https://github.com/elundmark/tz-aio-userscript/raw/master/tzaiov2.user.js
+// @supportURL    https://github.com/elundmark/tz-aio-userscript/issues
 // @include       http://torrentz.eu/*
 // @include       https://torrentz.eu/*
 // @match         http://torrentz.eu/*
