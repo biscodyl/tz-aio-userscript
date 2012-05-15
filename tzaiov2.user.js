@@ -983,7 +983,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               TZO.trackerObject.allArray = TZO.mergeTrackers( TZO.trackerObject.userArray, TZO.trackerObject.siteArray, "array" );
               TZO.trackerObject.allString = TZO.mergeTrackers( TZO.trackerObject.allArray, [], "string" );
               TZO.trackerObject.allMagnet = "magnet:?xt=urn:btih:" + TZO.torrHash + "&amp;dn="
-              + TZO.torrentTitles.encoded + "&amp;tr=" + TZO.trackerObject.siteString.replace(/\n+/g,"&amp;tr=");
+              + TZO.torrentTitles.encoded + "&amp;tr=" + TZO.trackerObject.allString.replace(/\n+/g,"&amp;tr=");
               trackerLen = TZO.trackerObject.allArray.length;
               trackersText = trackerLen > 1 ? "trackers" : "tracker";
 
