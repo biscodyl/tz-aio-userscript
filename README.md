@@ -8,7 +8,7 @@ Features
 --------
 
 * Ad removal.
-* Colorized search-results.
+* Colorized search-results and magnet-link for each result.
 * Direct download links for torrent files.
 * Select-to-search with custom search-engines.
 * Saved custom trackers with intelligent sorting.
