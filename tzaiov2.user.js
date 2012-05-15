@@ -22,9 +22,6 @@
   var currProtocol = location.protocol,
       currHost     = location.hostname,
       addJQuery, storedSettings, $j, init, TZO;
-  if ( typeof unsafeWindow === "undefined" ) {
-    unsafeWindow = window;
-  }
   if ( currHost.match(/torrentz\.eu/i) && currProtocol === "http:" ) {
     // Force ssl - use torrentz.me if you need http: (.me has no ssl)
     location.href = location.href.replace(/^http:/, "https:");
@@ -1589,7 +1586,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
       // end GM error logger
     }
     // end init
-    init( unsafeWindow, ($||jQuery||unsafeWindow.jQuery) );
+    init( (unsafeWindow||window), ($||jQuery||unsafeWindow.jQuery) );
   }
   // end if !=== https:
 })();
