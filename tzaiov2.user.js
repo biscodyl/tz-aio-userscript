@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.1
-// @date          2012-05-15
+// @version       2.0.2
+// @date          2012-05-16
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -15,6 +15,7 @@
 // @include       https://torrentz.eu/*
 // @match         http://torrentz.eu/*
 // @match         https://torrentz.eu/*
+// @require       https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAAC3ElEQVR42u3b51MTQRzH4RWUiIqIXRR7Q1EUuyiW2FDD2bAX7L0rIhZUUMHeK/ZesPfeULF3seHt9y8xkzsEjtWJXLzL6O+TV5nszD252exekjkGkyMAAQiQCeAwOK4BICjU0IKgBYRKhhZKAAIQgAAEIAABCEAAAhCAAARwa8BGcOeLkkTFApxjTh4B6+F8vEOwJGg1ZABjgg0AVPORBB0DBxDpkzfAuj8C+Em5i4OjSL+8ATbwXEGGPVnwQk3BQeZ+47IeQNLFMyk5O3mDwx6/ciJF06WKuQ4yZe87LkMPoG9Ux8CcVd4ERyv8AzXVY8WkrEbErNx//o4MGXoA9lo1DMnZZuUMJHjXDtHWVFJLhCPl3esACNuhAnzbSb8skUPpXwYsduszsByf1dJlbjBArShTW2MSoFF9tW3GzQFx+/7aHCCAswCaAwRwOWAnzYH/HkBzwF0A0WbPged3Hz3J3q14A8+AqNcLrTYjAdqvi/LbiZXCjQRg99QZatMnHYWM48XLdTF0DiTk87KojedAWlkWEG7sx7BIk5ZKo97LSO/GCrWIMHgdsCrPh14APi1g+RvYzFmIehzinCd7sCo2k/aCtQBOe7DSnU1aimPAkVqBlWgrmQOY/Ax40Y95N5fMAQw7C3ydxzzrRphzPdDrIMCTGQvobtJ2vAocpwqzUp0kcwBLvgPXGjPf1iZ9NZvwAHjTh3k1izDlemBRmXPgiGaetWzS79oDx/CeLt8Nl20Bz9jOWHnRCpTEMwNk2MvgP/sS7xrAkY/gV0f3HjxtltLscYJfyUQ9nRmmG6Ak49X1m7fvqT0+4CQgbXgNl8wBxyN7h8O6Ogmorg+w9eXD+4JSd7Gs/WDpB2WMqMsDdALGxo4cJGhIe9ZGymzgfGWMqP7+VXUAHJW0FBRksVi1Y8QVqEP/GxKAAAQgAAEIQAACEIAABCAAAbQAd7vdj8PgON1zSgACuAvgB4QHvuWvZtCMAAAAAElFTkSuQmCC
 // ==/UserScript==
 (function(){
@@ -24,22 +25,10 @@
   if ( typeof unsafeWindow === "undefined" ) {
     unsafeWindow = window;
   }
-  if ( currHost.match(/(www\.)?torrentz\.eu/i) && currProtocol === "http:" ) {
+  if ( currHost.match(/torrentz\.eu/i) && currProtocol === "http:" ) {
     // Force ssl - use torrentz.me if you need http: (.me has no ssl)
     location.href = location.href.replace(/^http:/, "https:");
   } else {
-    // All done forcing ssl and checking we're on the right page
-    // Chrome support: Loads jQuery and calls a callback function
-    function addJQuery() {
-      var script = document.createElement("script");
-      // As of 2012-05-10 1.7.1 is the version Torrentz.eu has embedded
-      script.setAttribute("src", "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js");
-      script.addEventListener("load", function() {
-        $j = unsafeWindow.jQuery;
-        init(unsafeWindow, $j);
-      }, false);
-      document.body.appendChild(script);
-    }
     // Main init function
     init = function(_window, $j){
       try {
@@ -47,6 +36,7 @@
         var GM_log = function(obj) {
           _window.console.log(obj);
         };
+        if ( typeof $j !== "function" ) throw "jQuery wasn't loaded!";
         /*
             Plugins  
         */
@@ -90,11 +80,11 @@
           && typeof $j.toJSON === "function"
           && typeof $j.jStorage === "object"
           && !/^announcelist_/.test(document.location.pathname.replace(/\x2F/g,"")) ) {
-          // *************************************************************************************
+          // ***************************************************************************************
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.1 2012-05-15",
+            scriptVersion    : "Version 2.0.2 2012-05-16",
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
             defTrackerList   : [
@@ -640,11 +630,14 @@ font-family:inherit;\
                   e = this,
                   base = e.scriptName;
               return "\
+/*body."+base+"_b div.results {\
+  overflow:hidden !important;\
+}*/\
 body."+base+"_b div.results > dl {\
 position: relative;\
 border-bottom: 1px solid " + e.colors.white + "\
 }\
-body."+base+"_b div.results > dl a {\
+body."+base+"_b div.results > dl dt a {\
 display: block;\
 position: absolute;\
 top: 0px;\
@@ -653,7 +646,13 @@ width: 100%;\
 height: 100%;\
 line-height: 25px;\
 }\
-div.results > dl.pron {\
+body."+base+"_b h2 a.approximate_rss_link img {\
+  opacity:0.5;\
+}\
+body."+base+"_b h2 a.approximate_rss_link:hover img {\
+  opacity:1;\
+}\
+div.results > dl.pink {\
 background-color: #FFDCEF;\
 }\
 div.results > dl.tv {\
@@ -701,8 +700,43 @@ opacity: 0.5;\
 div.results > dl:hover dt a {\
 color: " + e.colors.orange + ";\
 }\
-body."+base+"_b div.results > dl:hover a {\
+body."+base+"_b div.results > dl:hover dt a {\
 text-decoration: none;\
+}\
+body."+base+"_b div.results > dl dd.magnet {\
+  position:relative;\
+  z-index:1; /* Over the main link but below ajaxed search results */\
+  width: 24px;\
+  overflow: visible;\
+  margin-top: -20px;\
+  height: 24px;\
+  text-align: center;\
+  margin-right: 12px;\
+}\
+body."+base+"_b div.results > dl dd.magnet a {\
+  display:block;\
+  position:absolute;\
+  top:0; bottom:0;\
+  left:0; right:0;\
+  background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAACYVBMVEUAAAAAA\
+ABMizxMizwAAAAAAAAdNRcAAAAAAAAAAAAAAAADBgMAAAAHDAVMizxMizwrTyIqTSFNjTtOjTtDejRNjTtCeTNNjTtNjTtCeTNBd\
+zJOjjtNjTpPjzpPjzpKhjZKhjZMizpUkUNWk0R4rl5SkEByqFh2rVtMizpNjTxSkEJxp1mLvG2Nu26RwHKUxHRUkUNWkkRZlEdZl\
+UdalUhalkhnmFdvplhxqFlypWFzwiVzxiF0pmN0qlx1ySJ2yCN3rV94p2h5qWl6qWt6xS57xjB7yS98xTN8yyx9xzWAyTmAzTSBz\
+jSBzjaDyT6DzjiEzzqFzUCGzECHykWIzEOIzUSM0keNv26Nz0yOzU+OzlGP0k2QwXCQw3CR0FOR1E6S1VCTxHKT1FOT1VKT1VOU1\
+VOU1VaV01mZ1Vua2F2bvJGc2GGd2WKfrpmfwpWf2WWgv5ig2meiwJmi22uk222l3G6m2Hanw5+n0Iin0Yeo1Iap1Yep2HqqxaKq2\
+3qs14ms3nqt2Iut23+u1Y2u1o6u332v33+v34Cv4ICwtayw4IG0z6214om24oq65JG75JG83Z6835284Ju93p++36C+456+5pe/3\
+6HA4Z/A5J/A5KDB46HB5KHC5KLD56DE46fE5aLE5qTF5KjF5qXF6KHG6aTH6aXJ6arR6rfR7bXT67vU7rrY4dTY78DZ8MLa49fa7\
+cba8MXc8sjd5drf8szi89Lj9NLk9NPl9dbr99/t7ert7evt+OPu7uzu7u3v7+3v7+7v8O3v+eXv+ebw8O7w8O/x8e/x+en1++/3/\
+PL///+5JOgQAAAAMHRSTlMAAgMEBgcICg0QFhYZIiotOkh9f4CAjo6QmKDLzc3O0NX19fX19vb29/f3+P39/v6zdD/wAAABQElEQ\
+VQoz2NgoCroRAMIiVMoAFli1+69e/fu37//ABCgSOwGCR84cAQEUCTA4kfWZNkYGljm5SJL7Nt/4GC5aWz9wsWNicbCTAgJoLijw\
+8y2nMzs4q65KtLMMAmgObW2S1LjGw4d7y/MmacuCpc4st5kakJYzrpTp3Z05GfMVuaHShw4UhDT6ptcsv3UqT29pUl1+hIwiaNO1\
+SkBy3q2nTq1c9rqtPQWOajEkaMmc/z7Tp3ceerU4ROnlocs0kRIzPJfCguTFX7zERLOVakeKyHiG4Mim2VhEseKwtvtfNaCxLeEu\
+pbpicN1bDaaFG3vvenUqa2BLsGTlfgQwd5tsSDC2m3VBi+r4BlqQsgRZWY+sSnO0z2qZoK2DBtSNLJzi6jqVE6ZXqGrJcbLxYokw\
+8IpICmvqKEgJcjDwYgnIQAAHQu+galt2X0AAAAASUVORK5CYII=) 50% 50% no-repeat;\
+  background-size:16px 16px;\
+}\
+body."+base+"_b div.results > dl dd.magnet a:hover {\
+  background-size:24px 24px;\
 }\
               ";
             },
@@ -1471,12 +1505,17 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               var searchParameters = document.location.search.match(/^\?f\=(.+)$/i),
                   resultsEl = $j("div.results"),
                   resultsH2 = resultsEl.find(" > h2"),
-                  genreArr;
+                  genreArr,
+                  genreArrLength,
+                  colorize,
+                  dtWidth;
               if ( storedSettings.removeAds ) {
               }
               if ( storedSettings.searchHighlight ) {
                 genreArr = [
-[ "pron",    /(pron|porn|p0rn|pr0n|xxx|adult|\bsex\b)/i ],
+[ "pink",
+  new RegExp(unescape("%28%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30%6E%7C%78%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%62%29"), "i")
+],
 [ "tv",      /(\btv\b|eztv|ettv|tvteam|television|series|shows|episodes)/i ],
 [ "movie",   /(movie|xvid|divx|bdrip|hdrip|maxspeed|klaxxon|axxo|wmv|avi|matroska|mkv|highres|264)/i ],
 [ "game",    /game/i ],
@@ -1488,34 +1527,44 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
 [ "app",     /(\bunix\b|\blinux\b|\bsolaris\b|\bwindows\b|\bmac\b|\bx64\b|\bx86\b)/i ],
 [ "misc",    /(other|misc|unsorted|siterip)/i ]
                 ];
-                TZO.addStyle( TZO.searchCss() );
-                resultsEl.find("dt").has("a").each(function(i, val1){
-                  var dtEl     = $j(val1),
-                      torrString = dtEl.text(),
-                      hasRaquo   = /»/.test(torrString),
-                      innerSpanWidth,
-                      dtWidth    = dtEl.width();
-                  // Span width padding fix
-                  dtEl.find("> a").wrapInner("<span></span>");
-                  innerSpanWidth = dtEl.find("> a > span").width();
-                  dtEl.css({
-                    "padding-left" : (innerSpanWidth + 5) + "px",
-                    "width"        : (dtWidth - innerSpanWidth - 5) + "px"
-                  });
-                  // Keyword check
-                  if (hasRaquo) {
-                    var keyWordsArr = torrString.split("»"),
-                        keyWords = keyWordsArr[(keyWordsArr.length-1)];
-                    $j.each(genreArr, function(j, val2){
-                      if ( val2[1].test(keyWords) ) {
-                        dtEl
-                        .parent()
-                        .addClass(val2[0]);
-                        return false;
+                genreArrLength = genreArr.length;
+                colorize = function(x, e) {
+                  // I've tried to optimize this to make it faster but this is the best I could do
+                  var el             = $j(e),
+                      dtEl           = $j("dt", el),
+                      elLink         = $j("a", el),
+                      torrString     = dtEl.length ? dtEl.text() : "",
+                      magnetUrl,
+                      matchKeywords  = torrString.match(/»(.*)$/i),
+                      matchTitle     = torrString.match(/^(.*)\s?»/i),
+                      innerSpanWidth = elLink.length ? elLink.wrapInner("<span></span>").find(" > span").width() : 0,
+                      i = 0;
+                  if ( elLink.length && dtEl.length ) {
+                    // only meausre the 1st one
+                    dtWidth = !x ? el.width() : dtWidth;
+                    magnetUrl = "magnet:?xt=urn:btih:" + elLink.attr("href").match(/\w{40}/i)[0]
+                    + "&amp;dn=" + encodeURIComponent( matchTitle[1] )
+                    + "&amp;tr=" + TZO.trackerObject.userString.replace(/\n+/g,"&amp;tr=");
+                    // Span width padding fix
+                    el.css({
+                      "padding-left" : (innerSpanWidth + 5) + "px",
+                      "width"        : (dtWidth - innerSpanWidth - 5) + "px"
+                    }).append("<dd class='magnet'><a href='" + magnetUrl + "' title='Download with magnetlink "
+                       + "(" + TZO.trackerObject.userArray.length + " trackers)'>&nbsp;</a></dd>");
+                    dtEl.css("width", (dtWidth - innerSpanWidth - 5) + "px");
+                    // Keyword check
+                    if ( matchKeywords && matchKeywords[1] ) {
+                      for (i; i < genreArrLength; i++) {
+                        if ( genreArr[i][1].test(matchKeywords[1]) ) {
+                          el.addClass( genreArr[i][0] );
+                          break;
+                        }
                       }
-                    });
+                    }
                   }
-                });
+                }
+                TZO.addStyle( TZO.searchCss() );
+                resultsEl.find("dl").each(colorize);
               }
               // Add rss link for "approximate match" results
               if ( searchParameters
@@ -1523,7 +1572,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                 && resultsEl.has("dl").length
                 && resultsH2.length
                 && !resultsH2.has("img[src*='rss.png']").length ) {
-                resultsH2.append(" <a href=\"/feed?q=" + searchParameters[1] + "\"><img width=\"16\" height=\"16\" src=\"/img/rss.png\"></a>");
+                resultsH2.append(" <a class='approximate_rss_link' href='/feed?q=" + searchParameters[1] + "'><img width='16' height='16' src='/img/rss.png'></a>");
               }
             })();
           // end pages
@@ -1532,28 +1581,15 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
           // debug
           _window["debug_"+TZO.scriptName] = TZO;
 
-        // ***************************************************************************************
-        // end plugins and $j check
+        // *****************************************************************************************
         }
-      // end GM error logger
       } catch(e) {
         typeof GM_log === "function" && GM_log(e);
       }
+      // end GM error logger
+    }
     // end init
-    }
-    if ( typeof jQuery === "function" ) {
-      $j = jQuery;
-      init(unsafeWindow, $j);
-    } else if ( typeof window.jQuery === "function" ) {
-      $j = window.jQuery;
-      init(unsafeWindow, $j);
-    } else if ( typeof unsafeWindow.jQuery === "function" ) {
-      $j = unsafeWindow.jQuery;
-      init(unsafeWindow, $j);
-    } else {
-      // load jQuery and then execute the main init function on script.load
-      addJQuery();
-    }
-  // end if !=== https:
+    init( unsafeWindow, ($||jQuery||unsafeWindow.jQuery) );
   }
+  // end if !=== https:
 })();
