@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.2
+// @version       2.0.3
 // @date          2012-05-16
 // @author        elundmark
 // @contact       mail@elundmark.se
@@ -81,7 +81,7 @@
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.2 2012-05-16",
+            scriptVersion    : "Version 2.0.3 2012-05-16",
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
             defTrackerList   : [
@@ -102,8 +102,8 @@
 "http://nemesis.1337x.org:80/announce"
             ],
             searchEnginesArr : [
-"search imdb|http://www.nullrefer.com/?http://www.imdb.com/find?s=all&amp;q=%s",
-"rotten tomatoes|http://www.nullrefer.com/?http://www.rottentomatoes.com/search/full_search.php?search=%s",
+"search_imdb|http://www.nullrefer.com/?http://www.imdb.com/find?s=all&amp;q=%s",
+"rotten_tomatoes|http://www.nullrefer.com/?http://www.rottentomatoes.com/search/full_search.php?search=%s",
 "itunes|http://www.nullrefer.com/?http://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term=%s",
 "amazon|http://www.nullrefer.com/?http://www.amazon.com/s/?field-keywords=%s",
 "wikipedia|http://www.nullrefer.com/?http://en.wikipedia.org/w/index.php?search=%s",
@@ -486,6 +486,10 @@ border:7px solid "+e.colors.white+";\
    -moz-border-radius: 3px;\
         border-radius: 3px;\
 }\
+."+base+"_b #default_searchengines_textarea:focus,\
+."+base+"_b #default_trackers_textarea:focus {\
+  outline:none;\
+}\
 ."+base+"_b #other_settings {\
 right: 22px;\
 height: 235px;\
@@ -748,6 +752,7 @@ body."+base+"_b div.results > dl dd.magnet a:hover {\
             },
             currentSettings  : function(){
               return {
+                versionCheck    : $j.jStorage.get(this.scriptName+"_versionCheck"),
                 removeAds       : $j.jStorage.get(this.scriptName+"_removeAds"),
                 searchHighlight : $j.jStorage.get(this.scriptName+"_searchHighlight"),
                 linkComments    : $j.jStorage.get(this.scriptName+"_linkComments"),
@@ -821,14 +826,28 @@ body."+base+"_b div.results > dl dd.magnet a:hover {\
           };
           // end TZO object
 
-          // Set default settings localStorage for the 1st run
-          $j.jStorage.get(TZO.scriptName+"_removeAds") === null       && $j.jStorage.set(TZO.scriptName+"_removeAds",true);
-          $j.jStorage.get(TZO.scriptName+"_searchHighlight") === null && $j.jStorage.set(TZO.scriptName+"_searchHighlight",true);
-          $j.jStorage.get(TZO.scriptName+"_linkComments") === null    && $j.jStorage.set(TZO.scriptName+"_linkComments", true);
-          $j.jStorage.get(TZO.scriptName+"_defaultTrackers") === null && $j.jStorage.set(TZO.scriptName+"_defaultTrackers",TZO.defTrackerList);
-          $j.jStorage.get(TZO.scriptName+"_searchEngines") === null   && $j.jStorage.set(TZO.scriptName+"_searchEngines",TZO.searchEnginesArr);
-          
           storedSettings = TZO.currentSettings();
+          
+          // Set default settings localStorage for the 1st run
+          if ( storedSettings.versionCheck === null
+            && storedSettings.removeAds === null
+            && storedSettings.searchHighlight === null
+            && storedSettings.linkComments === null
+            && storedSettings.defaultTrackers === null
+            && storedSettings.searchEngines === null ) {
+            $j.jStorage.set(TZO.scriptName+"_versionCheck",TZO.scriptVersion);
+            $j.jStorage.set(TZO.scriptName+"_removeAds",true);
+            $j.jStorage.set(TZO.scriptName+"_searchHighlight",true);
+            $j.jStorage.set(TZO.scriptName+"_linkComments", true);
+            $j.jStorage.set(TZO.scriptName+"_defaultTrackers",TZO.defTrackerList);
+            $j.jStorage.set(TZO.scriptName+"_searchEngines",TZO.searchEnginesArr);
+            storedSettings = TZO.currentSettings();
+          } else if ( $j.jStorage.get(TZO.scriptName+"_versionCheck") === null ) {
+            // new version flush to circumvent errors (mean and lazy)
+            alert("This version upgrade requires all stored data you have to be deleted, \
+sorry about that. The page will refresh and new values set. Won't happen again :)");
+            $j.jStorage.flush() && _window.location.reload();
+          }
           
           TZO.trackerObject.userArray = storedSettings.defaultTrackers;
           TZO.trackerObject.userString = TZO.mergeTrackers( TZO.trackerObject.userArray, [], "string");
@@ -853,7 +872,7 @@ body."+base+"_b div.results > dl dd.magnet a:hover {\
             settingsEl = TZO.topDiv.find(" > ul > li."+TZO.scriptName+"_settings a");
             TZO.topDiv.append("<div class='settings_wrap'><span id='trackers_title'>\
 Default trackerlist (these are added to all torrents\' trackers, if absent)</span>\
-<span id='searchengines_title'>Search engines list (title|url formatting, use %s to indicate keyword)</span>\
+<span id='searchengines_title'>Search engines list (title|url formatting, use %s to indicate keyword, and \"_\" to indicate a space)</span>\
 <textarea title='Note that these are combined with the torrents own trackers, and after that duplicates are removed, \
 they get sorted by domain, and finally grouped with any backup udp protocols.' id='default_trackers_textarea' wrap='off'>"
 + TZO.newlineDelimiter( TZO.mergeTrackers( [], storedSettings.defaultTrackers, "string" ) ) + "</textarea>\
@@ -900,17 +919,20 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
             });
 
             settingsSubmitEl.bind("click", function(){
+              var saveTrackers, saveSearchEngines;
               TZO.topDiv.find("input:checked").each(function(){
                 var el = $j(this),
                     settingName = el.attr("name"),
                     settingValue = TZO.makeBool(el.val());
                 $j.jStorage.set(TZO.scriptName + "_" + settingName, settingValue);
               });
-              $j.jStorage.set( TZO.scriptName+"_defaultTrackers", $j("#default_trackers_textarea").val().split(/\n+/) );
-              $j.jStorage.set( TZO.scriptName+"_searchEngines", $j("#default_searchengines_textarea").val().split(/\n+/) );
+              saveTrackers = $j("#default_trackers_textarea").val().split(/\s+/);
+              saveSearchEngines = $j("#default_searchengines_textarea").val().split(/\s+/);
+              $j.jStorage.set( TZO.scriptName+"_defaultTrackers",  saveTrackers);
+              $j.jStorage.set( TZO.scriptName+"_searchEngines", saveSearchEngines);
               setTimeout(function(){
                 _window.location.reload();
-              }, 250);
+              }, 100);
             });
             
             resetEl.bind("click",function(){
@@ -1418,7 +1440,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                   for ( var i = 0; i < storedSettings.searchEngines.length; i++ ) {
                     var engineHTMLArr = storedSettings.searchEngines[i].split("|");
                     searchHtml += "<a class='search_link' href='"
-                      + engineHTMLArr[1].replace(/%s/g,searchStr) + "'>" + engineHTMLArr[0] + "</a>";
+                      + engineHTMLArr[1].replace(/%s/g,searchStr) + "'>" + engineHTMLArr[0].replace(/_/g," ") + "</a>";
                   }
                   searchHtml += "<a class='search_link' href='"
                     + "/search?f="+searchStr+"'>torrentz</a><a href='/feed?q=" + searchStr
@@ -1510,9 +1532,8 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               }
               if ( storedSettings.searchHighlight ) {
                 genreArr = [
-[ "pink",
-  new RegExp(unescape("%28%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30%6E%7C%78%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%62%29"), "i")
-],
+[ "pink",    new RegExp(unescape("%28%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30%6E%7C%78\
+%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%2B%3F%5C%62%29"), "i") ],
 [ "tv",      /(\btv\b|eztv|ettv|tvteam|television|series|shows|episodes)/i ],
 [ "movie",   /(movie|xvid|divx|bdrip|hdrip|maxspeed|klaxxon|axxo|wmv|avi|matroska|mkv|highres|264)/i ],
 [ "game",    /game/i ],
@@ -1530,17 +1551,21 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                   var el             = $j(e),
                       dtEl           = $j("dt", el),
                       elLink         = $j("a", el),
+                      // avoid errors as much as possible
                       torrString     = dtEl.length ? dtEl.text() : "",
-                      magnetUrl,
-                      matchKeywords  = torrString.match(/»(.*)$/i),
-                      matchTitle     = torrString.match(/^(.*)\s?»/i),
+                      matchKeywords  = torrString.replace(/^.*»\s+?(.*)$/i, "$1"),
+                      matchTitle     = torrString.replace(/^(.*)\s+?».*$/i, "$1"),
+                      matchKeywords  = matchKeywords.length ? matchKeywords : torrString,
+                      matchTitle     = matchTitle.length ? matchTitle : torrString,
+                      // wrap the a with a span and measure it's width
                       innerSpanWidth = elLink.length ? elLink.wrapInner("<span></span>").find(" > span").width() : 0,
+                      magnetUrl,
                       i = 0;
                   if ( elLink.length && dtEl.length ) {
-                    // only meausre the 1st one
+                    // speed improvment: only measure the 1st one
                     dtWidth = !x ? el.width() : dtWidth;
                     magnetUrl = "magnet:?xt=urn:btih:" + elLink.attr("href").match(/\w{40}/i)[0]
-                    + "&amp;dn=" + encodeURIComponent( matchTitle[1] )
+                    + "&amp;dn=" + encodeURIComponent( matchTitle )
                     + "&amp;tr=" + TZO.trackerObject.userString.replace(/\n+/g,"&amp;tr=");
                     // Span width padding fix
                     el.css({
@@ -1548,14 +1573,12 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                       "width"        : (dtWidth - innerSpanWidth - 5) + "px"
                     }).append("<dd class='magnet'><a href='" + magnetUrl + "' title='Download with magnetlink "
                        + "(" + TZO.trackerObject.userArray.length + " trackers)'>&nbsp;</a></dd>");
-                    dtEl.css("width", (dtWidth - innerSpanWidth - 5) + "px");
+                    dtEl.css("width", (dtWidth - innerSpanWidth - 7) + "px");
                     // Keyword check
-                    if ( matchKeywords && matchKeywords[1] ) {
-                      for (i; i < genreArrLength; i++) {
-                        if ( genreArr[i][1].test(matchKeywords[1]) ) {
-                          el.addClass( genreArr[i][0] );
-                          break;
-                        }
+                    for (i; i < genreArrLength; i++) {
+                      if ( genreArr[i][1].test(matchKeywords) ) {
+                        el.addClass( genreArr[i][0] );
+                        break;
                       }
                     }
                   }
