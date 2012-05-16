@@ -1151,7 +1151,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                     copylistText = TZO.newlineDelimiter( TZO.trackerObject.allString ),
                     linkHeight   = copylistEl.outerHeight(),
                     theTextarea,
-                    textareaHTML = "<div id='copy_tr_textarea'><textarea cols='40' rows='10' wrap='off'>"
+                    textareaHTML = "<div id='copy_tr_textarea'><textarea readonly='readonly' cols='40' rows='10' wrap='off'>"
                     + copylistText + "</textarea></div>";
                 TZO.bodyEl.append(textareaHTML);
                 TZO.copyTextarea = $j("#copy_tr_textarea");
