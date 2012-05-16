@@ -1538,12 +1538,12 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
 [ "movie",   /(movie|xvid|divx|bdrip|hdrip|maxspeed|klaxxon|axxo|wmv|avi|matroska|mkv|highres|264)/i ],
 [ "game",    /game/i ],
 [ "book",    /(book|epub|pdf|document|m4b|audiobook|audible|comics)/i ],
-[ "music",   /(music|audio|flac|lossless|consert|bootleg|mp3|ogg|wav|m4a)/i ],
+[ "music",   /(music|audio|\bpop\b|\brock\b|flac|lossless|consert|bootleg|mp3|ogg|wav|m4a)/i ],
 [ "app",     /(software|applications|apps|\bos\b)/i ],
 [ "picture", /(picture|images|gallery)/i ],
 [ "movie",   /(video|1080p|720p)/i ],
-[ "app",     /(\bunix\b|\blinux\b|\bsolaris\b|\bwindows\b|\bmac\b|\bx64\b|\bx86\b)/i ],
-[ "misc",    /(other|misc|unsorted|siterip)/i ]
+[ "app",     /(\bos\b|\bunix\b|\blinux\b|\bsolaris\b|\bwindows\b|\bmac\b|\bx64\b|\bx86\b)/i ],
+[ "misc",    /(other|misc|miscellaneous|unsorted|siterip)/i ]
                 ];
                 genreArrLength = genreArr.length;
                 colorize = function(x, e) {
