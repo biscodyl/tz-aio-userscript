@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.3
-// @date          2012-05-16
+// @version       2.0.4
+// @date          2012-05-17
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
 // @namespace     http://elundmark.se/code/tz-aio
-// @homepage      http://userscripts.org/scripts/show/125001
+// @homepage      https://userscripts.org/scripts/show/125001
 // @updateURL     https://userscripts.org/scripts/source/125001.meta.js
-// @downloadURL   https://github.com/elundmark/tz-aio-userscript/raw/master/tzaiov2.user.js
+// @downloadURL   https://userscripts.org/scripts/source/125001.user.js
 // @supportURL    https://github.com/elundmark/tz-aio-userscript/issues
 // @include       http://torrentz.eu/*
 // @include       https://torrentz.eu/*
@@ -81,7 +81,7 @@
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.3 2012-05-16",
+            scriptVersion    : "Version 2.0.4 2012-05-17",
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
             defTrackerList   : [
@@ -791,6 +791,8 @@ body."+base+"_b div.results > dl dd.magnet a:hover {\
             mergeTrackers    : function(stored, specific, format) {
               var mergedArray;
               if ( _.isArray(stored) && _.isArray(specific) ) {
+                stored = _.compact(stored);
+                specific = _.compact(specific);
                 mergedArray = _.union(stored, specific);
                 mergedArray = this.finalTrackerSorting(mergedArray);
                 if ( format && format === "array") {
@@ -928,6 +930,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               });
               saveTrackers = $j("#default_trackers_textarea").val().split(/\s+/);
               saveSearchEngines = $j("#default_searchengines_textarea").val().split(/\s+/);
+              saveSearchEngines = _.compact(saveSearchEngines);
               $j.jStorage.set( TZO.scriptName+"_defaultTrackers",  saveTrackers);
               $j.jStorage.set( TZO.scriptName+"_searchEngines", saveSearchEngines);
               setTimeout(function(){
