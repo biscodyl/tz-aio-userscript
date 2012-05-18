@@ -1,0 +1,31 @@
+Changelog
+---------
+
+**2.0.5** (2012-05-18)
+* Removed new ads on search-result pages.
+
+**2.0.4** (2012-05-17)
+* Crutial whitespace fix using `_.compact()`
+* New `@downloadURL`
+* Small RegExp changes.
+
+**2.0.3** (2012-05-16)
+* Added version-control to help future updates from breaking the page.
+* Changed internal functions to prevent errors fom whitespace in user saved vaules.
+* Small CSS fix to search-results.
+
+**2.0.2** (2012-05-16)
+* New: Magnet-links on all individual search-results.
+* Crutial typo fix in `TZO.trackerObject.allMagnet` string.
+* New Help section html.
+* Speed improvments.
+* `@require` jquery 1.7.1 instead of copying from unsafeWindow.
+
+**2.0.1** (2012-05-14)
+* Small CSS fix.
+* 2.0.0 (2012-05-14)
+* First release, total rework of version 1.
+
+**1.0** (2012-02-06)
+* __I wrote the first version almost a year and a half ago, and since so much has changed since that version, I started anew with v.2__
+
