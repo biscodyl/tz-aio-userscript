@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.4
-// @date          2012-05-17
+// @version       2.0.5
+// @date          2012-05-18
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -81,7 +81,7 @@
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.4 2012-05-17",
+            scriptVersion    : "Version 2.0.5 2012-05-18",
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
             defTrackerList   : [
@@ -1523,16 +1523,19 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
             })();
           // Searchresults ( The /i page uses ajax so let's skip that
           } else if ( /^(search|any|verified|advanced|tracker_)/i.test(TZO.torrHash) ) {
+            if ( storedSettings.removeAds ) {
+              if ( $j("div.results:eq(0)").find("h2").text().match(/sponsored/i) ) {
+                $j("div.results:eq(0)").addClass("removed_ad");
+              }
+            }
             (function(){
               var searchParameters = document.location.search.match(/^\?f\=(.+)$/i),
-                  resultsEl = $j("div.results"),
+                  resultsEl = $j("div.results:visible:eq(0)"),
                   resultsH2 = resultsEl.find(" > h2"),
                   genreArr,
                   genreArrLength,
                   colorize,
                   dtWidth;
-              if ( storedSettings.removeAds ) {
-              }
               if ( storedSettings.searchHighlight ) {
                 genreArr = [
 [ "pink",    new RegExp(unescape("%28%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30%6E%7C%78\
