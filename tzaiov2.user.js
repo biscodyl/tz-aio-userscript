@@ -1029,7 +1029,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                     }
                   };
               TZO.torrentTitles.raw = torrTitle;
-              TZO.torrentTitles.encoded = encodeURIComponent( torrTitle ),
+              TZO.torrentTitles.encoded = encodeURIComponent( torrTitle.replace("'","") );
               trackerLinks.each(function() {
                 // Will produce an empty array if there are no trackers on site
                 currTrackerList.push( $j(this).text() );
@@ -1560,7 +1560,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                       // avoid errors as much as possible
                       torrString     = dtEl.length ? dtEl.text() : "",
                       matchKeywords  = torrString.replace(/^.*»\s+?(.*)$/i, "$1"),
-                      matchTitle     = torrString.replace(/^(.*)\s+?».*$/i, "$1"),
+                      matchTitle     = torrString.replace(/^(.*)\s+?».*$/i, "$1").replace("'",""),
                       matchKeywords  = matchKeywords.length ? matchKeywords : torrString,
                       matchTitle     = matchTitle.length ? matchTitle : torrString,
                       // wrap the a with a span and measure it's width
@@ -1619,3 +1619,4 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
   }
   // end if !=== https:
 })();
+
