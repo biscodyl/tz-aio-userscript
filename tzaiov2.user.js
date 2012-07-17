@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.5
-// @date          2012-05-18
+// @version       2.0.6
+// @date          2012-07-17
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -81,7 +81,7 @@
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.5 2012-05-18",
+            scriptVersion    : "Version 2.0.6 2012-07-17",
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
             defTrackerList   : [
@@ -621,20 +621,21 @@ text-shadow:none;\
 #trackers_title, #searchengines_title {\
 text-shadow: 1px 1px 0 #0C2C4C;\
 }\
-input, button, select, option, form.search * {\
+/*input, button, select, option, form.search * {\
 font-family:inherit;\
-}\
+}*/\
               ";
             },
             searchCss        : function() {
               var boxShadow = "0 3px 5px #777, 0 -3px 5px #AAA",
-                  e = this,
-                  base = e.scriptName;
+                  e         = this,
+                  base      = e.scriptName
+              ;
               return "\
 /*body."+base+"_b div.results {\
   overflow:hidden !important;\
 }*/\
-body."+base+"_b div.results > dl {\
+body."+base+"_b div.results > dl:not(.dmca) {\
 position: relative;\
 border-bottom: 1px solid " + e.colors.white + "\
 }\
@@ -663,7 +664,7 @@ div.results > dl.movie {\
 background-color: #FCD1C0;\
 }\
 div.results > dl.game {\
-background-color: #EDBF9E;\
+background-color: #F2C3A1; /*EDBF9E*/\
 }\
 div.results > dl.book {\
 background-color: #CCDBEB;\
@@ -680,7 +681,7 @@ background-color: #E0C4DA;\
 div.results > dl.misc {\
 background-color: #DDBFDD;\
 }\
-body."+base+"_b div.results > dl:hover {\
+body."+base+"_b div.results > dl:not(.dmca):hover {\
 background: "  + e.colors.offwhite + " !important;\
 cursor: pointer;\
 left: 0px;\
@@ -692,7 +693,7 @@ border-radius: 3px;\
 -moz-box-shadow: " + boxShadow + ";\
 box-shadow: " + boxShadow + ";\
 }\
-div.results > dl:hover dt {\
+div.results > dl:not(.dmca):hover dt {\
 color: #474E54;\
 }\
 div.results > dl dt a:active, div.results > dl dt a:focus {\
@@ -712,13 +713,16 @@ body."+base+"_b div.results > dl dd.magnet {\
   margin-top: -20px;\
   height: 24px;\
   text-align: center;\
-  margin-right: 12px;\
+  margin-right: 10px;\
 }\
 body."+base+"_b div.results > dl dd.magnet a {\
   display:block;\
   position:absolute;\
   top:0; bottom:0;\
   left:0; right:0;\
+  -webkit-transition: all 0.15s linear;\
+  -moz-transition: all 0.15s linear;\
+  transition: all 0.15s linear;\
   background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAACYVBMVEUAAAAAA\
 ABMizxMizwAAAAAAAAdNRcAAAAAAAAAAAAAAAADBgMAAAAHDAVMizxMizwrTyIqTSFNjTtOjTtDejRNjTtCeTNNjTtNjTtCeTNBd\
 zJOjjtNjTpPjzpPjzpKhjZKhjZMizpUkUNWk0R4rl5SkEByqFh2rVtMizpNjTxSkEJxp1mLvG2Nu26RwHKUxHRUkUNWkkRZlEdZl\
@@ -738,6 +742,9 @@ pbpicN1bDaaFG3vvenUqa2BLsGTlfgQwd5tsSDC2m3VBi+r4BlqQsgRZWY+sSnO0z2qZoK2DBtSNLJzi
 }\
 body."+base+"_b div.results > dl dd.magnet a:hover {\
   background-size:24px 24px;\
+}\
+body."+base+"_b div.results > dl dd.magnet a:active {\
+  background-size:14px 14px;\
 }\
               ";
             },
@@ -777,7 +784,9 @@ body."+base+"_b div.results > dl dd.magnet a:hover {\
               }, newArr = [];
               _arr.sort(sortArr);
               for (var index = 0; index < _arr.length; index++) {
-                var prev = index >= 1 ? _arr[(index-1)] : "", udpPopped;
+                var prev = index >= 1 ? _arr[(index-1)] : "",
+                    udpPopped
+                ;
                 if ( prev.replace(/^udp/,"") == _arr[index].replace(/^https?/,"") ) {
                   udpPopped = newArr.pop();
                   newArr.push(_arr[index]);
@@ -805,8 +814,9 @@ body."+base+"_b div.results > dl dd.magnet a:hover {\
               }
             },
             newlineDelimiter    : function(s){
-              var localArr = s.replace(/^\n+/,"").replace(/\n+$/,"").split(/\n+/),
-                  newString = "";
+              var localArr  = s.replace(/^\n+/,"").replace(/\n+$/,"").split(/\n+/),
+                  newString = ""
+              ;
               for (var index = 0; index < localArr.length; index++) {
                 var next = (index+1) < localArr.length ? localArr[(index+1)] : "";
                 if ( next.replace(/^udp/,"") == localArr[index].replace(/^https?/,"") ) {
@@ -862,7 +872,8 @@ sorry about that. The page will refresh and new values set. Won't happen again :
             var settingsEl,
                 settingsSubmitEl,
                 resetEl,
-                settingsVisible = false;
+                settingsVisible = false
+            ;
             TZO.topDiv = $j("div.top:eq(0)");
             // Remove ads here since we have this function on every page
             if ( storedSettings.removeAds ) {
@@ -921,11 +932,14 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
             });
 
             settingsSubmitEl.bind("click", function(){
-              var saveTrackers, saveSearchEngines;
+              var saveTrackers,
+                  saveSearchEngines
+              ;
               TZO.topDiv.find("input:checked").each(function(){
-                var el = $j(this),
-                    settingName = el.attr("name"),
-                    settingValue = TZO.makeBool(el.val());
+                var el           = $j(this),
+                    settingName  = el.attr("name"),
+                    settingValue = TZO.makeBool(el.val())
+                ;
                 $j.jStorage.set(TZO.scriptName + "_" + settingName, settingValue);
               });
               saveTrackers = $j("#default_trackers_textarea").val().split(/\s+/);
@@ -953,7 +967,8 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
             if ( storedSettings.removeAds ) {
               (function(){
                 var topInfoDiv = TZO.bodyEl.find(" > div.info"),
-                    firstDl    = downloadDiv.find(" > dl:eq(0)");
+                    firstDl    = downloadDiv.find(" > dl:eq(0)")
+                ;
                 if ( topInfoDiv.text().match(/btguard/i) ) topInfoDiv.addClass("removed_ad");
                 if ( firstDl.text().match(/(direct\s+download|sponsored\s+link)/i) ) firstDl.addClass("removed_ad");
               })();
@@ -965,8 +980,9 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                 setTimeout(function(){
                   // Linkify visible comments
                   if ( commentEl.length ) {
-                    var regPatt = /((http|https)\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)?/gi,
-                        linkComments = commentEl.find(".com:visible:contains('http')");
+                    var regPatt      = /((http|https)\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)?/gi,
+                        linkComments = commentEl.find(".com:visible:contains('http')")
+                    ;
                     linkComments.each(function(){
                       var thisLink = $j(this);
                       thisLink.replaceText(regPatt, "<a href='$1'>$1</a>" );
@@ -1008,7 +1024,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                   filesInfoText,
                   wmvWarning     = false,
                   verDownload    = $j(".votebox .status").text().match(/\d+/),
-                  verDownloadCl  = verDownload && +verDownload[0] >= 2 ? " verified_download" : "",
+                  verDownloadCl  = verDownload && +verDownload[0] >= 3 ? " verified_download" : "",
                   warn_blink_timer,
                   filesSizeText  = $j("div:contains('Size:'):eq(0)", filesDiv).text().replace("Size: ",""),
                   commentDiv     = $j("div.comments"),
@@ -1027,7 +1043,8 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                     } else {
                       return i;
                     }
-                  };
+                  }
+              ;
               TZO.torrentTitles.raw = torrTitle;
               TZO.torrentTitles.encoded = encodeURIComponent( torrTitle.replace("'","") );
               trackerLinks.each(function() {
@@ -1095,7 +1112,8 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               }
               seedText = seedTitle + " <span style='color:" + seedColor + "'>" + seedMeter + "</span>";
               minPeersText = " <span>" + formatNumbers(minPeers) + "+ peers</span>";
-              clippyText = "<a href='#' id='copylist' title='Click to copy the trackerlist'>Copy " + TZO.trackerObject.allArray.length + " trackers</a>";
+              clippyText = "<a href='#' id='copylist' title='Click to copy the trackerlist'>Copy "
+                          +TZO.trackerObject.allArray.length + " trackers</a>";
               if (commentCount) {
                 commentText = "<a href='#comments_"+TZO.scriptName+"'>";
                 commentDiv.attr("id","comments_"+TZO.scriptName);
@@ -1155,7 +1173,8 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                     linkHeight   = copylistEl.outerHeight(),
                     theTextarea,
                     textareaHTML = "<div id='copy_tr_textarea'><textarea readonly='readonly' cols='40' rows='10' wrap='off'>"
-                    + copylistText + "</textarea></div>";
+                    + copylistText + "</textarea></div>"
+                ;
                 TZO.bodyEl.append(textareaHTML);
                 TZO.copyTextarea = $j("#copy_tr_textarea");
                 copylistEl.click(function(){
@@ -1176,221 +1195,218 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
             // Download buttons
             (function(){
               // select the links we want to downloadify
-              var torCacheUrl = "http://torcache.net/torrent/" + TZO.torrHash.toUpperCase() + ".torrent?title=" + TZO.torrentTitles.encoded,
-                  torRageUrl  = "http://torrage.net/torrent/" + TZO.torrHash.toUpperCase() + ".torrent",
-                  torrSitesArr     = [
-                  [ "btmon.com",
-                    function(theUrl){
-                      // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent.html
-                      // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent
-                      // last checked 2012-05-13
-                      return ( theUrl.replace(/\.html$/i, "") );
-                    }
+              var torCacheUrl        = "http://torcache.net/torrent/" + TZO.torrHash.toUpperCase() + ".torrent?title=" + TZO.torrentTitles.encoded,
+                  torRageUrl         = "http://torrage.com/torrent/" + TZO.torrHash.toUpperCase() + ".torrent",
+                  torrSitesArr       = [
+                    [ "btmon.com",
+                      function(theUrl){
+                        // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent.html
+                        // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent
+                        // last checked 2012-05-13
+                        return ( theUrl.replace(/\.html$/i, "") );
+                      }
+                    ],
+                    [ "torrentdownloads.net",
+                      function(theUrl){
+                        // www.torrentdownloads.net/torrent/1652094016/ubuntu-10+10-desktop-i386+iso
+                        // www.torrentdownloads.net/download/1652094016/ubuntu-10+10-desktop-i386+iso
+                        // last checked 2012-05-13
+                        return ( theUrl.replace(/(\.net\/)torrent(\/)/i,"$1download$2") );
+                      }
+                    ],
+                    [ "kat.ph",
+                      function(theUrl){
+                        // www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
+                        // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
+                        // last checked 2012-05-13
+                        return ( torCacheUrl );
+                      }
+                    ],
+                    [ "kickasstorrents.com",
+                      function(theUrl){
+                        // www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
+                        // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
+                        // last checked 2012-05-13
+                        return ( torCacheUrl );
+                      }
+                    ],
+                    [ "h33t.com/tor",
+                      function(theUrl){
+                        // h33t.com/tor/999999/ubuntu-10.10-dvd-i386.iso-h33t
+                        // h33t.com/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=Ubuntu%2010.10%20-%20DVD%20-%20i386.iso.torrent
+                        // last checked 2012-05-13
+                        return ( "http://h33t.com/download.php?id=" + TZO.torrHash.toLowerCase() + "&f="
+                                +TZO.torrentTitles.encoded + "%5D%5Bh33t%5D.torrent" );
+                      }
+                    ],
+                    [ "newtorrents.info/torrent",
+                      function(theUrl){
+                        // www.newtorrents.info/torrent/99999/Ubuntu-10-10-DVD-i386.html?nopop=1
+                        // www.newtorrents.info/down.php?id=99999
+                        // last checked 2012-05-13
+                        var theUrlArr = theUrl.split("/");
+                        return ( "http://" + theUrlArr[2] + "/down.php?id=" + theUrlArr[4] );
+                      }
+                    ],
+                    [ "fenopy.eu/torrent",
+                      function(theUrl){
+                        // fenopy.com/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA
+                        // fenopy.com/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA==/download.torrent
+                        // seems to use torcache but this works too
+                        // last checked 2012-05-13
+                        return ( theUrl + "==/download.torrent" );
+                      }
+                    ],
+                    [ "extratorrent.com/torrent",
+                      function(theUrl){
+                        // extratorrent.com/torrent/9999999/Ubuntu-10-10-DVD-i386.html
+                        // extratorrent.com/download/9999999/Ubuntu-10-10-DVD-i386.torrent
+                        // last checked 2012-05-13
+                        return ( theUrl.replace(/(\.com\/torrent)/i, ".com/download").replace(/\.html$/i, ".torrent") );
+                      }
+                    ],
+                    [ "bitsnoop.com",
+                      function(theUrl){
+                        // bitsnoop.com/ubuntu-10-10-dvd-i386-q17900716.html
+                        // torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+                        // last checked 2012-05-13
+                        return ( torRageUrl );
+                      }
+                    ],
+                    [ "bt-chat.com",
+                      function(theUrl){
+                        // www.bt-chat.com/details.php?id=999999
+                        // www.bt-chat.com/download.php?id=999999
+                        // last checked 2012-05-13
+                        // Site was malware flagged so I don't know if this still works
+                        return ( theUrl.replace(/\/details\.php/i, "/download.php") );
+                      }
+                    ],
+                    [ "1337x.org",
+                      function(theUrl){
+                        // 1337x.org/torrent/999999/ubuntu-10-10-dvd-i386/
+                        // last checked 2012-05-13
+                        return ( torCacheUrl );
+                      }
+                    ],
+                    [ "torrentfunk.com/torrent/",
+                      function(theUrl){
+                        // www.torrentfunk.com/torrent/9999999/ubuntu-10-10-dvd-i386.html
+                        // www.torrentfunk.com/tor/9999999.torrent
+                        // last checked 2012-05-13
+                        var theUrlArr = theUrl.split("/");
+                        return ( "http://www.torrentfunk.com/tor/" + theUrlArr[4] + ".torrent" );
+                      }
+                    ],
+                    [ "torrentstate.com",
+                      function(theUrl){
+                        // www.torrentstate.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
+                        // www.torrentstate.com/download/BAE62A9932EC69BC6687A6D399CCB9D89D00D455
+                        // last checked 2012-05-13
+                        // Site was down so I don't know if this still works
+                        return ( "http://www.torrentstate.com/download/" + TZO.torrHash.toUpperCase() );
+                      }
+                    ],
+                    [ "torlock.com/torrent/",
+                      function(theUrl){
+                        // www.torlock.com/torrent/1702956/21-jump-street-2012-r5-new-line-inspiral.html
+                        // dl.torlock.com/1702956.torrent
+                        // last checked 2012-05-13
+                        var theUrlArr = theUrl.split("/");
+                        return ( "http://dl.torlock.com/" + theUrlArr[4] + ".torrent" );
+                      }
+                    ],
+                    [ "torrenthound.com/hash",
+                      function(theUrl){
+                        // www.torrenthound.com/hash/bae62a9932ec69bc6687a6d399ccb9d89d00d455/torrent-info/ubuntu-10.10-dvd-i386.iso
+                        // www.torrenthound.com/torrent/bae62a9932ec69bc6687a6d399ccb9d89d00d455
+                        // last checked 2012-05-13
+                        return ( "http://www.torrenthound.com/torrent/" + TZO.torrHash );
+                      }
+                    ],
+                    [ "vertor.com/torrents",
+                      function(theUrl){
+                        // www.vertor.com/torrents/2191958/Ubuntu-10-10-Maverick-Meerkat-%28Desktop-Intel-x86%29
+                        // www.vertor.com/index.php?mod=download&id=2191958
+                        // last checked 2012-05-13
+                        var theUrlArr = theUrl.split("/");
+                        return ( "http://www.vertor.com/index.php?mod=download&id=" + theUrlArr[4] );
+                      }
+                    ],
+                    [ "yourbittorrent.com/torrent/",
+                      function(theUrl){
+                        // www.yourbittorrent.com/torrent/212911/ubuntu-10-10-desktop-i386-iso.html
+                        // www.yourbittorrent.com/down/212911.torrent
+                        // last checked 2012-05-13
+                        var theUrlArr = theUrl.split("/");
+                        return ( "http://yourbittorrent.com/down/" + theUrlArr[4] + ".torrent" );
+                      }
+                    ],
+                    [ "torrents.net/torrent",
+                      function(theUrl){
+                        // www.torrents.net/torrent/9999999/Ubuntu-10-10-DVD-i386.html/
+                        // www.torrents.net/down/9999999.torrent
+                        // last checked 2012-05-13
+                        var theUrlArr = theUrl.split("/");
+                        return ( "http://www.torrents.net/down/" + theUrlArr[4] + ".torrent" );
+                      }
+                    ],
+                    [ "torrentbit.net/torrent",
+                      function(theUrl){                  
+                        // www.torrentbit.net/torrent/1903618/Ubuntu11.04%20Desktop%20i386%20ISO/
+                        // www.torrentbit.net/get/1903618
+                        // last checked 2012-05-13
+                        var theUrlArr = theUrl.split("/");
+                        return ( "http://www.torrentbit.net/get/" + theUrlArr[4] );
+                      }
+                    ],
+                    [ "coda.fm/albums",
+                      function(theUrl){                  
+                        // coda.fm/albums/9999
+                        // coda.fm/albums/9999/torrent/download?file=Title+of+torrent.torrent
+                        // last checked 2012-05-13
+                        var theUrlArr = theUrl.split("/");
+                        return ( "http://coda.fm/albums/" + theUrlArr[4] + "/torrent/download?file="
+                                +TZO.torrentTitles.encoded + ".torrent" );
+                      }
+                    ],
+                    [ "take.fm/movies",
+                      function(theUrl){                  
+                        // take.fm/movies/999/releases/9999
+                        // take.fm/movies/999/releases/9999/torrent/download?file=Title+of+torrent.torrent
+                        // last checked 2012-05-13
+                        var theUrlArr = theUrl.split("/");
+                        return ( "http://take.fm/movies/"+theUrlArr[4]+"/releases/"+theUrlArr[6]
+                                +"/torrent/download?file="+TZO.torrentTitles.encoded+".torrent" );
+                      }
+                    ],
+                    [ "torrage.com/torrent",
+                      function(theUrl){
+                        // torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+                        return theUrl;
+                      }
+                    ],
+                    [ "torcache.net/torrent",
+                      function(theUrl){
+                        // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+                        return theUrl;
+                      }
+                    ],
+                    [ "zoink.it/torrent",
+                      function(theUrl){
+                        // zoink.it/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+                        return theUrl;
+                      }
+                    ]
                   ],
-                  [ "torrentdownloads.net",
-                    function(theUrl){
-                      // www.torrentdownloads.net/torrent/1652094016/ubuntu-10+10-desktop-i386+iso
-                      // www.torrentdownloads.net/download/1652094016/ubuntu-10+10-desktop-i386+iso
-                      // last checked 2012-05-13
-                      return ( theUrl.replace(/(\.net\/)torrent(\/)/i,"$1download$2") );
-                    }
-                  ],
-                  [ "kat.ph",
-                    function(theUrl){
-                      // www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
-                      // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
-                      // last checked 2012-05-13
-                      return ( torCacheUrl );
-                    }
-                  ],
-                  [ "kickasstorrents.com",
-                    function(theUrl){
-                      // www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
-                      // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
-                      // last checked 2012-05-13
-                      return ( torCacheUrl );
-                    }
-                  ],
-                  [ "h33t.com/tor",
-                    function(theUrl){
-                      // h33t.com/tor/999999/ubuntu-10.10-dvd-i386.iso-h33t
-                      // h33t.com/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=Ubuntu%2010.10%20-%20DVD%20-%20i386.iso.torrent
-                      // last checked 2012-05-13
-                      return ( "http://h33t.com/download.php?id=" + TZO.torrHash.toLowerCase() + "&f=" + TZO.torrentTitles.encoded + "%5D%5Bh33t%5D.torrent" );
-                    }
-                  ],
-                  [ "newtorrents.info/torrent",
-                    function(theUrl){
-                      // www.newtorrents.info/torrent/99999/Ubuntu-10-10-DVD-i386.html?nopop=1
-                      // www.newtorrents.info/down.php?id=99999
-                      // last checked 2012-05-13
-                      var theUrlArr = theUrl.split("/");
-                      return ( "http://" + theUrlArr[2] + "/down.php?id=" + theUrlArr[4] );
-                    }
-                  ],
-                  [ "fenopy.eu/torrent",
-                    function(theUrl){
-                      // fenopy.com/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA
-                      // fenopy.com/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA==/download.torrent
-                      // seems to use torcache but this works too
-                      // last checked 2012-05-13
-                      return ( theUrl + "==/download.torrent" );
-                    }
-                  ],
-                  [ "extratorrent.com/torrent",
-                    function(theUrl){
-                      // extratorrent.com/torrent/9999999/Ubuntu-10-10-DVD-i386.html
-                      // extratorrent.com/download/9999999/Ubuntu-10-10-DVD-i386.torrent
-                      // last checked 2012-05-13
-                      return ( theUrl.replace(/(\.com\/torrent)/i, ".com/download").replace(/\.html$/i, ".torrent") );
-                    }
-                  ],
-                  [ "bitsnoop.com",
-                    function(theUrl){
-                      // bitsnoop.com/ubuntu-10-10-dvd-i386-q17900716.html
-                      // torrage.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
-                      // last checked 2012-05-13
-                      return ( torRageUrl );
-                    }
-                  ],
-                  [ "bt-chat.com",
-                    function(theUrl){
-                      // www.bt-chat.com/details.php?id=999999
-                      // www.bt-chat.com/download.php?id=999999
-                      // last checked 2012-05-13
-                      // Site was malware flagged so I don't know if this still works
-                      return ( theUrl.replace(/\/details\.php/i, "/download.php") );
-                    }
-                  ],
-                  [ "1337x.org",
-                    function(theUrl){
-                      // 1337x.org/torrent/999999/ubuntu-10-10-dvd-i386/
-                      // last checked 2012-05-13
-                      return ( torCacheUrl );
-                    }
-                  ],
-                  [ "torrentfunk.com/torrent/",
-                    function(theUrl){
-                      // www.torrentfunk.com/torrent/9999999/ubuntu-10-10-dvd-i386.html
-                      // www.torrentfunk.com/tor/9999999.torrent
-                      // last checked 2012-05-13
-                      var theUrlArr = theUrl.split("/");
-                      return ( "http://www.torrentfunk.com/tor/" + theUrlArr[4] + ".torrent" );
-                    }
-                  ],
-                  [ "torrentstate.com",
-                    function(theUrl){
-                      // www.torrentstate.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
-                      // www.torrentstate.com/download/BAE62A9932EC69BC6687A6D399CCB9D89D00D455
-                      // last checked 2012-05-13
-                      // Site was down so I don't know if this still works
-                      return ( "http://www.torrentstate.com/download/" + TZO.torrHash.toUpperCase() );
-                    }
-                  ],
-                  [ "torlock.com/torrent/",
-                    function(theUrl){
-                      // www.torlock.com/torrent/1702956/21-jump-street-2012-r5-new-line-inspiral.html
-                      // dl.torlock.com/1702956.torrent
-                      // last checked 2012-05-13
-                      var theUrlArr = theUrl.split("/");
-                      return ( "http://dl.torlock.com/" + theUrlArr[4] + ".torrent" );
-                    }
-                  ],
-                  [ "torrenthound.com/hash",
-                    function(theUrl){
-                      // www.torrenthound.com/hash/bae62a9932ec69bc6687a6d399ccb9d89d00d455/torrent-info/ubuntu-10.10-dvd-i386.iso
-                      // www.torrenthound.com/torrent/bae62a9932ec69bc6687a6d399ccb9d89d00d455
-                      // last checked 2012-05-13
-                      return ( "http://www.torrenthound.com/torrent/" + TZO.torrHash );
-                    }
-                  ],
-                  [ "vertor.com/torrents",
-                    function(theUrl){
-                      // www.vertor.com/torrents/2191958/Ubuntu-10-10-Maverick-Meerkat-%28Desktop-Intel-x86%29
-                      // www.vertor.com/index.php?mod=download&id=2191958
-                      // last checked 2012-05-13
-                      var theUrlArr = theUrl.split("/");
-                      return ( "http://www.vertor.com/index.php?mod=download&id=" + theUrlArr[4] );
-                    }
-                  ],
-                  [ "yourbittorrent.com/torrent/",
-                    function(theUrl){
-                      // www.yourbittorrent.com/torrent/212911/ubuntu-10-10-desktop-i386-iso.html
-                      // www.yourbittorrent.com/down/212911.torrent
-                      // last checked 2012-05-13
-                      var theUrlArr = theUrl.split("/");
-                      return ( "http://yourbittorrent.com/down/" + theUrlArr[4] + ".torrent" );
-                    }
-                  ],
-                  [ "rarbg.com/torrents",
-                    function(theUrl){
-                      // rarbg.com/torrents/filmi/download/bae62a9932ec69bc6687a6d399ccb9d89d00d455/torrent.html
-                      // rarbg.com/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=ubuntu-10-10-desktop-i386-iso.torrent
-                      // last checked 2012-05-13
-                      return ( "http://rarbg.com/download.php?id=" + TZO.torrHash + "&f=" + TZO.torrentTitles.encoded + ".torrent" );
-                    }
-                  ],
-                  [ "torrents.net/torrent",
-                    function(theUrl){
-                      // www.torrents.net/torrent/9999999/Ubuntu-10-10-DVD-i386.html/
-                      // www.torrents.net/down/9999999.torrent
-                      // last checked 2012-05-13
-                      var theUrlArr = theUrl.split("/");
-                      return ( "http://www.torrents.net/down/" + theUrlArr[4] + ".torrent" );
-                    }
-                  ],
-                  [ "torrentbit.net/torrent",
-                    function(theUrl){                  
-                      // www.torrentbit.net/torrent/1903618/Ubuntu11.04%20Desktop%20i386%20ISO/
-                      // www.torrentbit.net/get/1903618
-                      // last checked 2012-05-13
-                      var theUrlArr = theUrl.split("/");
-                      return ( "http://www.torrentbit.net/get/" + theUrlArr[4] );
-                    }
-                  ],
-                  [ "coda.fm/albums",
-                    function(theUrl){                  
-                      // coda.fm/albums/9999
-                      // coda.fm/albums/9999/torrent/download?file=Title+of+torrent.torrent
-                      // last checked 2012-05-13
-                      var theUrlArr = theUrl.split("/");
-                      return ( "http://coda.fm/albums/" + theUrlArr[4] + "/torrent/download?file=" + TZO.torrentTitles.encoded + ".torrent" );
-                    }
-                  ],
-                  [ "take.fm/movies",
-                    function(theUrl){                  
-                      // take.fm/movies/999/releases/9999
-                      // take.fm/movies/999/releases/9999/torrent/download?file=Title+of+torrent.torrent
-                      // last checked 2012-05-13
-                      var theUrlArr = theUrl.split("/");
-                      return ( "http://take.fm/movies/"+theUrlArr[4]+"/releases/"+theUrlArr[6]+"/torrent/download?file="+TZO.torrentTitles.encoded+".torrent" );
-                    }
-                  ],
-                  [ "torrage.com/torrent",
-                    function(theUrl){
-                      // torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
-                      return theUrl;
-                    }
-                  ],
-                  [ "torcache.net/torrent",
-                    function(theUrl){
-                      // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
-                      return theUrl;
-                    }
-                  ],
-                  [ "zoink.it/torrent",
-                    function(theUrl){
-                      // zoink.it/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
-                      return theUrl;
-                    }
-                  ]
-              ],
-              linkList           = downloadDiv.find("a:not([href^='magnet']):not([href='"+TZO.scriptName + "_dllink'])"),
-              torrSitesArrLength = torrSitesArr.length;
+                  linkList           = downloadDiv.find("a:not([href^='magnet']):not([href='"+TZO.scriptName + "_dllink'])"),
+                  torrSitesArrLength = torrSitesArr.length
+              ;
               linkList.each(function(){
-                var theUrl  = this.href,
+                var theUrl    = this.href,
                     theUrlLow = theUrl.toLowerCase(),
-                    theLink   = $j(this);
+                    theLink   = $j(this)
+                ;
                 for ( var j = 0; j < torrSitesArrLength; j++ ) {
                   if ( theUrlLow.match(new RegExp(torrSitesArr[j][0],"i")) ) {
                     theLink.before("<a href='" + torrSitesArr[j][1](theUrl) + "' class='"
@@ -1404,10 +1420,17 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
             
             // Select to search
             (function(){
-              var titleEl  = $j("h2:eq(0)"),
-                  injectEl = downloadDiv.find(" > dl:eq(0)"),
-                  searchBar, searchLinks, theOrgText, theOldText, searchHelperText,
-                  unselectSelection, noModKeys, handleEscape;
+              var titleEl           = $j("h2:eq(0)"),
+                  injectEl          = downloadDiv.find(" > dl:eq(0)"),
+                  searchBar,
+                  searchLinks,
+                  theOrgText,
+                  theOldText,
+                  searchHelperText,
+                  unselectSelection,
+                  noModKeys,
+                  handleEscape
+              ;
               titleEl.attr("title","Select the text in this title to start searching...");
               titleEl.after("<div id='search_bar'></div>");
               searchBar = $j("#search_bar");
@@ -1427,9 +1450,19 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                 return t;
               }
               TzaioSelect.Selector.mouseup = function(e) {
-                var st = TzaioSelect.Selector.getSelected(),
-                    tempStr, _temp, searchStr, searchLink = "", searchHtml = "", leftOffset, widthCalc,
-                    cssWidth, _searchEgi = [], xOffset = e.clientX, yOffset = e.clientY;
+                var st         = TzaioSelect.Selector.getSelected(),
+                    tempStr,
+                    _temp,
+                    searchStr,
+                    searchLink = "",
+                    searchHtml = "",
+                    leftOffset,
+                    widthCalc,
+                    cssWidth,
+                    _searchEgi = [],
+                    xOffset    = e.clientX,
+                    yOffset    = e.clientY
+                ;
                 if (st != "") {
                   titleEl.removeAttr("title");
                   tempStr = st+"";
@@ -1501,7 +1534,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
             if ( storedSettings.removeAds ) {
               (function(){
                 // Old Ads that might popup later again
-                var frontPageAd   = TZO.bodyEl.find(" > p a img");
+                var frontPageAd = TZO.bodyEl.find(" > p a img");
                 if (frontPageAd.length && frontPageAd.parent().parent().is("p")) frontPageAd.parent().parent().hide();
               })();
             }
@@ -1527,15 +1560,18 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               if ( $j("div.results:eq(0)").find("h2").text().match(/sponsored/i) ) {
                 $j("div.results:eq(0)").addClass("removed_ad");
               }
+              $j("body > div.sponsored").remove();
             }
             (function(){
               var searchParameters = document.location.search.match(/^\?f\=(.+)$/i),
-                  resultsEl = $j("div.results:visible:eq(0)"),
-                  resultsH2 = resultsEl.find(" > h2"),
+                  resultsEl        = $j("div.results:visible:eq(0)"),
+                  resultsH2        = resultsEl.find(" > h2"),
                   genreArr,
                   genreArrLength,
                   colorize,
-                  dtWidth;
+                  dtWidth,
+                  removedDl
+              ;
               if ( storedSettings.searchHighlight ) {
                 genreArr = [
 [ "pink",    new RegExp(unescape("%28%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30%6E%7C%78\
@@ -1565,21 +1601,24 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                       matchTitle     = matchTitle.length ? matchTitle : torrString,
                       // wrap the a with a span and measure it's width
                       innerSpanWidth = elLink.length ? elLink.wrapInner("<span></span>").find(" > span").width() : 0,
+                      i              = 0,
                       magnetUrl,
-                      i = 0;
+                      new_dtWidth
+                  ;
                   if ( elLink.length && dtEl.length ) {
                     // speed improvment: only measure the 1st one
                     dtWidth = !x ? el.width() : dtWidth;
+                    new_dtWidth = (dtWidth - innerSpanWidth - 5) > 0 ? (dtWidth - innerSpanWidth - 5) : 2;
                     magnetUrl = "magnet:?xt=urn:btih:" + elLink.attr("href").match(/\w{40}/i)[0]
                     + "&amp;dn=" + encodeURIComponent( matchTitle )
                     + "&amp;tr=" + TZO.trackerObject.userString.replace(/\n+/g,"&amp;tr=");
                     // Span width padding fix
                     el.css({
                       "padding-left" : (innerSpanWidth + 5) + "px",
-                      "width"        : (dtWidth - innerSpanWidth - 5) + "px"
+                      "width"        : new_dtWidth + "px"
                     }).append("<dd class='magnet'><a href='" + magnetUrl + "' title='Download with magnetlink "
                        + "(" + TZO.trackerObject.userArray.length + " trackers)'>&nbsp;</a></dd>");
-                    dtEl.css("width", (dtWidth - innerSpanWidth - 7) + "px");
+                    dtEl.css("width", (new_dtWidth - 2) + "px");
                     // Keyword check
                     for (i; i < genreArrLength; i++) {
                       if ( genreArr[i][1].test(matchKeywords) ) {
@@ -1590,6 +1629,11 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                   }
                 }
                 TZO.addStyle( TZO.searchCss() );
+                // Add class to 'X results removed in compliance with EUCD / DMCA' first
+                removedDl = resultsEl.find("dl:last");
+                if ( removedDl.text().match(/removed.+compliance/i) ) {
+                  removedDl.addClass("dmca");
+                }
                 resultsEl.find("dl").each(colorize);
               }
               // Add rss link for "approximate match" results
@@ -1598,7 +1642,11 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                 && resultsEl.has("dl").length
                 && resultsH2.length
                 && !resultsH2.has("img[src*='rss.png']").length ) {
-                resultsH2.append(" <a class='approximate_rss_link' href='/feed?q=" + searchParameters[1] + "'><img width='16' height='16' src='/img/rss.png'></a>");
+                resultsH2.append(
+                  " <a class='approximate_rss_link' href='/feed?q="
+                  + searchParameters[1]
+                  + "'><img width='16' height='16' src='/img/rss.png'></a>"
+                );
               }
             })();
           // end pages
@@ -1619,4 +1667,3 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
   }
   // end if !=== https:
 })();
-
