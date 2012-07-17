@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+**2.0.6** (2012-07-17)
+* Numerous small but important fixes:
+* Most notably to the magnet-links which could break when they contained hyphens or quotes.
+* I also improved the searchresults list, especially when the title becomes too long.
+* Removed rarbg.com's torrent link, which is impossible to link to now.
+* torrage.net -> torrage.com
+* Cleaned up the code a tad.
+
 **2.0.5** (2012-05-18)
 * Removed new ads on search-result pages.
 
