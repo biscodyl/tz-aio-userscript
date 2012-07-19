@@ -82,6 +82,7 @@
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
             scriptVersion    : "Version 2.0.6 2012-07-17",
+            docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
             defTrackerList   : [
@@ -177,6 +178,7 @@ a7Ct3UT0hh9p9EnXT5Vh6t4C22QaUDh6HwnECOmcO7K+6kW49DKqS2DrEZCtfuI+9GrNHg4fMHVSO5kE
 Yh4ohUPPWKTUh3PaQEptIOr6BiJjcZXCwktaAGfrRIpwblqOV3YKdhfXOIvBLeREWpnd8ynsaSJoyESFphwTtfjN6X1jRO2+FxWt\
 CWksqBApeiFIR9K6fiTpPiigDoadqCEag5YUFKl6Yrciw0VOlhOivv/Ff8wtn0KzlebrUYwAAAABJRU5ErkJggg==);\
 }\
+#"+base+".not_active { background-image:url(//"+TZO.docDomain+"/img/exclamation.png); }\
 #"+base+"_logo {\
 display: block;\
 position: absolute;\
@@ -184,7 +186,7 @@ top: -1px;\
 right: -1px;\
 z-index: 10;\
 background-color: "+e.colors.tzblue+";\
-background-image: url(/img/cbr.gif), url(/img/ctr.gif);\
+background-image: url(//"+TZO.docDomain+"/img/cbr.gif), url(//"+TZO.docDomain+"/img/ctr.gif);\
 background-repeat: no-repeat, no-repeat;\
 background-position: bottom right, top right;\
 width: 66px;\
@@ -404,7 +406,7 @@ display: none !important;\
 ."+base+"_b div.top {\
 position:relative;\
 z-index:5;\
-background-image: url('/img/cbl.gif'), url('/img/cbr.gif');\
+background-image: url('//"+TZO.docDomain+"/img/cbl.gif'), url('//"+TZO.docDomain+"/img/cbr.gif');\
 background-repeat: no-repeat, no-repeat;\
 background-position: left bottom, right bottom;\
 background-color: "+e.colors.tzblue+"; position:relative;\
@@ -1023,8 +1025,9 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                   fileLinks      = $j("a", filesDiv),
                   filesInfoText,
                   wmvWarning     = false,
+                  notActive      = !!(downloadDiv.next(".error").text().match(/active\s+locations?/i)),
                   verDownload    = $j(".votebox .status").text().match(/\d+/),
-                  verDownloadCl  = verDownload && +verDownload[0] >= 3 ? " verified_download" : "",
+                  verDownloadCl  = (verDownload && +verDownload[0] >= 3) && !notActive ? " verified_download" : notActive ? " not_active" : "",
                   warn_blink_timer,
                   filesSizeText  = $j("div:contains('Size:'):eq(0)", filesDiv).text().replace("Size: ",""),
                   commentDiv     = $j("div.comments"),
@@ -1121,7 +1124,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                 commentText = "<a href='#write_comment_"+TZO.scriptName+"'>";
                 formFieldset.attr("id","write_comment_"+TZO.scriptName);
               }
-              commentText += "<img src='/img/comment.png'/> " + commentCount+"</a>";
+              commentText += "<img src='//"+TZO.docDomain+"/img/comment.png'/> " + commentCount+"</a>";
               fileLinks.filter("[href*='.wmv']").each(function(){
                 if ( /\.wmv$/i.test($j(this).text()) ) {
                   wmvWarning = true;
@@ -1129,7 +1132,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               });
               if (fileLinks.length) {
                 $j("div.files:eq(0)").attr("id","files_"+TZO.scriptName);
-                filesInfoText = "<a href='#files_"+TZO.scriptName+"'><img src='/img/folder.png'/> " + fileLinks.length + "</a> &frasl; ";
+                filesInfoText = "<a href='#files_"+TZO.scriptName+"'><img src='//"+TZO.docDomain+"/img/folder.png'/> " + fileLinks.length + "</a> &frasl; ";
               } else if (!fileLinks.length) {
                 filesInfoText = "";
               }
@@ -1480,7 +1483,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                   }
                   searchHtml += "<a class='search_link' href='"
                     + "/search?f="+searchStr+"'>torrentz</a><a href='/feed?q=" + searchStr
-                    + "'><img src='/img/rss.png' width='16' height='16'></a>";
+                    + "'><img src='//"+TZO.docDomain+"/img/rss.png' width='16' height='16'></a>";
                   if (searchStr != "") {
                     searchBar.html(searchHtml);
                     TZO.bodyEl.addClass("search_ready");
@@ -1645,7 +1648,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                 resultsH2.append(
                   " <a class='approximate_rss_link' href='/feed?q="
                   + searchParameters[1]
-                  + "'><img width='16' height='16' src='/img/rss.png'></a>"
+                  + "'><img width='16' height='16' src='//"+TZO.docDomain+"/img/rss.png'></a>"
                 );
               }
             })();
@@ -1667,3 +1670,4 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
   }
   // end if !=== https:
 })();
+
