@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.7
-// @date          2012-07-22
+// @version       2.0.8
+// @date          2012-07-23
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -81,7 +81,7 @@
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.7 2012-07-22",
+            scriptVersion    : "Version 2.0.8 2012-07-23",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
@@ -1202,6 +1202,14 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               var torCacheUrl        = "http://torcache.net/torrent/" + TZO.torrHash.toUpperCase() + ".torrent?title=" + TZO.torrentTitles.encoded,
                   torRageUrl         = "http://torrage.com/torrent/" + TZO.torrHash.toUpperCase() + ".torrent",
                   torrSitesArr       = [
+                    [ "publichd.eu",
+                      function(theUrl){
+                        // publichd.eu/index.php?page=torrent-details&id=bae62a9932ec69bc6687a6d399ccb9d89d00d455
+                        // publichd.eu/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=ubuntu-10.10-dvd-i386.iso.torrent
+                        // last checked 2012-07-23
+                        return ( "http://publichd.eu/download.php?id=" + TZO.torrHash.toLowerCase() + "&f=" + TZO.torrentTitles.encoded + ".torrent" );
+                      }
+                    ],
                     [ "btmon.com",
                       function(theUrl){
                         // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent.html

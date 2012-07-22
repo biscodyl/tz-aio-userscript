@@ -1,8 +1,11 @@
 Changelog
 ---------
 
+**2.0.8** (2012-07-23)
+* Added publichd.eu to the `torrSitesArr` download buttons array.
+
 **2.0.7** (2012-07-22)
-* Fixed broken linkComments select option in the options panel.
+* Fixed broken `linkComments` select option in the options panel.
 * Linked the userscripts.org changelog to this page instead of mirroring it in two places.
 * Plus some variable cleanups and inline comments.
 
@@ -10,8 +13,8 @@ Changelog
 * Numerous small but important fixes:
 * Most notably to the magnet-links which could break when they contained hyphens or quotes.
 * I also improved the searchresults list, especially when the title becomes too long.
-* Removed rarbg.com's torrent link, which is impossible to link to now.
-* torrage.net -> torrage.com
+* Removed rarbg.com's download button form `torrSitesArr`, which is impossible to link to now.
+* Renamed torrage.net -> torrage.com in `torrSitesArr`.
 * Cleaned up the code a tad.
 
 **2.0.5** (2012-05-18)
@@ -19,7 +22,7 @@ Changelog
 
 **2.0.4** (2012-05-17)
 * Crutial whitespace fix using `_.compact()`
-* New `@downloadURL`
+* New `@downloadURL`.
 * Small RegExp changes.
 
 **2.0.3** (2012-05-16)
@@ -36,7 +39,8 @@ Changelog
 
 **2.0.1** (2012-05-14)
 * Small CSS fix.
-* 2.0.0 (2012-05-14)
+
+**2.0.0** (2012-05-14)
 * First release, total rework of version 1.
 
 **1.0** (2012-02-06)
