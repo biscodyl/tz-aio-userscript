@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+**2.0.7** (2012-07-22)
+* Fixed broken linkComments select option in the options panel.
+* Linked the userscripts.org changelog to this page instead of mirroring it in two places.
+* Plus some variable cleanups and inline comments.
+
 **2.0.6** (2012-07-17)
 * Numerous small but important fixes:
 * Most notably to the magnet-links which could break when they contained hyphens or quotes.
