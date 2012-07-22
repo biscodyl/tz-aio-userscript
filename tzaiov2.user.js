@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.6
-// @date          2012-07-17
+// @version       2.0.7
+// @date          2012-07-22
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -81,7 +81,7 @@
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.6 2012-07-17",
+            scriptVersion    : "Version 2.0.7 2012-07-22",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
@@ -917,7 +917,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
 
             if ( !storedSettings.removeAds ) $j("#removeAds_false").attr("checked", true);
             if ( !storedSettings.searchHighlight ) $j("#searchHighlight_false").attr("checked", true);
-            if ( !storedSettings.linkComments ) $j("#searchHighlight_false").attr("checked", true);
+            if ( !storedSettings.linkComments ) $j("#linkComments_false").attr("checked", true);
 
             settingsSubmitEl = $j("#settings_submit");
             resetEl = $j("#settings_reset");
