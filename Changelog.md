@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.9** (2012-07-25)
+* Added movietorrents.eu to the `torrSitesArr` download buttons array.
+
 **2.0.8** (2012-07-23)
 * Added publichd.eu to the `torrSitesArr` download buttons array.
 
