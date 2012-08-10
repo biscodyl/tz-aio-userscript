@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.10** (2012-08-10)
+* New ad removed.
+
 **2.0.9** (2012-07-25)
 * Added movietorrents.eu to the `torrSitesArr` download buttons array.
 

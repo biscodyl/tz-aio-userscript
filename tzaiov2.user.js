@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.9
-// @date          2012-07-25
+// @version       2.0.10
+// @date          2012-08-10
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -81,7 +81,7 @@
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.9 2012-07-25",
+            scriptVersion    : "Version 2.0.10 2012-08-10",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             bodyEl           : $j("body"),
@@ -883,6 +883,7 @@ sorry about that. The page will refresh and new values set. Won't happen again :
               TZO.removeDocOnclick();
               TZO.bodyEl.addClass("no_ads");
               $j("object, embed, iframe").addClass("removed_ad");
+              $j("p.generic").has("iframe").addClass("removed_ad");
             }
             TZO.topDiv.find(" > ul").prepend("<li class='"+TZO.scriptName+"_settings'><a href='#' title='Change TzAio Settings'>TzAio</a>");
             settingsEl = TZO.topDiv.find(" > ul > li."+TZO.scriptName+"_settings a");
