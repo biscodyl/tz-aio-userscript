@@ -2,7 +2,7 @@ Changelog
 ---------
 
 **2.0.11** (2012-09-01)
-* More new ads removed.
+* More new ads removed. jQuery bumped to 1.8.1.
 
 **2.0.10** (2012-08-10)
 * New ad removed.
