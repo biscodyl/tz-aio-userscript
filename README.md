@@ -38,3 +38,8 @@ How to use
 
 1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) under Firefox, or [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo) under Google Chrome.
 2. Install the userscript itself from [userscripts.org](http://userscripts.org/scripts/show/125001), click on `Install`.
+
+ToDo's
+----------
+
+1. Major rewrite, I wrote the bulk of this not knowing much about JS.

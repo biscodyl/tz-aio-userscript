@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.11** (2012-09-01)
+* More new ads removed.
+
 **2.0.10** (2012-08-10)
 * New ad removed.
 
