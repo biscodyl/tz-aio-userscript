@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.12** (2012-09-05)
+* Changed http://www.nullreferer.com/ cloaker to http://href.li/ and removed all said hardcoded urls to `TBO.cloakerUrl`.
+
 **2.0.11** (2012-09-01)
 * More new ads removed. jQuery bumped to 1.8.1.
 

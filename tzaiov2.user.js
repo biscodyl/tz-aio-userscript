@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.11
-// @date          2012-09-01
+// @version       2.0.12
+// @date          2012-09-05
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -81,9 +81,10 @@
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.11 2012-09-01",
+            scriptVersion    : "Version 2.0.12 2012-09-05",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
+            cloakerUrl       : "http://href.li/?",
             bodyEl           : $j("body"),
             defTrackerList   : [
 "http://tracker.openbittorrent.com:80/announce",
@@ -103,12 +104,12 @@
 "http://nemesis.1337x.org:80/announce"
             ],
             searchEnginesArr : [
-"search_imdb|http://www.nullrefer.com/?http://www.imdb.com/find?s=all&amp;q=%s",
-"rotten_tomatoes|http://www.nullrefer.com/?http://www.rottentomatoes.com/search/full_search.php?search=%s",
-"itunes|http://www.nullrefer.com/?http://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term=%s",
-"amazon|http://www.nullrefer.com/?http://www.amazon.com/s/?field-keywords=%s",
-"wikipedia|http://www.nullrefer.com/?http://en.wikipedia.org/w/index.php?search=%s",
-"google|http://www.nullrefer.com/?http://www.google.com/search?q=%s"
+"search_imdb|http://www.imdb.com/find?s=all&amp;q=%s",
+"rotten_tomatoes|http://www.rottentomatoes.com/search/full_search.php?search=%s",
+"itunes|http://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term=%s",
+"amazon|http://www.amazon.com/s/?field-keywords=%s",
+"wikipedia|http://en.wikipedia.org/w/index.php?search=%s",
+"google|http://www.google.com/search?q=%s"
             ],
             colors              : {
               tzblue     : "#369",
@@ -991,7 +992,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                     ;
                     linkComments.each(function(){
                       var thisLink = $j(this);
-                      thisLink.replaceText(regPatt, "<a href='$1'>$1</a>" );
+                      thisLink.replaceText(regPatt, "<a href='" + TZO.cloakerUrl + "$1'>$1</a>" );
                     });
                   }
                 }, 750);
@@ -1499,8 +1500,9 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                   searchStr = tempStr;
                   for ( var i = 0; i < storedSettings.searchEngines.length; i++ ) {
                     var engineHTMLArr = storedSettings.searchEngines[i].split("|");
-                    searchHtml += "<a class='search_link' href='"
-                      + engineHTMLArr[1].replace(/%s/g,searchStr) + "'>" + engineHTMLArr[0].replace(/_/g," ") + "</a>";
+                    searchHtml += "<a class='search_link' href='" + TZO.cloakerUrl
+                      + engineHTMLArr[1].replace(/%s/g,searchStr).replace("http://www.nullrefer.com/?","")
+                      + "'>" + engineHTMLArr[0].replace(/_/g," ") + "</a>";
                   }
                   searchHtml += "<a class='search_link' href='"
                     + "/search?f="+searchStr+"'>torrentz</a><a href='/feed?q=" + searchStr
