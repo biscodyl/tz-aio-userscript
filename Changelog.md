@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.13** (2012-09-07)
+* New sponsored search results removed.
+
 **2.0.12** (2012-09-05)
 * Changed http://www.nullreferer.com/ cloaker to http://href.li/ and removed all said hardcoded urls to `TBO.cloakerUrl`.
 
