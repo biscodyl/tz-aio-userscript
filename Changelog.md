@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.14** (2012-12-04)
+* Highlighted results for Anime. Small CSS fix on search results. Updated all embedded plugins to their latest release.
+
 **2.0.13** (2012-09-07)
 * New sponsored search results removed.
 

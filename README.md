@@ -21,7 +21,7 @@ Features
 Included plugins
 ----------------
 
-* jQuery JSON Plugin, version: 2.3 (2011-09-17)
+* jQuery JSON Plugin, version: 2.4 (2012-11-13)
   MIT license: [opensource.org/licenses/mit-license.php](http://www.opensource.org/licenses/mit-license.php)
   Influenced by MochiKit's serializeJSON, (c) 2005 by Bob Ippolito.
 * JSTORAGE, Copyright (c) 2010 Andris Reinman, andris.reinman@gmail.com
@@ -30,7 +30,7 @@ Included plugins
   Version: 1.1, Last updated: 11/21/2009*
   [Dual licensed](http://benalman.com/about/license/) under the MIT and GPL licenses.
   [Project Home](http://benalman.com/projects/jquery-replacetext-plugin/)
-* [Underscore.js](http://documentcloud.github.com/underscore) 1.3.3, (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
+* [Underscore.js](http://underscorejs.org/) 1.4.2, (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
   Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
 
 How to use
@@ -42,4 +42,4 @@ How to use
 ToDo's
 ----------
 
-1. Major rewrite, I wrote the bulk of this not knowing much about JS.
+1. Major rewrite one the site changes too much, I wrote the bulk of this not knowing much about JS.
