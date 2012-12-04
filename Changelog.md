@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.16** (2012-12-04)
+* All New Search results! Pretty sweet...
+
 **2.0.15** (2012-12-04)
 * Updated `jQuery` to __1.8.3__
 * This script now applies to all the different domains:

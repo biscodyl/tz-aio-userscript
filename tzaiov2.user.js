@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.15
+// @version       2.0.16
 // @date          2012-12-04
 // @author        elundmark
 // @contact       mail@elundmark.se
@@ -141,7 +141,7 @@ l="userDataBehavior"}else{i=null;break a}E();y();x("local");x("session");"localS
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.15 2012-12-04",
+            scriptVersion    : "Version 2.0.16 2012-12-04",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             cloakerUrl       : "http://href.li/?",
@@ -691,32 +691,82 @@ font-family:inherit;\
               ";
             },
             searchCss        : function() {
-              var boxShadow = "0 3px 5px #777, 0 -3px 5px #AAA",
-                  e         = this,
-                  base      = e.scriptName
+              var e    = this,
+                  base = e.scriptName
               ;
               return "\
-/*body."+base+"_b div.results {\
-  overflow:hidden !important;\
-}*/\
-body."+base+"_b div.results > dl:not(.dmca) {\
-position: relative;\
-border-bottom: 1px solid " + e.colors.white + "\
+body."+base+"_b div.results > dl:not(.dmca):hover > dt > a {\
+  color: #F51;\
+  text-decoration: underline;\
 }\
-body."+base+"_b div.results > dl dt a {\
-display: block;\
-position: absolute;\
-top: 0px;\
-left: 2px;\
-width: 100%;\
-height: 100%;\
-line-height: 25px;\
+body."+base+"_b div.results > dl:not(.dmca):hover {\
+  cursor: pointer;\
+  background-color: white;\
+  -webkit-box-shadow: -4px 0 3px rgba(0,0,0,0.1), 0 -4px 20px white, \
+4px 0 3px rgba(0,0,0,0.1), 0 5px 15px white;\
+  -moz-box-shadow: -4px 0 3px rgba(0,0,0,0.1), 0 -4px 20px white, \
+4px 0 3px rgba(0,0,0,0.1), 0 8px 20px white;\
+  box-shadow: -4px 0 3px rgba(0,0,0,0.1), 0 -4px 20px white, \
+4px 0 3px rgba(0,0,0,0.1), 0 8px 20px white;\
+  -moz-border-radius: 2px;\
+  -webkit-border-radius: 2px;\
+  -ms-border-radius: 2px;\
+  border-radius: 2px;\
+}\
+body."+base+"_b div.results > dl span.magnet {\
+  width: 24px;\
+  height: 24px;\
+  position: relative;\
+  top: -7px;\
+  left: -15px;\
+  overflow: visible;\
+  position: relative;\
+  text-align: center;\
+}\
+body."+base+"_b div.results > dl span.magnet a {\
+  display:block;\
+  position:absolute;\
+  top:0; bottom:0;\
+  left:0; right:0;\
+  color: rgb(255,255,255);\
+  color: rgba(255,255,255,0);\
+  -webkit-transition: all 0.15s linear;\
+  -moz-transition: all 0.15s linear;\
+  transition: all 0.15s linear;\
+  background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAACYVBMVEUAAAAAA\
+ABMizxMizwAAAAAAAAdNRcAAAAAAAAAAAAAAAADBgMAAAAHDAVMizxMizwrTyIqTSFNjTtOjTtDejRNjTtCeTNNjTtNjTtCeTNBd\
+zJOjjtNjTpPjzpPjzpKhjZKhjZMizpUkUNWk0R4rl5SkEByqFh2rVtMizpNjTxSkEJxp1mLvG2Nu26RwHKUxHRUkUNWkkRZlEdZl\
+UdalUhalkhnmFdvplhxqFlypWFzwiVzxiF0pmN0qlx1ySJ2yCN3rV94p2h5qWl6qWt6xS57xjB7yS98xTN8yyx9xzWAyTmAzTSBz\
+jSBzjaDyT6DzjiEzzqFzUCGzECHykWIzEOIzUSM0keNv26Nz0yOzU+OzlGP0k2QwXCQw3CR0FOR1E6S1VCTxHKT1FOT1VKT1VOU1\
+VOU1VaV01mZ1Vua2F2bvJGc2GGd2WKfrpmfwpWf2WWgv5ig2meiwJmi22uk222l3G6m2Hanw5+n0Iin0Yeo1Iap1Yep2HqqxaKq2\
+3qs14ms3nqt2Iut23+u1Y2u1o6u332v33+v34Cv4ICwtayw4IG0z6214om24oq65JG75JG83Z6835284Ju93p++36C+456+5pe/3\
+6HA4Z/A5J/A5KDB46HB5KHC5KLD56DE46fE5aLE5qTF5KjF5qXF6KHG6aTH6aXJ6arR6rfR7bXT67vU7rrY4dTY78DZ8MLa49fa7\
+cba8MXc8sjd5drf8szi89Lj9NLk9NPl9dbr99/t7ert7evt+OPu7uzu7u3v7+3v7+7v8O3v+eXv+ebw8O7w8O/x8e/x+en1++/3/\
+PL///+5JOgQAAAAMHRSTlMAAgMEBgcICg0QFhYZIiotOkh9f4CAjo6QmKDLzc3O0NX19fX19vb29/f3+P39/v6zdD/wAAABQElEQ\
+VQoz2NgoCroRAMIiVMoAFli1+69e/fu37//ABCgSOwGCR84cAQEUCTA4kfWZNkYGljm5SJL7Nt/4GC5aWz9wsWNicbCTAgJoLijw\
+8y2nMzs4q65KtLMMAmgObW2S1LjGw4d7y/MmacuCpc4st5kakJYzrpTp3Z05GfMVuaHShw4UhDT6ptcsv3UqT29pUl1+hIwiaNO1\
+SkBy3q2nTq1c9rqtPQWOajEkaMmc/z7Tp3ceerU4ROnlocs0kRIzPJfCguTFX7zERLOVakeKyHiG4Mim2VhEseKwtvtfNaCxLeEu\
+pbpicN1bDaaFG3vvenUqa2BLsGTlfgQwd5tsSDC2m3VBi+r4BlqQsgRZWY+sSnO0z2qZoK2DBtSNLJzi6jqVE6ZXqGrJcbLxYokw\
+8IpICmvqKEgJcjDwYgnIQAAHQu+galt2X0AAAAASUVORK5CYII=) 50% 50% no-repeat;\
+  background-size:18px 18px;\
+}\
+body."+base+"_b div.results > dl span.magnet a:hover {\
+  background-size:24px 24px;\
+}\
+body."+base+"_b div.results > dl span.magnet a:active {\
+  background-size:14px 14px;\
 }\
 body."+base+"_b h2 a.approximate_rss_link img {\
   opacity:0.5;\
 }\
 body."+base+"_b h2 a.approximate_rss_link:hover img {\
   opacity:1;\
+}\
+body."+base+"_b div.results > dl.dmca {\
+  background-color: #EDF2F8;\
+}\
+body."+base+"_b div.results dl span.v[style*='background-color:#fff'], body."+base+"_b div.results dl span.v:empty {\
+  visibility: hidden;\
 }\
 div.results > dl.pink {\
 background-color: #FFDCEF;\
@@ -747,73 +797,6 @@ background-color: #DDBFDD;\
 }\
 div.results > dl.anime {\
 background-color: #F4DE7A;\
-}\
-body."+base+"_b div.results > dl:not(.dmca):hover {\
-background: "  + e.colors.offwhite + " !important;\
-cursor: pointer;\
-left: 0px;\
-z-index: 99999;\
--moz-border-radius: 3px;\
--webkit-border-radius: 3px;\
-border-radius: 3px;\
--webkit-box-shadow: " + boxShadow + ";\
--moz-box-shadow: " + boxShadow + ";\
-box-shadow: " + boxShadow + ";\
-}\
-div.results > dl:not(.dmca):hover dt {\
-color: #474E54;\
-}\
-div.results > dl dt a:active, div.results > dl dt a:focus {\
-opacity: 0.5;\
-}\
-div.results > dl:hover dt a {\
-color: " + e.colors.orange + ";\
-}\
-body."+base+"_b div.results > dl:hover dt a {\
-text-decoration: none;\
-}\
-body."+base+"_b div.results > dl dd.magnet {\
-  position:relative;\
-  z-index:1; /* Over the main link but below ajaxed search results */\
-  width: 24px;\
-  overflow: visible;\
-  margin-top: -20px;\
-  height: 24px;\
-  text-align: center;\
-  margin-right: 280px;\
-}\
-body."+base+"_b div.results > dl dd.magnet a {\
-  display:block;\
-  position:absolute;\
-  top:0; bottom:0;\
-  left:0; right:0;\
-  color: rgb(255,255,255) !important;\
-  color: rgba(255,255,255,0) !important;\
-  -webkit-transition: all 0.15s linear;\
-  -moz-transition: all 0.15s linear;\
-  transition: all 0.15s linear;\
-  background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAACYVBMVEUAAAAAA\
-ABMizxMizwAAAAAAAAdNRcAAAAAAAAAAAAAAAADBgMAAAAHDAVMizxMizwrTyIqTSFNjTtOjTtDejRNjTtCeTNNjTtNjTtCeTNBd\
-zJOjjtNjTpPjzpPjzpKhjZKhjZMizpUkUNWk0R4rl5SkEByqFh2rVtMizpNjTxSkEJxp1mLvG2Nu26RwHKUxHRUkUNWkkRZlEdZl\
-UdalUhalkhnmFdvplhxqFlypWFzwiVzxiF0pmN0qlx1ySJ2yCN3rV94p2h5qWl6qWt6xS57xjB7yS98xTN8yyx9xzWAyTmAzTSBz\
-jSBzjaDyT6DzjiEzzqFzUCGzECHykWIzEOIzUSM0keNv26Nz0yOzU+OzlGP0k2QwXCQw3CR0FOR1E6S1VCTxHKT1FOT1VKT1VOU1\
-VOU1VaV01mZ1Vua2F2bvJGc2GGd2WKfrpmfwpWf2WWgv5ig2meiwJmi22uk222l3G6m2Hanw5+n0Iin0Yeo1Iap1Yep2HqqxaKq2\
-3qs14ms3nqt2Iut23+u1Y2u1o6u332v33+v34Cv4ICwtayw4IG0z6214om24oq65JG75JG83Z6835284Ju93p++36C+456+5pe/3\
-6HA4Z/A5J/A5KDB46HB5KHC5KLD56DE46fE5aLE5qTF5KjF5qXF6KHG6aTH6aXJ6arR6rfR7bXT67vU7rrY4dTY78DZ8MLa49fa7\
-cba8MXc8sjd5drf8szi89Lj9NLk9NPl9dbr99/t7ert7evt+OPu7uzu7u3v7+3v7+7v8O3v+eXv+ebw8O7w8O/x8e/x+en1++/3/\
-PL///+5JOgQAAAAMHRSTlMAAgMEBgcICg0QFhYZIiotOkh9f4CAjo6QmKDLzc3O0NX19fX19vb29/f3+P39/v6zdD/wAAABQElEQ\
-VQoz2NgoCroRAMIiVMoAFli1+69e/fu37//ABCgSOwGCR84cAQEUCTA4kfWZNkYGljm5SJL7Nt/4GC5aWz9wsWNicbCTAgJoLijw\
-8y2nMzs4q65KtLMMAmgObW2S1LjGw4d7y/MmacuCpc4st5kakJYzrpTp3Z05GfMVuaHShw4UhDT6ptcsv3UqT29pUl1+hIwiaNO1\
-SkBy3q2nTq1c9rqtPQWOajEkaMmc/z7Tp3ceerU4ROnlocs0kRIzPJfCguTFX7zERLOVakeKyHiG4Mim2VhEseKwtvtfNaCxLeEu\
-pbpicN1bDaaFG3vvenUqa2BLsGTlfgQwd5tsSDC2m3VBi+r4BlqQsgRZWY+sSnO0z2qZoK2DBtSNLJzi6jqVE6ZXqGrJcbLxYokw\
-8IpICmvqKEgJcjDwYgnIQAAHQu+galt2X0AAAAASUVORK5CYII=) 50% 50% no-repeat;\
-  background-size:16px 16px;\
-}\
-body."+base+"_b div.results > dl dd.magnet a:hover {\
-  background-size:24px 24px;\
-}\
-body."+base+"_b div.results > dl dd.magnet a:active {\
-  background-size:14px 14px;\
 }\
               ";
             },
@@ -1655,11 +1638,11 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               var searchParameters = document.location.search.match(/^\?f\=(.+)$/i),
                   resultsEl        = $j("div.results:visible:eq(0)"),
                   resultsH2        = resultsEl.find(" > h2"),
+                  widthsObj        = null,
                   genreArr,
                   genreArrLength,
                   colorize,
-                  dtWidth,
-                  removedDl
+                  dmcaDl
               ;
               if ( storedSettings.searchHighlight ) {
                 genreArr = [
@@ -1668,47 +1651,55 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
 [ "tv",      /(\btv\b|eztv|ettv|tvteam|television|series|shows|episodes)/i ],
 [ "movie",   /(movie|xvid|divx|bdrip|hdrip|maxspeed|klaxxon|axxo|wmv|avi|matroska|mkv|highres|264)/i ],
 [ "game",    /game/i ],
-[ "anime",   /anime\b/i ],
 [ "book",    /(book|epub|pdf|document|m4b|audiobook|audible|comics)/i ],
 [ "music",   /(music|audio|\bpop\b|\brock\b|flac|lossless|consert|bootleg|mp3|ogg|wav|m4a)/i ],
 [ "app",     /(software|applications|apps|\bos\b)/i ],
 [ "picture", /(picture|images|gallery)/i ],
+[ "anime",   /anime\b/i ],
 [ "movie",   /(video|1080p|720p)/i ],
 [ "app",     /(\bos\b|\bunix\b|\blinux\b|\bsolaris\b|\bwindows\b|\bmac\b|\bx64\b|\bx86\b)/i ],
 [ "misc",    /(other|misc|miscellaneous|unsorted|siterip)/i ]
                 ];
                 genreArrLength = genreArr.length;
                 colorize = function(x, e) {
-                  // I've tried to optimize this to make it faster but this is the best I could do
+                   // I've tried to optimize this to make it faster but this is the best I could do
                   var el             = $j(e),
                       dtEl           = $j("dt", el),
                       elLink         = $j("a", el),
+                      statsDd        = el.find("dd"),
                       // avoid errors as much as possible
                       torrString     = dtEl.length ? dtEl.text() : "",
+                      showTitle      = torrString.length > 89 ? torrString : null,
                       matchKeywords  = torrString.replace(/^.*»\s+?(.*)$/i, "$1"),
                       matchTitle     = torrString.replace(/^(.*)\s+?».*$/i, "$1").replace("'",""),
                       matchKeywords  = matchKeywords.length ? matchKeywords : torrString,
                       matchTitle     = matchTitle.length ? matchTitle : torrString,
-                      // wrap the a with a span and measure it's width
-                      innerSpanWidth = elLink.length ? elLink.wrapInner("<span></span>").find(" > span").width() : 0,
                       i              = 0,
-                      magnetUrl,
-                      new_dtWidth
+                      magnetUrl
                   ;
+                  if ( !widthsObj ) {
+                    widthsObj = { dt : (dtEl.width() - 24), dd : (statsDd.width() + 24) };
+                  }
                   if ( elLink.length && dtEl.length ) {
-                    // speed improvment: only measure the 1st one
-                    dtWidth = !x ? el.width() : dtWidth;
-                    new_dtWidth = (dtWidth - innerSpanWidth - 5) > 0 ? (dtWidth - innerSpanWidth - 5) : 2;
+                    // magnet link
                     magnetUrl = "magnet:?xt=urn:btih:" + elLink.attr("href").match(/\w{40}/i)[0]
                     + "&amp;dn=" + encodeURIComponent( matchTitle )
                     + "&amp;tr=" + TZO.trackerObject.userString.replace(/\n+/g,"&amp;tr=");
-                    // Span width padding fix
-                    el.css({
-                      "padding-left" : (innerSpanWidth + 5) + "px",
-                      "width"        : new_dtWidth + "px"
-                    }).append("<dd class='magnet'><a href='" + magnetUrl + "' title='Download with magnetlink "
-                       + "(" + TZO.trackerObject.userArray.length + " trackers)'>&nbsp;</a></dd>");
-                    dtEl.css("width", (new_dtWidth - 2) + "px");
+                    el.find("dd").prepend("<span class='magnet'><a href='" + magnetUrl + "' title='Download with magnetlink "
+                      + "(" + TZO.trackerObject.userArray.length + " trackers)'>&nbsp;</a></span>")
+                      .click(function(e){
+                      var $target = typeof e.target !== "undefined" ? $(e.target) : null,
+                        $this = $(this),
+                        $link
+                      ;
+                      if ( $target && !$target.is("a") ) {
+                        $link = $this.find("> dt > a");
+                        $link = $link.attr("href").match(/\/[a-zA-Z0-9]{40}/) ? $link.attr("href") : null;
+                        $link && ( location.href = $link );
+                        return false;
+                      }
+                    });
+                    showTitle && ( el.attr("title", showTitle) );
                     // Keyword check
                     for (i; i < genreArrLength; i++) {
                       if ( genreArr[i][1].test(matchKeywords) ) {
@@ -1718,13 +1709,15 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                     }
                   }
                 }
-                TZO.addStyle( TZO.searchCss() );
                 // Add class to 'X results removed in compliance with EUCD / DMCA' first
-                removedDl = resultsEl.find("dl:last");
-                if ( removedDl.text().match(/removed.+compliance/i) ) {
-                  removedDl.addClass("dmca");
+                dmcaDl = resultsEl.find("dl:last");
+                if ( dmcaDl.text().match(/removed.+compliance/i) ) {
+                  dmcaDl.addClass("dmca");
                 }
                 resultsEl.find("dl").each(colorize);
+                TZO.addStyle( TZO.searchCss() );
+                TZO.addStyle( "div.results > dl > dt { width: " + widthsObj.dt + "px !important; }"
+                  + "div.results > dl > dd { width: " + widthsObj.dd + "px !important; }" );
               }
               // Add rss link for "approximate match" results
               if ( searchParameters

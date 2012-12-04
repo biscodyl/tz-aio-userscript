@@ -18,7 +18,7 @@ Applies to these sites
 Features
 --------
 
-* Forces SSL
+* Forces SSL on all domains.
 * Ad removal.
 * Colorized search-results and magnet-link for each result.
 * Direct download links for torrent files.
