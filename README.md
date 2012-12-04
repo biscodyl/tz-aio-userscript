@@ -1,7 +1,7 @@
 Torrentz All-in-one Userscript
 ==============================
 
-[Does everything you wish Torrentz.eu could do!](http://userscripts.org/scripts/show/125001)
+[Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
 This userscript enhances torrentz.eu to include a bunch of new features. Tested on Firefox 12+ and Google Chrome +18 with Tampermonkey.
 
 Features
