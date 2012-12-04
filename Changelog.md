@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.17** (2012-12-05)
+* Result click fix and more small CSS fixes.
+
 **2.0.16** (2012-12-04)
 * All New Search results! Pretty sweet...
 

@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.16
-// @date          2012-12-04
+// @version       2.0.17
+// @date          2012-12-05
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -141,7 +141,7 @@ l="userDataBehavior"}else{i=null;break a}E();y();x("local");x("session");"localS
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.16 2012-12-04",
+            scriptVersion    : "Version 2.0.17 2012-12-05",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             cloakerUrl       : "http://href.li/?",
@@ -332,7 +332,7 @@ padding-top: 5px;\
 padding-bottom: 5px;\
 position: absolute;\
 top: 0;\
-left: 591px;\
+right: 80px;\
 }\
 ."+base+"_b a."+base+"_dllink em {\
 color: "+e.colors.brown+";\
@@ -702,12 +702,14 @@ body."+base+"_b div.results > dl:not(.dmca):hover > dt > a {\
 body."+base+"_b div.results > dl:not(.dmca):hover {\
   cursor: pointer;\
   background-color: white;\
+  position: relative;\
+  z-index: 999999999;\
   -webkit-box-shadow: -4px 0 3px rgba(0,0,0,0.1), 0 -4px 20px white, \
-4px 0 3px rgba(0,0,0,0.1), 0 5px 15px white;\
+4px 0 3px rgba(0,0,0,0.1), 0 4px 15px white;\
   -moz-box-shadow: -4px 0 3px rgba(0,0,0,0.1), 0 -4px 20px white, \
-4px 0 3px rgba(0,0,0,0.1), 0 8px 20px white;\
+4px 0 3px rgba(0,0,0,0.1), 0 4px 15px white;\
   box-shadow: -4px 0 3px rgba(0,0,0,0.1), 0 -4px 20px white, \
-4px 0 3px rgba(0,0,0,0.1), 0 8px 20px white;\
+4px 0 3px rgba(0,0,0,0.1), 0 4px 15px white;\
   -moz-border-radius: 2px;\
   -webkit-border-radius: 2px;\
   -ms-border-radius: 2px;\
@@ -1686,8 +1688,8 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                     + "&amp;dn=" + encodeURIComponent( matchTitle )
                     + "&amp;tr=" + TZO.trackerObject.userString.replace(/\n+/g,"&amp;tr=");
                     el.find("dd").prepend("<span class='magnet'><a href='" + magnetUrl + "' title='Download with magnetlink "
-                      + "(" + TZO.trackerObject.userArray.length + " trackers)'>&nbsp;</a></span>")
-                      .click(function(e){
+                    + "(" + TZO.trackerObject.userArray.length + " trackers)'>&nbsp;</a></span>")
+                    .end().click(function(e){
                       var $target = typeof e.target !== "undefined" ? $(e.target) : null,
                         $this = $(this),
                         $link
