@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.14
+// @version       2.0.15
 // @date          2012-12-04
 // @author        elundmark
 // @contact       mail@elundmark.se
@@ -15,15 +15,38 @@
 // @include       https://torrentz.eu/*
 // @match         http://torrentz.eu/*
 // @match         https://torrentz.eu/*
-// @require       http://code.jquery.com/jquery-1.8.1.min.js
+// @include       http://torrentz.com/*
+// @include       https://torrentz.com/*
+// @match         http://torrentz.com/*
+// @match         https://torrentz.com/*
+// @include       http://torrentz.me/*
+// @include       https://torrentz.me/*
+// @match         http://torrentz.me/*
+// @match         https://torrentz.me/*
+// @include       http://torrentz.in/*
+// @include       https://torrentz.in/*
+// @match         http://torrentz.in/*
+// @match         https://torrentz.in/*
+// @include       http://torrentz.hk/*
+// @include       https://torrentz.hk/*
+// @match         http://torrentz.hk/*
+// @match         https://torrentz.hk/*
+// @include       http://torrents.de/*
+// @include       https://torrents.de/*
+// @match         http://torrents.de/*
+// @match         https://torrents.de/*
+// @include       http://tz.ai/*
+// @include       https://tz.ai/*
+// @match         http://tz.ai/*
+// @match         https://tz.ai/*
+// @require       http://code.jquery.com/jquery-1.8.3.min.js
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAAC3ElEQVR42u3b51MTQRzH4RWUiIqIXRR7Q1EUuyiW2FDD2bAX7L0rIhZUUMHeK/ZesPfeULF3seHt9y8xkzsEjtWJXLzL6O+TV5nszD252exekjkGkyMAAQiQCeAwOK4BICjU0IKgBYRKhhZKAAIQgAAEIAABCEAAAhCAAARwa8BGcOeLkkTFApxjTh4B6+F8vEOwJGg1ZABjgg0AVPORBB0DBxDpkzfAuj8C+Em5i4OjSL+8ATbwXEGGPVnwQk3BQeZ+47IeQNLFMyk5O3mDwx6/ciJF06WKuQ4yZe87LkMPoG9Ux8CcVd4ERyv8AzXVY8WkrEbErNx//o4MGXoA9lo1DMnZZuUMJHjXDtHWVFJLhCPl3esACNuhAnzbSb8skUPpXwYsduszsByf1dJlbjBArShTW2MSoFF9tW3GzQFx+/7aHCCAswCaAwRwOWAnzYH/HkBzwF0A0WbPged3Hz3J3q14A8+AqNcLrTYjAdqvi/LbiZXCjQRg99QZatMnHYWM48XLdTF0DiTk87KojedAWlkWEG7sx7BIk5ZKo97LSO/GCrWIMHgdsCrPh14APi1g+RvYzFmIehzinCd7sCo2k/aCtQBOe7DSnU1aimPAkVqBlWgrmQOY/Ax40Y95N5fMAQw7C3ydxzzrRphzPdDrIMCTGQvobtJ2vAocpwqzUp0kcwBLvgPXGjPf1iZ9NZvwAHjTh3k1izDlemBRmXPgiGaetWzS79oDx/CeLt8Nl20Bz9jOWHnRCpTEMwNk2MvgP/sS7xrAkY/gV0f3HjxtltLscYJfyUQ9nRmmG6Ak49X1m7fvqT0+4CQgbXgNl8wBxyN7h8O6Ogmorg+w9eXD+4JSd7Gs/WDpB2WMqMsDdALGxo4cJGhIe9ZGymzgfGWMqP7+VXUAHJW0FBRksVi1Y8QVqEP/GxKAAAQgAAEIQAACEIAABCAAAbQAd7vdj8PgON1zSgACuAvgB4QHvuWvZtCMAAAAAElFTkSuQmCC
 // ==/UserScript==
 (function(){
   var currProtocol = location.protocol,
       currHost     = location.hostname,
       storedSettings, init, TZO;
-  if ( currHost.match(/torrentz\.eu/i) && currProtocol === "http:" ) {
-    // Force ssl - use torrentz.me if you need http: (the .me domain has no ssl certificate)
+  if ( currProtocol === "http:" ) {
     location.href = location.href.replace(/^http:/, "https:");
   } else {
     // Main init function, called right after it's been closed
@@ -118,7 +141,7 @@ l="userDataBehavior"}else{i=null;break a}E();y();x("local");x("session");"localS
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.14 2012-12-04",
+            scriptVersion    : "Version 2.0.15 2012-12-04",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             cloakerUrl       : "http://href.li/?",
@@ -146,7 +169,7 @@ l="userDataBehavior"}else{i=null;break a}E();y();x("local");x("session");"localS
 "itunes|http://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term=%s",
 "amazon|http://www.amazon.com/s/?field-keywords=%s",
 "wikipedia|http://en.wikipedia.org/w/index.php?search=%s",
-"google|https://www.google.com/search?q=%s"
+"google|http://www.google.com/search?q=%s"
             ],
             colors              : {
               tzblue     : "#369",
@@ -883,7 +906,6 @@ body."+base+"_b div.results > dl dd.magnet a:active {\
             trackerObject       : {}
           // end TZO object
           };
-
           storedSettings = TZO.currentSettings();
           
           // Set default settings localStorage for the 1st run
@@ -912,7 +934,6 @@ sorry about that. The page will refresh and new values set. Won't happen again :
           
           TZO.bodyEl.addClass(TZO.scriptName + "_b");
           TZO.addStyle( TZO.css() );
-
           // Settings applies to all pages
           (function(){
             var settingsEl,
@@ -958,11 +979,9 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
 \
 <button id='settings_submit'>SAVE &amp; REFRESH</button>\
 </div></div>");
-
             if ( !storedSettings.removeAds ) $j("#removeAds_false").attr("checked", true);
             if ( !storedSettings.searchHighlight ) $j("#searchHighlight_false").attr("checked", true);
             if ( !storedSettings.linkComments ) $j("#linkComments_false").attr("checked", true);
-
             settingsSubmitEl = $j("#settings_submit");
             resetEl = $j("#settings_reset");
             
@@ -977,7 +996,6 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               TZO.copyTextarea.length && TZO.copyTextarea.stop().hide(0);
               return false;
             });
-
             settingsSubmitEl.bind("click", function(){
               var saveTrackers,
                   saveSearchEngines
@@ -1109,7 +1127,6 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               + TZO.torrentTitles.encoded + "&amp;tr=" + TZO.trackerObject.allString.replace(/\n+/g,"&amp;tr=");
               trackerLen = TZO.trackerObject.allArray.length;
               trackersText = trackerLen > 1 ? "trackers" : "tracker";
-
               // final magnetlink uri
               magnetLinkHtml = "<a class='"+TZO.scriptName+"_mlink' href='"
               + TZO.trackerObject.allMagnet 
@@ -1724,10 +1741,8 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
             })();
           // end pages
           }
-
           // easier debuggery
           _window["debug_"+TZO.scriptName] = TZO;
-
         // *****************************************************************************************
         }
       } catch(e) {

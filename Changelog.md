@@ -1,6 +1,17 @@
 Changelog
 ---------
 
+**2.0.15** (2012-12-04)
+* Updated `jQuery` to __1.8.3__
+* This script now applies to all the different domains:
+* [http(s)://torrentz.eu/*](https://torrentz.eu/)
+* [http(s)://torrentz.com/*](https://torrentz.com/)
+* [http(s)://torrentz.me/*](https://torrentz.me/)
+* [http(s)://torrentz.in/*](https://torrentz.in/)
+* [http(s)://torrentz.hk/*](https://torrentz.hk/)
+* [http(s)://torrents.de/*](https://torrents.de/)
+* [http(s)://tz.ai/*](https://tz.ai/)
+
 **2.0.14** (2012-12-04)
 * Highlighted results for Anime. Small CSS fix on search results. Updated all embedded plugins to their latest release.
 
