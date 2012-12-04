@@ -4,9 +4,21 @@ Torrentz All-in-one Userscript
 [Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
 This userscript enhances torrentz.eu to include a bunch of new features. Tested on Firefox 12+ and Google Chrome +18 with Tampermonkey.
 
+Applies to these sites
+----------------------
+
+* [http(s)://torrentz.eu/*](https://torrentz.eu/)
+* [http(s)://torrentz.com/*](https://torrentz.com/)
+* [http(s)://torrentz.me/*](https://torrentz.me/)
+* [http(s)://torrentz.in/*](https://torrentz.in/)
+* [http(s)://torrentz.hk/*](https://torrentz.hk/)
+* [http(s)://torrents.de/*](https://torrents.de/)
+* [http(s)://tz.ai/*](https://tz.ai/)
+
 Features
 --------
 
+* Forces SSL
 * Ad removal.
 * Colorized search-results and magnet-link for each result.
 * Direct download links for torrent files.
