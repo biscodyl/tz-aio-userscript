@@ -1,0 +1,6 @@
+/* Included in the project, see Readme for versions, descriptions and copyright information. */
+https://raw.github.com/documentcloud/underscore/87cac5bd057ceafd6f779b1df33de61ca21b5e1d/underscore-min.js
+https://github.com/cowboy/jquery-replacetext/raw/227662ecbe7dfe9ecf94041ba6dd0125907a97b9/jquery.ba-replacetext.min.js
+https://github.com/andris9/jStorage/raw/0468546887a82e9a90e2f38b0a90d806ef1ee3b8/jstorage.min.js
+https://jquery-json.googlecode.com/files/jquery.json-2.4.min.js
+https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js
