@@ -2,7 +2,7 @@ Torrentz All-in-one Userscript
 ==============================
 
 [Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
-This userscript enhances torrentz.eu to include a bunch of new features. Tested on Firefox 12+ and Google Chrome +18 with Tampermonkey.
+This userscript enhances Torrentz (on all SSL domains) to include a bunch of new features. Tested on Firefox 12+ and Google Chrome +18 with Tampermonkey.
 
 Applies to these sites
 ----------------------
@@ -52,7 +52,11 @@ How to use
 1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) under Firefox, or [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo) under Google Chrome.
 2. Install the userscript itself from [userscripts.org](http://userscripts.org/scripts/show/125001), click on `Install`.
 
-ToDo's
+TODO's
 ----------
 
-1. Major rewrite one the site changes too much, I wrote the bulk of this not knowing much about JS.
+1. Rewrite to make make it more maintainable. The result will be version 2.1.
+2. Add keyboard shortcuts for magnet and copy-box.
+3. Fix some CSS glitches, non critical.
+4. Build script, v2.1.
+
