@@ -20,7 +20,7 @@ Features
 
 * Forces SSL on all domains.
 * Ad removal.
-* Colorized search-results and magnet-link for each result.
+* (v2.0.16 improved) Colorized search-results and magnet-link for each result.
 * Direct download links for torrent files.
 * Select-to-search with custom search-engines.
 * Saved custom trackers with intelligent sorting.
@@ -29,6 +29,7 @@ Features
 * Stats on seed-ratio and trackers.
 * wmv file warning.
 * Options panel to customize these settings.
+* (v2.0.18) Passes AdBlocker default list. `/html/body/div[2]` had `info` as a class, which matched a rule in adBlocker.
 
 Included plugins
 ----------------

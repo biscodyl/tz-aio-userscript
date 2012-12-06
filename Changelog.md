@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.18** (2012-12-06)
+* Fixed adblocker removing the info bar. Thanks [AlienHeads](https://github.com/elundmark/tz-aio-userscript/issues/1)!
+
 **2.0.17** (2012-12-05)
 * Result click fix and more small CSS fixes.
 

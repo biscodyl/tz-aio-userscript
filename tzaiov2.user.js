@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.17
-// @date          2012-12-05
+// @version       2.0.18
+// @date          2012-12-06
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -40,6 +40,7 @@
 // @match         http://tz.ai/*
 // @match         https://tz.ai/*
 // @require       http://code.jquery.com/jquery-1.8.3.min.js
+// @grant         none
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAAC3ElEQVR42u3b51MTQRzH4RWUiIqIXRR7Q1EUuyiW2FDD2bAX7L0rIhZUUMHeK/ZesPfeULF3seHt9y8xkzsEjtWJXLzL6O+TV5nszD252exekjkGkyMAAQiQCeAwOK4BICjU0IKgBYRKhhZKAAIQgAAEIAABCEAAAhCAAARwa8BGcOeLkkTFApxjTh4B6+F8vEOwJGg1ZABjgg0AVPORBB0DBxDpkzfAuj8C+Em5i4OjSL+8ATbwXEGGPVnwQk3BQeZ+47IeQNLFMyk5O3mDwx6/ciJF06WKuQ4yZe87LkMPoG9Ux8CcVd4ERyv8AzXVY8WkrEbErNx//o4MGXoA9lo1DMnZZuUMJHjXDtHWVFJLhCPl3esACNuhAnzbSb8skUPpXwYsduszsByf1dJlbjBArShTW2MSoFF9tW3GzQFx+/7aHCCAswCaAwRwOWAnzYH/HkBzwF0A0WbPged3Hz3J3q14A8+AqNcLrTYjAdqvi/LbiZXCjQRg99QZatMnHYWM48XLdTF0DiTk87KojedAWlkWEG7sx7BIk5ZKo97LSO/GCrWIMHgdsCrPh14APi1g+RvYzFmIehzinCd7sCo2k/aCtQBOe7DSnU1aimPAkVqBlWgrmQOY/Ax40Y95N5fMAQw7C3ydxzzrRphzPdDrIMCTGQvobtJ2vAocpwqzUp0kcwBLvgPXGjPf1iZ9NZvwAHjTh3k1izDlemBRmXPgiGaetWzS79oDx/CeLt8Nl20Bz9jOWHnRCpTEMwNk2MvgP/sS7xrAkY/gV0f3HjxtltLscYJfyUQ9nRmmG6Ak49X1m7fvqT0+4CQgbXgNl8wBxyN7h8O6Ogmorg+w9eXD+4JSd7Gs/WDpB2WMqMsDdALGxo4cJGhIe9ZGymzgfGWMqP7+VXUAHJW0FBRksVi1Y8QVqEP/GxKAAAQgAAEIQAACEIAABCAAAbQAd7vdj8PgON1zSgACuAvgB4QHvuWvZtCMAAAAAElFTkSuQmCC
 // ==/UserScript==
 (function(){
@@ -141,7 +142,7 @@ l="userDataBehavior"}else{i=null;break a}E();y();x("local");x("session");"localS
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.17 2012-12-05",
+            scriptVersion    : "Version 2.0.18 2012-12-06",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             cloakerUrl       : "http://href.li/?",
@@ -226,6 +227,13 @@ font-family: inherit;\
 #"+base+" {\
 padding-right: 0 !important;\
 position: relative;\
+background: "+e.colors.lightgreen+" url(/img/information.png) no-repeat 7px;\
+border: solid 1px "+e.colors.green+";\
+border-radius: 5px;\
+font-size: 15px;\
+line-height: 22px;\
+margin: 20px;\
+padding: 10px 30px;\
 }\
 #"+base+".verified_download {\
 background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUE\
@@ -1020,7 +1028,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                     firstDl    = downloadDiv.find(" > dl:eq(0)"),
                     pImgAd     = topInfoDiv.prev().has("a img")
                 ;
-                if ( topInfoDiv.text().match(/btguard/i) ) topInfoDiv.addClass("removed_ad");
+                if ( topInfoDiv.length && topInfoDiv.text().match(/btguard/i) ) topInfoDiv.addClass("removed_ad");
                 if ( firstDl.text().match(/(direct\s+download|sponsored\s+link)/i) ) firstDl.addClass("removed_ad");
                 if ( pImgAd.length ) pImgAd.addClass("removed_ad");
               })();
@@ -1200,7 +1208,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
               finalHtml += "<span id='"+TZO.scriptName+"_message'>";
               finalHtml += "Visit Torrentz All-in-One Website ("+TZO.scriptVersion+")";
               finalHtml += "</span></a>";
-              downloadDiv.before("<div id='" + TZO.scriptName + "' class='info" + verDownloadCl + "'>" + finalHtml + "</div>");
+              downloadDiv.before("<div id='" + TZO.scriptName + "' class='" + verDownloadCl + "'>" + finalHtml + "</div>");
               // edit torrentz own magnet link if avaliable
               downloadDiv.find("a[href^='magnet']").each(function(){
                 $(this).attr("href", TZO.trackerObject.allMagnet
