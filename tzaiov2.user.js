@@ -451,7 +451,7 @@ display: none !important;\
 }\
 ."+base+"_b div.top {\
 position:relative;\
-z-index:5;\
+z-index:2;\
 background-image: url('//"+TZO.docDomain+"/img/cbl.gif'), url('//"+TZO.docDomain+"/img/cbr.gif');\
 background-repeat: no-repeat, no-repeat;\
 background-position: left bottom, right bottom;\

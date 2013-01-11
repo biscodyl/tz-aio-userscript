@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.20** (2013-01-11)
+* Fixed autocomplete CSS (was hidden behind settings div).
+
 **2.0.19** (2013-01-11)
 * Various updates to step this into the future a litlle bit. GreaseMonkey or TamperMonkey is now required.`@match` rules have been removed for legibility and easier customization. `@grant GM_log` rule also added. Other small `typeof` quirks fixed.
 
