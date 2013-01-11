@@ -2,11 +2,12 @@ Torrentz All-in-one Userscript
 ==============================
 
 [Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
-This userscript enhances Torrentz (on all SSL domains) to include a bunch of new features. Tested on Firefox 12+ and Google Chrome +18 with Tampermonkey.
+This userscript enhances Torrentz (on all SSL domains) to include a bunch of new features. Tested on Firefox 17+ and Google Chrome +23 with Tampermonkey.
 
 Applies to these sites
 ----------------------
 
+* [http(s)://torrentz.ph/*](https://torrentz.ph/)
 * [http(s)://torrentz.eu/*](https://torrentz.eu/)
 * [http(s)://torrentz.com/*](https://torrentz.com/)
 * [http(s)://torrentz.me/*](https://torrentz.me/)
