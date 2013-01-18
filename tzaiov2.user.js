@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.19
-// @date          2013-01-11
+// @version       2.0.21
+// @date          2013-01-18
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT License; http://www.opensource.org/licenses/mit-license.php
@@ -118,7 +118,7 @@ l="userDataBehavior"}else{i=null;break a}E();y();x("local");x("session");"localS
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.19 2013-01-11",
+            scriptVersion    : "Version 2.0.21 2013-01-18",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             cloakerUrl       : "http://href.li/?",
@@ -446,7 +446,8 @@ font: 13px/1.2 'Ubuntu Mono', Menlo, Monaco, Consolas, Inconsolata, 'Courier New
 /*   SETTINGS   */ \
 \
 \
-."+base+"_b.no_ads .SPECIFICELEMENT, ."+base+"_b.no_ads .dontblockmebro, ."+base+"_b .removed_ad {\
+."+base+"_b.no_ads .SPECIFICELEMENT, ."+base+"_b.no_ads .dontblockmebro, \
+."+base+"_b.no_ads dnotblockmebro ."+base+"_b .removed_ad {\
 display: none !important;\
 }\
 ."+base+"_b div.top {\

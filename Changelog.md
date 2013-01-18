@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.21** (2013-01-18)
+* Added new ad block to the no-ads list (sorry bro).
+
 **2.0.20** (2013-01-11)
 * Fixed autocomplete CSS (was hidden behind settings div).
 
