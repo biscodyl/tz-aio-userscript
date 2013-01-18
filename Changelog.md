@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.0.22** (2013-01-18)
+* CSS typo fix.
+
 **2.0.21** (2013-01-18)
 * Added new ad block to the no-ads list (sorry bro).
 
