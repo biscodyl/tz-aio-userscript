@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.0.22
-// @date          2013-01-18
+// @version       2.0.23
+// @date          2013-02-23
 // @author        elundmark
 // @contact       mail@elundmark.se
-// @license       MIT License; http://www.opensource.org/licenses/mit-license.php
+// @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
 // @namespace     http://elundmark.se/code/tz-aio/
 // @homepage      https://userscripts.org/scripts/show/125001
 // @updateURL     https://userscripts.org/scripts/source/125001.meta.js
@@ -13,6 +13,7 @@
 // @supportURL    https://github.com/elundmark/tz-aio-userscript/issues
 // @include       http*://torrentz.ph/*
 // @include       http*://torrentz.eu/*
+// @include       http*://torrentz.li/*
 // @include       http*://torrentz.com/*
 // @include       http*://torrentz.me/*
 // @include       http*://torrentz.in/*
@@ -21,18 +22,28 @@
 // @include       http*://tz.ai/*
 // @require       http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js
 // @grant         GM_log
+// @grant         unsafeWindow
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAAC3ElEQVR42u3b51MTQRzH4RWUiIqIXRR7Q1EUuyiW2FDD2bAX7L0rIhZUUMHeK/ZesPfeULF3seHt9y8xkzsEjtWJXLzL6O+TV5nszD252exekjkGkyMAAQiQCeAwOK4BICjU0IKgBYRKhhZKAAIQgAAEIAABCEAAAhCAAARwa8BGcOeLkkTFApxjTh4B6+F8vEOwJGg1ZABjgg0AVPORBB0DBxDpkzfAuj8C+Em5i4OjSL+8ATbwXEGGPVnwQk3BQeZ+47IeQNLFMyk5O3mDwx6/ciJF06WKuQ4yZe87LkMPoG9Ux8CcVd4ERyv8AzXVY8WkrEbErNx//o4MGXoA9lo1DMnZZuUMJHjXDtHWVFJLhCPl3esACNuhAnzbSb8skUPpXwYsduszsByf1dJlbjBArShTW2MSoFF9tW3GzQFx+/7aHCCAswCaAwRwOWAnzYH/HkBzwF0A0WbPged3Hz3J3q14A8+AqNcLrTYjAdqvi/LbiZXCjQRg99QZatMnHYWM48XLdTF0DiTk87KojedAWlkWEG7sx7BIk5ZKo97LSO/GCrWIMHgdsCrPh14APi1g+RvYzFmIehzinCd7sCo2k/aCtQBOe7DSnU1aimPAkVqBlWgrmQOY/Ax40Y95N5fMAQw7C3ydxzzrRphzPdDrIMCTGQvobtJ2vAocpwqzUp0kcwBLvgPXGjPf1iZ9NZvwAHjTh3k1izDlemBRmXPgiGaetWzS79oDx/CeLt8Nl20Bz9jOWHnRCpTEMwNk2MvgP/sS7xrAkY/gV0f3HjxtltLscYJfyUQ9nRmmG6Ak49X1m7fvqT0+4CQgbXgNl8wBxyN7h8O6Ogmorg+w9eXD+4JSd7Gs/WDpB2WMqMsDdALGxo4cJGhIe9ZGymzgfGWMqP7+VXUAHJW0FBRksVi1Y8QVqEP/GxKAAAQgAAEIQAACEIAABCAAAbQAd7vdj8PgON1zSgACuAvgB4QHvuWvZtCMAAAAAElFTkSuQmCC
 // ==/UserScript==
-(function(){
+(function(_window, $j){
   var currProtocol = location.protocol,
       currHost     = location.hostname,
-      storedSettings, init, TZO;
-  if ( currProtocol === "http:" ) {
-    location.href = location.href.replace(/^http:/, "https:");
-  } else {
-    // Main init function, called right after it's been closed
-    init = function(_window, $j){
-      try {
+      storedSettings, init, TZO,
+      GM_log       = function (msg) {
+        // redirects logs from error console to the more usable console
+        if ( typeof _window !== "undefined"  && _window.console && _window.console.log ) {
+          _window.console.log("-------- TzAio GM_log --------");
+          _window.console.log(msg);
+        }
+      }
+  ;
+  try {
+    if ( currProtocol === "http:" ) {
+      location.href = location.href.replace(/^http:/, "https:");
+    } else {
+      // Main init function, called right after it's been closed
+      init = function(){
+
         if ( typeof $j !== "function" || typeof _window !== "object" ) throw "We have no _window (or) $j";
         //
         //  Plugins  
@@ -118,7 +129,7 @@ l="userDataBehavior"}else{i=null;break a}E();y();x("local");x("session");"localS
           TZO = {
             torrHash         : document.location.pathname.replace(/\x2F/g,""),
             scriptName       : "tz_aio",
-            scriptVersion    : "Version 2.0.22 2013-01-18",
+            scriptVersion    : "Version 2.0.23 2013-02-23",
             docDomain        : document.domain,
             scriptHomepage   : "http://userscripts.org/scripts/show/125001",
             cloakerUrl       : "http://href.li/?",
@@ -310,7 +321,7 @@ position: relative;\
 }\
 ."+base+"_b a."+base+"_dllink {\
 display: block;\
-width: 120px;\
+width: 126px;\
 height:20px;\
 padding-top: 5px;\
 padding-bottom: 5px;\
@@ -680,12 +691,12 @@ font-family:inherit;\
                   base = e.scriptName
               ;
               return "\
-body."+base+"_b div.results > dl:not(.dmca):hover > dt > a {\
+/*body."+base+"_b div.results > dl:not(.dmca):hover > dt > a {\
   color: #F51;\
   text-decoration: underline;\
-}\
+}*/\
 body."+base+"_b div.results > dl:not(.dmca):hover {\
-  cursor: pointer;\
+  /*cursor: pointer;*/\
   background-color: white;\
   position: relative;\
   z-index: 999999999;\
@@ -1674,6 +1685,7 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                     + "&amp;tr=" + TZO.trackerObject.userString.replace(/\n+/g,"&amp;tr=");
                     el.find("dd").prepend("<span class='magnet'><a href='" + magnetUrl + "' title='Download with magnetlink "
                     + "(" + TZO.trackerObject.userArray.length + " trackers)'>&nbsp;</a></span>")
+                    /*
                     .end().click(function(e){
                       var $target = e.target !== undefined ? $(e.target) : null,
                         $this = $(this),
@@ -1685,7 +1697,9 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
                         $link && ( location.href = $link );
                         return false;
                       }
-                    });
+                    })
+                    */
+                    ;
                     showTitle && ( el.attr("title", showTitle) );
                     // Keyword check
                     for (i; i < genreArrLength; i++) {
@@ -1725,14 +1739,14 @@ id='searchHighlight_false' /><label for='searchHighlight_false'>No</label></span
           _window["debug_"+TZO.scriptName] = TZO;
         // *****************************************************************************************
         }
-      } catch(e) {
-        typeof GM_log === "function" && GM_log(e);
-      // end GM error logger
+      // end init
       }
-    // end init
+      // call init with window and jQuery from best to worst solution
+      init();
+    // end if !=== https:
     }
-    // call init with window and jQuery from best to worst solution
-    init( (unsafeWindow||window), (jQuery||unsafeWindow.jQuery||window.jQuery) );
-  // end if !=== https:
+  } catch(e) {
+    typeof GM_log === "function" && GM_log(e);
+  // end GM error logger
   }
-}());
+}((unsafeWindow||window), (jQuery||unsafeWindow.jQuery||window.jQuery)));

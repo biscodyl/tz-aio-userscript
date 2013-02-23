@@ -9,6 +9,7 @@ Applies to these sites
 
 * [http(s)://torrentz.ph/*](https://torrentz.ph/)
 * [http(s)://torrentz.eu/*](https://torrentz.eu/)
+* [http(s)://torrentz.li/*](https://torrentz.li/)
 * [http(s)://torrentz.com/*](https://torrentz.com/)
 * [http(s)://torrentz.me/*](https://torrentz.me/)
 * [http(s)://torrentz.in/*](https://torrentz.in/)

@@ -1,6 +1,19 @@
 Changelog
 ---------
 
+**2.0.23** (2013-02-23)
+* Removed javascript click from search results, too many annoyances. Added the .li domain. Other small optimizations.
+* Current domain list:
+* * [http(s)://torrentz.ph/*](https://torrentz.ph/)
+* * [http(s)://torrentz.eu/*](https://torrentz.eu/)
+* * [http(s)://torrentz.li/*](https://torrentz.li/)
+* * [http(s)://torrentz.com/*](https://torrentz.com/)
+* * [http(s)://torrentz.me/*](https://torrentz.me/)
+* * [http(s)://torrentz.in/*](https://torrentz.in/)
+* * [http(s)://torrentz.hk/*](https://torrentz.hk/)
+* * [http(s)://torrents.de/*](https://torrents.de/)
+* * [http(s)://tz.ai/*](https://tz.ai/)
+
 **2.0.22** (2013-01-18)
 * CSS typo fix.
 
