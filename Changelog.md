@@ -2,16 +2,16 @@ Changelog
 ---------
 
 **2.1.0** (2013-03-10)
-* Total rewrite, most noticable change is that it now uses GM supported built-in storage, which means all settings you save, applies to all domains. As there are more new features than changes, these are some of them. See all [here](https://github.com/elundmark/tz-aio-userscript/blob/master/README.md)
-* __NEW__ Global settings panel for all domains:
-    * __Default trackerlist__ **(Magically sorted trackers, that apply to all magnet-links.)**
-    * __Search engines list__ **(Select some text in the title and search these sites.)**
-    * __No referer url__ **(An optional url that is prepended to all outgoing non-torrent-ish sites.)**
-    * __Force HTTPS__ **(Off be default, but forces SSL if enabled.)**
-    * __Hide Ads__ **(Wouldn't be a UserScript without this. As ads change, this script will be updated.)**
-    * __Colorful results__ **(Uses a pretty solid** `RegExp` pattern to figure out what is what.**)**
-    * __Ajaxed sorting__  **(Applies to all search results, uses** `history.pushState` **)**
-    * __Fix comment links__ **(Changes all valid un-anchored links inside comments to links)**
+* Total rewrite, most noticable change is that it now uses GM supported built-in storage, which means all settings you save, applies to all domains. As there are more new features than changes, these are some of them. See all [here](https://github.com/elundmark/tz-aio-userscript/blob/master/README.md).
+* Global settings panel for all domains (__NEW__)
+    * _Default trackerlist_ (Magically sorted trackers, that apply to all magnet-links.)
+    * _Search engines list_ (Select some text in the title and search these sites.)
+    * _No referer url_ (An optional url that is prepended to all outgoing non-torrent-ish sites.)
+    * _Force HTTPS_ (Off be default, but forces SSL if enabled.)
+    * _Hide Ads_ (Wouldn't be a UserScript without this. As ads change, this script will be updated.)
+    * _Colorful results_ (Uses a pretty solid** `RegExp` pattern to figure out what is what.)
+    * _Ajaxed sorting_ (Applies to all search results, uses** `history.pushState`)
+    * _Fix comment links_ (Changes all valid un-anchored links inside comments to links)
     * All these settings are imported for <2.1.0 users, and can be flushed and reset on demand.
 * Updated `jQuery` to __1.8.3__
 * Updated `underScore.js` to __1.4.4__
