@@ -20,18 +20,18 @@ Applies to these sites
 Features
 --------
 
-* __Default trackerlist__ **(Magically sorted trackers, that apply to all magnet-links.)**
-* __Search engines list__ **(Select some text in the title and search these sites.)**
-* __No referer url__ **(An optional url that is prepended to all outgoing non-torrent-ish sites.)**
-* __Force HTTPS__ **(Off be default, but forces SSL if enabled.)**
-* __Hide Ads__ **(Wouldn't be a UserScript without this. As ads change, this script will be updated.)**
-* __Colorful results__ **(Uses a pretty solid** `RegExp` pattern to figure out what is what.**)**
-* __Ajaxed sorting__  **(Applies to all search results, uses** `history.pushState` **)**
-* __Fix comment links__ **(Changes all valid un-anchored links inside comments to links)**
+* _Default trackerlist_ (Magically sorted trackers, that apply to all magnet-links.)
+* _Search engines list_ (Select some text in the title and search these sites.)
+* _No referer url_ (An optional url that is prepended to all outgoing non-torrent-ish sites.)
+* _Force HTTPS_ (Off be default, but forces SSL if enabled.)
+* _Hide Ads_ (Wouldn't be a UserScript without this. As ads change, this script will be updated.)
+* _Colorful results_ (Uses a pretty solid** `RegExp` pattern to figure out what is what.)
+* _Ajaxed sorting_  (Applies to all search results, uses `history.pushState`)
+* _Fix comment links_ (Changes all valid un-anchored links inside comments to links)
 * All these settings are imported for <2.1.0 users, and can be flushed and reset on demand.
 
 * __NEW__ Global settings panel with these options:
-    * Force SSL on all domains **1** **2**.
+    * Force SSL on all domains **1**.
     * Ad removal.
     * Ajaxed sorting of results.
     * Colorful results.
@@ -39,8 +39,7 @@ Features
     * Add your own Select-to-search search-engines links.
     * Linked comment-links.
     * Optinal no-referer url for all outgoing links.
-* **1**) Applies to all mirrors, unlike before**.
-* **2**) Old users settings are imported automatically**.
+_1_ : Applies to all mirrors, unlike before. Old users settings are imported automatically.
 
 Under the hood
 ----------------
