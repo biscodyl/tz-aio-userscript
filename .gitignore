@@ -8,6 +8,8 @@
 *.swp
 *.vi
 *.tmproj
+*.sublime-project
+*.sublime-workspace
 *~
 
 # OS or Editor folders
