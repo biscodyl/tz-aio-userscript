@@ -38,7 +38,8 @@ Features
     * Saved custom trackers with intelligent sorting (now fixed).
     * Add your own Select-to-search search-engines links.
     * Linked comment-links.
-    * Optinal no-referer url for all outgoing links.
+    * Optionalal no-referer url for all outgoing links.
+
 _1_ : Applies to all mirrors, unlike before. Old users settings are imported automatically.
 
 Under the hood

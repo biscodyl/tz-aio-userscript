@@ -3,7 +3,7 @@ Changelog
 
 **2.1.0** (2013-03-10)
 * Total rewrite, most noticable change is that it now uses GM supported built-in storage, which means all settings you save, applies to all domains. As there are more new features than changes, these are some of them. See all [here](https://github.com/elundmark/tz-aio-userscript/blob/master/README.md).
-* Global settings panel for all domains (__NEW__)
+* __NEW__ Global settings panel for all domains
     * _Default trackerlist_ (Magically sorted trackers, that apply to all magnet-links.)
     * _Search engines list_ (Select some text in the title and search these sites.)
     * _No referer url_ (An optional url that is prepended to all outgoing non-torrent-ish sites.)
