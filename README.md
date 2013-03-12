@@ -59,7 +59,7 @@ Included plugins
 * jQuery JavaScript Library v1.9.1
   [jquery.com](http://jquery.com/)
   Includes Sizzle.js
-  [http://sizzlejs.com/(]http://sizzlejs.com/)
+  [http://sizzlejs.com/](http://sizzlejs.com/)
   Copyright 2005, 2012 jQuery Foundation, Inc. and other contributors
   Released under the MIT license
   [jquery.org/license](http://jquery.org/license)
