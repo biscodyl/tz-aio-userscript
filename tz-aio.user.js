@@ -25,7 +25,7 @@
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
 // @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=210_1
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=210_1
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=211_1
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAABGElEQVRYw2N4RCFgGCYG6FiTB+AGWPuTB0YNGDVg1ADaGIA9v7sg1Pc+eJRGugHKKOpD8RmwdS0U7Hn06OFqGEcOpjrvygMCBvgbGkHAVKABnEYwAJLpACp68IiQC+BgFtAAfhSRDpiHyDWg/RYQ3HhIvgH+xnpAQIELiIuFUQOGnQFwUOdLpgH5RUCQ8+iRkAeZXuCxAoKrj7y5/CgIg6UP5zD4UhCIFQ+PMjhQEAvxj+4waFMSjY8ecYtSkg6OPAph86MgHUx7OJPBHS7S+RAIQKUiiH54m7iEtHv/ISBYjFomgsFJVQIGTD92GA7mguOhFUnk8OHtKoSqNhEOOGB3RhcBAq3R6n3UgFEDBqsB5IKHw6PvDAAzFqvUZqMf1wAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -76,7 +76,6 @@
     environment     = isGM ? "Firefox/GreaseMonkey " : isTM ? "Chrome(-ium)/TamperMonkey "
       : isSC ? "Firefox/Scriptish " : "unknown ",
     execStartMS,
-    cachedCss,
     newCss,
     startLogMsg,
     $doc            = $(document),
@@ -224,15 +223,16 @@
         // remember to catch the obvious first, ten re-check / trap further down
         {
           name : "pink",
+          // idea: option to filter out the results, for the shy ones
           pattern : new RegExp(unescape("%28%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30"
             + "%6E%7C%78%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%2B%3F%5C%62%29"), "i")
         }, {
           name : "tv",
-          pattern : new RegExp("(\\b(sd|ez|et)?tv\\b|\\blol\\b|\\bs[0-9]{2}e[0-9]{2}\\b|"
+          pattern : new RegExp("((\\W|_)(sd|ez|et)?tv(\\W|_)|\\blol\\b|(\\W|_)s[0-9]{2}e[0-9]{2}(\\W|_)|"
             + "tvteam|discovery|hdtv|television|series|\\bshows?\\b|episodes?|\\bseasons?\\b)","i")
         }, {
           name : "movie",
-          pattern : new RegExp("(movie|film|maxspeed|axxo|feature|video|dvdscr|screener|\\bcam(rip)?"
+          pattern : new RegExp("(movie|film|maxspeed|axxo|feature|video|dvdscr|screener|(\\W|_)cam(rip)?"
             + "\\b|\\br[3-6]\\b|\\bts\\b|telesync|\\bvod(rip)?)","i")
         }, {
           name : "book",
@@ -253,12 +253,12 @@
           name : "picture",
           pattern : new RegExp("(picture|images|gallery)","i")
         }, {
+          name : "anime",
+          pattern : new RegExp("anime\\b","i")
+        }, {
           name : "movie",
           pattern : new RegExp("(1080p|720p|bluray|blueray|480p|wmv|avi|matroska|mkv"
             + "|highres|264|xvid|divx|bdrip|brrip|hdrip)","i")
-        }, {
-          name : "anime",
-          pattern : new RegExp("anime\\b","i")
         }, {
           name : "misc",
           pattern : new RegExp("(other|\\bmisc|un(sorted|known|defined)|siterip)","i")
@@ -395,8 +395,8 @@
             directHref = slashSplit && slashSplit.length >= 5 ? "http://coda.fm/albums/"
               + slashSplit[4] + "/torrent/download?file=" + titleEnc + ".torrent" : null;
           } else if ( ~href.indexOf("swesub.tv/torrents-details.php") ) {
-            // swesub.tv/download.php?id=11635&name=291054B23C19AECEAD1E8D3BA84A6E6C76FD832C.torrent
-            // swesub.tv/torrents-details.php?id=11635
+            // swesub.tv/download.php?id=99999&name=BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+            // swesub.tv/torrents-details.php?id=99999
             directHref = href.replace("torrents-details.php?","download.php?") + "&name="
               + HASH + ".torrent";
           } else if ( ~href.indexOf("take.fm/movies") ) {
@@ -499,7 +499,6 @@
 
       unselectSelection   : function () {
         // be nice, unselect the selected text
-        // todo: browser compatible? works in safari, chrome, firefox            
         w.getSelection().collapseToStart();
       },
 
@@ -532,9 +531,9 @@
         ;
         // pass through empty values
         if ( urls.match(/\S/) ) {
-          checkArray = this.truncateString(urls).split(/\s+/);
+          checkArray = underScore.compact(this.truncateString(urls).split(/\s+/));
           for ( i = 0; i < checkArray.length; i++ ) {
-            if ( checkArray[i] && !checkArray[i].match(this.cachedValues.linkifyPatt) ) {
+            if ( !this.truncateString(checkArray[i]).match(this.cachedValues.matchUrlPatt) ) {
               returnBool = false;
               break;
             }
@@ -683,6 +682,19 @@
         return cssStr;
       },
 
+      getMagnetUrl        : function (hash, title, trackers, htmlEnc) {
+        var returnStr = this.cachedValues.magnetURI + hash + "&dn="
+            + encodeURIComponent(title) + "&tr=",
+          trackerStr = encodeURIComponent(this.truncateString(trackers).replace(/\n+/g,"&tr="))
+            .replace(/\%26tr\%3D/g, "&tr=")
+        ;
+        returnStr += trackerStr;
+        if ( htmlEnc ) {
+          returnStr = underScore.escape(returnStr);
+        }
+        return returnStr;
+      },
+
       getHelpHtml         : function () {
         var str = "<p><b>" + this.userScript.name + " UserScript</b></p><ul>"
           + "<li>Installed: v" + this.userScript.version + "</li>"
@@ -802,10 +814,10 @@
           + "with any backup udp protocols.</p>"
           + "<label for='norefurl'>No referer url</label><input type='text' class='i' id='norefurl' name='norefurl' "
           +  "value='" + opts.noRefUrl + "' placeholder='http://' />"
-          + "<p>Optional. This url (if any) is prepended to all comment links, and search-engine links. By "
-          + "<a href='http://href.li?http://href.li/' target='_blank'>referer</a>, "
-          + " I mean that sites that you visit from this site isn`t being tracked. All depending on what "
-          + "url to set it to, of course.</p>"
+          + "<p>Optional. This url (if any) is prepended to all comment links, and search-engine links. "
+          + "<a href='http://href.li?http://href.li/' target='_blank'>No referer</a> means that outgoing "
+          + "links you click here can`t be traced back to " + this.page.domain + ". "
+          + "All depending on what url to set it to, of course.</p>"
           + "<label for='default_searchengines_textarea'>Search engines list</label>"
           + "<textarea id='default_searchengines_textarea' wrap='off' "
           + "rows='6' name='searching' class='i'>" + (opts.searchEngines.join("\n"))
@@ -1143,9 +1155,12 @@
         );
         trackerLen = trackers.allArray.length;
         // final magnetlink uri
+        // this.cachedValues.magnetURI + this.page.thash + "&amp;dn="
+        //  + this.page.titleEnc + "&amp;tr=" + trackers.allString.replace(/\n+/g,"&amp;tr=") 
+        // getMagnetUrl(this.page.thash, this.page.title, trackers.allString, true)
         magnetLinkHtml = "<a id='" + tzCl + "_magnet_link" + "' class='" + tzCl
-          + "_mlink " + tzCl + verDownloadCl + "' href='" + this.cachedValues.magnetURI + this.page.thash + "&amp;dn="
-          + this.page.titleEnc + "&amp;tr=" + trackers.allString.replace(/\n+/g,"&amp;tr=") 
+          + "_mlink " + tzCl + verDownloadCl + "' href='"
+          + (this.getMagnetUrl(this.page.thash, this.page.title, trackers.allString, true))
           + "' title='Fully qualified magnet URI for newer BitTorrent clients, includes"
           + " all " + trackerLen + " tracker" + (this.stringValueS(trackerLen)) + "'>Magnet Link</a>";
         // create seed leach ratio
@@ -1247,33 +1262,32 @@
         this.selectors.$otherMagnetLinks = this.selectors.$body.find("a[href^='magnet']")
           .not(this.selectors.$magnetLink);
         if ( this.selectors.$otherMagnetLinks.length ) {
-          magnetUrl = this.cachedValues.magnetURI + this.page.thash + "&amp;dn="
-            + this.page.titleEnc + "&amp;tr=" + trackers.allString.replace(/\n+/g,"&amp;tr=");
+          magnetUrl = this.getMagnetUrl(this.page.thash, this.page.title, trackers.allString);
           this.selectors.$otherMagnetLinks.each(function (index, element) {
-            $(element).attr("href", underScore.escape(magnetUrl));
+            $(element).attr("href", magnetUrl);
           });
         }
         if ( !commentCount ) {
           commentDiv.find(" > h2:eq(0)").replaceText(/\(\d+\)/, "(0)");
         }
         if ( callback && typeof callback === "function" ) {
-          // tr: change allString to .allSortedTrackers
           callback(trackers.allString);
         }
       },
 
       handleMagnetClicks  : function (event) {
         if ( !event && !this.isAnyInputFocused() ) {
+          // :active css class
           this.selectors.$magnetLink.addClass("active");
           w.location.href = this.selectors.$magnetLink[0].href;
           return false;
-        } else {
-          this.selectors.$magnetLink.removeClass("active");
+        } else if ( event ) {
+          // illogical, but this removes the override class active
+          tzAio.selectors.$magnetLink.removeClass("active");
         }
       },
 
       ajaxResultsHandler  : function (event) {
-        // ajax: delete all things here
         var cachedSearchEl;
         if ( event && event.target && event.target.className
           && event.target.className.indexOf("results") !== -1
@@ -1290,10 +1304,8 @@
       },
 
       doAjaxedSorting       : function (event) {
-        // ajax: 
         var relLink, relMatch;
         if ( this.href ) {
-          // relMatch = this.href.match(/[^\/]+$/i);
           relMatch = this.href.match(new RegExp(tzAio.page.protocol.replace(":","\\:")
             + "\\/\\/" + tzAio.page.domain.replace(".","\\.") + "(\\/.*)","i"));
           // prevent leaking of unwanted ajax links, shouldn't happen but it's good to remember
@@ -1304,8 +1316,9 @@
               .load(relLink + " div.results > *", function (responseText, textStatus, xhr) {
                 tzAio.cachedValues.ajaxTimer = new Date().getTime();
                 if ( textStatus == "error") {
-                  sendLog("Sorry, there was an error fetching the page '" + relLink + "'"
-                    + xhr.status + " " + xhr.statusText);
+                  // sendLog("Sorry, there was an error fetching the page '" + relLink + "'"
+                  //   + xhr.status + " " + xhr.statusText);
+                  w.location.href = relLink;
                 } else {
                   if ( w.history.pushState ) {
                     w.history.pushState("", "", relLink);
@@ -1348,13 +1361,10 @@
       dlResultsActions    : function (resultsElement, options, callback) {
         var dlElements      = resultsElement.getElementsByTagName("dl"),
           dlElsLen          = dlElements.length,
-          trackers          = encodeURIComponent(this.cachedValues.userString.replace(/\n+/g,"&tr="))
-            .replace(/\%26tr\%3D/g, "&tr="),
           trackerLen        = this.cachedValues.userArray.length,
           trackerSstr       = this.stringValueS(trackerLen),
           tzaioslug         = this.userScript.slug,
           linkPatt          = this.cachedValues.hashPatt,
-          magnetUri         = this.cachedValues.magnetURI,
           doColorize        = options.searchHighlight,
           magnetTitleAppend = " with magnetlink (" + trackerLen
             + " default tracker" + trackerSstr + ")",
@@ -1386,7 +1396,7 @@
           spanMagnet = document.createElement("SPAN");
           spanMagnet.className = tzaioslug + "_magnet";
           linkMagnet = document.createElement("A");
-          linkMagnet.href = magnetUri + torrHash + "&dn=" + encodeURIComponent(torrTitle) + "&tr=" + trackers;
+          linkMagnet.href = this.getMagnetUrl(torrHash, torrTitle, this.cachedValues.userString);
           linkMagnet.title = "Download " + torrTitle + magnetTitleAppend;
           spanMagnet.appendChild(linkMagnet);
           dlElements[i].appendChild(spanMagnet);
@@ -1714,6 +1724,32 @@
         }
       },
 
+      injectCss             : function () {
+        // sessionStorage is a tiny bit faster because we're replacing colors in the file
+        //   before appending it, so let's save some ms by caching it
+        //   to manually flush: > window.sessionStorage.removeItem("tz_aio_SS_cached_css")
+        if ( w.sessionStorage ) {
+
+          var cachedCss = w.sessionStorage.getItem(this.userScript.slug + "_SS_cached_css");
+
+          if ( cachedCss && typeof cachedCss === "string"
+            && cachedCss.match(this.cachedValues.cssVersionPatt)
+            && ( this.userScript.version === cachedCss.match(this.cachedValues.cssVersionPatt)[1] ) ) {
+            // cached css and the same version, safe to re-use
+            GM_addStyle(cachedCss);
+          } else {
+            // updated css version or fresh session
+            w.sessionStorage.removeItem(this.userScript.slug + "_SS_cached_css");
+            newCss = this.getCss();
+            GM_addStyle(newCss);
+            w.sessionStorage.setItem(this.userScript.slug + "_SS_cached_css", newCss);
+          }
+
+        } else {
+          GM_addStyle(this.getCss());
+        }
+      },
+
       lastAction          : function () {
         if ( !this.cachedValues.lastActionDone ) {
           this.cachedValues.lastActionDone = true;
@@ -1754,7 +1790,7 @@
         + "\\.bb|\\.bg|\\.br|\\.ca|\\.ch|\\.cn|\\.cs|\\.dk|\\.ee|\\.es|\\.fi|\\.fr|\\.gr|\\.in|"
         + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}",""),
       linkifyPatt        : /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)?/gi,
-      // selectTrashPatt    : /(\s+\d+(\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}$/,
+      matchUrlPatt       : /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i,
       selectTrashPatt    : /(\s+\d+(\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i,
       warnAboutOptions   : false,
       // https://en.wikipedia.org/wiki/Magnet_URI_scheme
@@ -1773,29 +1809,7 @@
 
     $.ajaxSetup({ cache : true });
 
-    // sessionStorage is a tiny bit faster because we're replacing colors in the file
-    //   before appending it, so let's save some ms by caching it
-    //   to manually flush: > window.sessionStorage.removeItem("tz_aio_SS_cached_css")
-    if ( w.sessionStorage ) {
-
-      cachedCss = w.sessionStorage.getItem(tzAio.userScript.slug + "_SS_cached_css");
-
-      if ( cachedCss && typeof cachedCss === "string"
-        && cachedCss.match(tzAio.cachedValues.cssVersionPatt)
-        && ( tzAio.userScript.version === cachedCss.match(tzAio.cachedValues.cssVersionPatt)[1] ) ) {
-        // cached css and the same version, safe to re-use
-        GM_addStyle(cachedCss);
-      } else {
-        // updated css version or fresh session
-        w.sessionStorage.removeItem(tzAio.userScript.slug + "_SS_cached_css");
-        newCss = tzAio.getCss();
-        GM_addStyle(newCss);
-        w.sessionStorage.setItem(tzAio.userScript.slug + "_SS_cached_css", newCss);
-      }
-
-    } else {
-      GM_addStyle(tzAio.getCss());
-    }
+    tzAio.injectCss();
 
     $doc.ready(function () {
 

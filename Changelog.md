@@ -1,18 +1,22 @@
 Changelog
 ---------
 
+**2.1.1** (2013-03-12)
+* Validation of user settings before saving is now fixed, magnetlink click error was fixed, and a bunch of internal optimizations. README.md and Changelog.md typos fixed.
+
 **2.1.0** (2013-03-10)
 * Total rewrite, most noticable change is that it now uses GM supported built-in storage, which means all settings you save, applies to all domains. As there are more new features than changes, these are some of them. See all [here](https://github.com/elundmark/tz-aio-userscript/blob/master/README.md).
-* __NEW__ Global settings panel for all domains
-    * _Default trackerlist_ (Magically sorted trackers, that apply to all magnet-links.)
-    * _Search engines list_ (Select some text in the title and search these sites.)
-    * _No referer url_ (An optional url that is prepended to all outgoing non-torrent-ish sites.)
-    * _Force HTTPS_ (Off be default, but forces SSL if enabled.)
-    * _Hide Ads_ (Wouldn't be a UserScript without this. As ads change, this script will be updated.)
-    * _Colorful results_ (Uses a pretty solid** `RegExp` pattern to figure out what is what.)
-    * _Ajaxed sorting_ (Applies to all search results, uses** `history.pushState`)
-    * _Fix comment links_ (Changes all valid un-anchored links inside comments to links)
-    * All these settings are imported for <2.1.0 users, and can be flushed and reset on demand.
+* __NEW__ Global settings panel with these options:
+    * Force SSL on all domains **1**.
+    * Ad removal.
+    * Ajaxed sorting of results.
+    * Colorful results.
+    * Saved custom trackers with intelligent sorting (now fixed).
+    * Add your own Select-to-search search-engines links.
+    * Linked comment-links.
+    * Optional no-referer url for all outgoing links.
+
+**1** ) Applies to all mirrors, unlike before. Old users settings are imported automatically.
 * Updated `jQuery` to __1.8.3__
 * Updated `underScore.js` to __1.4.4__
 * `@require` and `@resource` has replaced all bulky embedded code.

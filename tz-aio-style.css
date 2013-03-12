@@ -1,4 +1,4 @@
-/* 2.1.0  
+/* 2.1.1  
    makes sessionStorage work
    do not alter the first line, ever, other than the version number
 */
@@ -294,8 +294,8 @@
   background: $RGBAWHITE08;
 }
 .tz_aio_b.tz_aio_v2 .tz_aio_copy_textarea textarea {
-  width: 380px;
-  height: 224px;
+  width: 415px;
+  height: 238px;
 }
 .tz_aio_b.tz_aio_v2 .tz_aio_copy_textarea textarea {
   border: 0;

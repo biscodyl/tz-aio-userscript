@@ -2,7 +2,7 @@ Torrentz All-in-one Userscript
 ==============================
 
 [Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
-This userscript enhances Torrentz (on all SSL domains) to include a bunch of new features. Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome +23 with Tampermonkey.
+This userscript enhances Torrentz (on all SSL domains) to include a bunch of new features. Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey.
 
 Applies to these sites
 ----------------------
@@ -20,39 +20,39 @@ Applies to these sites
 Features
 --------
 
-* _Default trackerlist_ (Magically sorted trackers, that apply to all magnet-links.)
-* _Search engines list_ (Select some text in the title and search these sites.)
-* _No referer url_ (An optional url that is prepended to all outgoing non-torrent-ish sites.)
-* _Force HTTPS_ (Off be default, but forces SSL if enabled.)
-* _Hide Ads_ (Wouldn't be a UserScript without this. As ads change, this script will be updated.)
-* _Colorful results_ (Uses a pretty solid** `RegExp` pattern to figure out what is what.)
-* _Ajaxed sorting_  (Applies to all search results, uses `history.pushState`)
-* _Fix comment links_ (Changes all valid un-anchored links inside comments to links)
-* All these settings are imported for <2.1.0 users, and can be flushed and reset on demand.
+* _Default trackerlist_ (Magically sorted trackers, that apply to all magnet-links).
+* _Search engines list_ (Select some text in the title and search these sites).
+* _No referer url_ (An optional url that is prepended to all outgoing non-torrent-ish sites).
+* _Force HTTPS_ (Off by default, but forces SSL if enabled).
+* _Hide Ads_ (Wouldn't be a UserScript without this. As ads change, this script will be updated).
+* _Colorful results_ (Uses a pretty solid `RegExp` pattern to figure out what is what).
+* _Ajaxed sorting_  (Applies to all search results, uses `history.pushState`).
+* _Fix comment links_ (Changes all valid un-anchored links inside comments to links).
+* _All these settings are imported for **pre 2.1.0** users, and can be flushed and reset on demand._
 
-* __NEW__ Global settings panel with these options:
-    * Force SSL on all domains **1**.
+* __NEW__ Global settings panel with these options **1**:
+    * Force SSL on all domains.
     * Ad removal.
     * Ajaxed sorting of results.
     * Colorful results.
     * Saved custom trackers with intelligent sorting (now fixed).
     * Add your own Select-to-search search-engines links.
     * Linked comment-links.
-    * Optionalal no-referer url for all outgoing links.
+    * Optional no-referer url for all outgoing links.
 
-_1_ : Applies to all mirrors, unlike before. Old users settings are imported automatically.
+**1** ) Applies to all mirrors, unlike before. Old users settings are imported automatically.
 
 Under the hood
 ----------------
 
-* Smart keyboard shortcuts.
 * (v2.1.0 improved) Colorized search-results and magnet-link for each result.
 * Direct download links for torrent files.
 * Optimized magnet-link.
 * Copy-trackers button for easy copying.
 * Stats on seed-ratio and trackers (now generated a lot faster).
 * wmv file warning.
-* (v2.0.18) Passes AdBlocker default list. `/html/body/div[2]` had `info` as a class, which matched a rule in adBlocker.
+* Smart keyboard shortcuts (`C` to toggle the Copy-trackers box, `D` to download with the magnet-link, `SHIFT+D` to download the first available .torrent file, `ESCAPE` for general exit / reset).
+* (v2.0.18) Passes AdBlocker default list.
 
 Included plugins
 ----------------
@@ -84,6 +84,6 @@ How to use
 TODO's
 ----------
 
-1. Improve ***select-to-search**
+1. Improve select-to-search population [`fillSearchBar`].
 2. Build script for easier maintenance.
 
