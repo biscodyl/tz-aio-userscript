@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-**2.1.2** (2013-03-22)
+**2.1.3** (2013-03-22)
 * Fix for new inactive feature in [`dlResultsActions`].
 
 **2.1.2** (2013-03-22)
