@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.2
+// @version       2.1.3
 // @date          2013-03-22
 // @author        elundmark
 // @contact       mail@elundmark.se
@@ -24,8 +24,8 @@
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-2-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-2-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-3-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-3-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAABGElEQVRYw2N4RCFgGCYG6FiTB+AGWPuTB0YNGDVg1ADaGIA9v7sg1Pc+eJRGugHKKOpD8RmwdS0U7Hn06OFqGEcOpjrvygMCBvgbGkHAVKABnEYwAJLpACp68IiQC+BgFtAAfhSRDpiHyDWg/RYQ3HhIvgH+xnpAQIELiIuFUQOGnQFwUOdLpgH5RUCQ8+iRkAeZXuCxAoKrj7y5/CgIg6UP5zD4UhCIFQ+PMjhQEAvxj+4waFMSjY8ecYtSkg6OPAph86MgHUx7OJPBHS7S+RAIQKUiiH54m7iEtHv/ISBYjFomgsFJVQIGTD92GA7mguOhFUnk8OHtKoSqNhEOOGB3RhcBAq3R6n3UgFEDBqsB5IKHw6PvDAAzFqvUZqMf1wAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -1439,7 +1439,7 @@
               isActive = this.isActiveTorr( dlElements[i] );
             }
             if ( !isActive ) {
-              coloredClName = coloredClName.length ? coloredClName + " inactive" : "";
+              coloredClName = coloredClName + " inactive";
             }
             dlElements[i].className = unverifiedClName + coloredClName;
           }
