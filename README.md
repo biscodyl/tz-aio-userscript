@@ -25,7 +25,7 @@ Features
 * _No referer url_ (An optional url that is prepended to all outgoing non-torrent-ish sites).
 * _Force HTTPS_ (Off by default, but forces SSL if enabled).
 * _Hide Ads_ (Wouldn't be a UserScript without this. As ads change, this script will be updated).
-* _Colorful results_ (Uses a pretty solid `RegExp` pattern to figure out what is what).
+* _Colorful results_ (Uses a pretty solid `RegExp` pattern to figure out what is what and adds a background color so it's easier to read, and also dims out seemingly inactive torrents).
 * _Ajaxed sorting_  (Applies to all search results, uses `history.pushState`).
 * _Fix comment links_ (Changes all valid un-anchored links inside comments to links).
 * _All these settings are imported for **pre 2.1.0** users, and can be flushed and reset on demand._

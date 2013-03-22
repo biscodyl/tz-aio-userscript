@@ -1,4 +1,4 @@
-/* 2.1.1  
+/* 2.1.2  
    makes sessionStorage work
    do not alter the first line, ever, other than the version number
 */
@@ -536,6 +536,12 @@
   border-bottom: 0 none;
 }
 
+.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.inactive * {
+  opacity: 0.6;
+}
+.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.inactive:hover * {
+  opacity: 0.75;
+}
 .tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.pink {
   background-color: $SRPINK;
 }

@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.1
-// @date          2013-03-12
+// @version       2.1.2
+// @date          2013-03-22
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -24,8 +24,8 @@
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=210_1
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=211_1
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-2-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-2-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAABGElEQVRYw2N4RCFgGCYG6FiTB+AGWPuTB0YNGDVg1ADaGIA9v7sg1Pc+eJRGugHKKOpD8RmwdS0U7Hn06OFqGEcOpjrvygMCBvgbGkHAVKABnEYwAJLpACp68IiQC+BgFtAAfhSRDpiHyDWg/RYQ3HhIvgH+xnpAQIELiIuFUQOGnQFwUOdLpgH5RUCQ8+iRkAeZXuCxAoKrj7y5/CgIg6UP5zD4UhCIFQ+PMjhQEAvxj+4waFMSjY8ecYtSkg6OPAph86MgHUx7OJPBHS7S+RAIQKUiiH54m7iEtHv/ISBYjFomgsFJVQIGTD92GA7mguOhFUnk8OHtKoSqNhEOOGB3RhcBAq3R6n3UgFEDBqsB5IKHw6PvDAAzFqvUZqMf1wAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -947,7 +947,10 @@
           statusDigit,
           negativeEls,
           negativeVotes = 0,
-          positiveVotes
+          positiveVotes,
+          negativeElsLen,
+          negI          = -1,
+          negMatch
         ;
         if ( votebox && votebox.length ) {
           statusDigit = tzAio.getNodeNumber(votebox.find(".status")[0], true);
@@ -958,10 +961,15 @@
           } else {
             // count the other boxes and compare
             positiveVotes = tzAio.getNodeNumber(votebox.find(".up")[0], true);
-            negativeEls = votebox.find(".replist").has("a + a + a").each(function (index, element) {
-              var negMatch = tzAio.getNodeNumber(element, true);
-              negativeVotes += negMatch;
-            });
+            negativeEls = votebox.find(".replist").has("a + a + a");
+            negativeElsLen = negativeEls.length;
+            while ( (++negI < negativeElsLen) ) {
+              negMatch = tzAio.getNodeNumber(negativeEls[negI], true);
+            }
+            // negativeEls = votebox.find(".replist").has("a + a + a").each(function (index, element) {
+            //   var negMatch = tzAio.getNodeNumber(element, true);
+            //   negativeVotes += negMatch;
+            // });
             if ( positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2 ) {
               returnDigit = 1;
             }
@@ -1107,6 +1115,8 @@
           wmvPatt          = new RegExp("\\.wmv$","i"),
           trackersDiv      = this.selectors.$body.find("div.trackers:eq(0)"),
           trackerLinks     = trackersDiv.find("dt a"),
+          trackerLinksI    = -1,
+          trackerLinksLen  = trackerLinks.length,
           trackerDataEls   = trackersDiv.find("dl:has(a) dd"),
           upElems          = trackerDataEls.find(".u"),
           upElemsLen       = upElems.length,
@@ -1114,8 +1124,9 @@
           downElems        = trackerDataEls.find(".d"),
           downElemsLen     = downElems.length,
           downElemsLenI    = -1,
-          dhtEls           = trackersDiv.find("dl:eq(0):contains('(DHT)') span.u, "
-            + "dl:eq(0):contains('(DHT)') span.d"),
+          dhtEls           = trackersDiv[0].textContent.indexOf("(DHT)") !== -1
+            ? trackersDiv.find("dl:eq(0):contains('(DHT)') span.u, "
+            + "dl:eq(0):contains('(DHT)') span.d") : [],
           dhtElsLen        = dhtEls.length,
           dhtElsLenI       = -1,
           dhtElsMax,
@@ -1143,9 +1154,12 @@
           magnetHtml,
           magnetUrl
         ;
-        trackerLinks.each(function (index, element) {
-          currTrackerList.push( (element.textContent||"") );
-        });
+        while ( (++trackerLinksI < trackerLinksLen) ) {
+          currTrackerList.push( (trackerLinks[trackerLinksI].textContent||"") );
+        }
+        // trackerLinks.each(function (index, element) {
+        //   currTrackerList.push( (element.textContent||"") );
+        // });
         trackers = this.makeTrackersObject(
           underScore.union(
             currTrackerList,
@@ -1372,6 +1386,7 @@
           currentClName,
           unverifiedClName  = "",
           coloredClName     = "",
+          isActive          = true,
           i, torrHash, torrLink, torrLinks, torrTitle, vSpan, dtContent,
           isTrackerList     = this.page.path.indexOf("/tracker_") === 0,
           doneResultClName  = !isTrackerList ? " " + tzaioslug + "_colorized"
@@ -1403,23 +1418,29 @@
           vSpan = dlElements[i].getElementsByClassName("v");
           vSpan = (vSpan && vSpan.length ? vSpan[0] : null);
           // stop if we're on a trackers list; too heavy and doesn't match enough
-          if ( vSpan && !isTrackerList ) {
-            if ( !/[1-9]/.test(vSpan.textContent) ) {
-              // no votes
-              unverifiedClName = currentClName + " " + tzaioslug + "_unverified_dl";
-            } else if ( /\-[0-9]/.test(vSpan.textContent) ) {
-              // negative votes
-              unverifiedClName = currentClName + " " + tzaioslug + "_fake_dl";
-            }
-            // Keyword check
-            if ( doColorize && this.searchGenres && this.searchGenres.length ) {
-              dtContent = dlElements[i].getElementsByTagName("dt");
-              dtContent = dtContent.length ? dtContent[0].textContent : "";
-              coloredClName = this.colorizeMatch(dtContent, this.searchGenres, torrTitle);
-            }
-          }
-          coloredClName = coloredClName.length ? " " + coloredClName : "";
           if ( !isTrackerList ) {
+            if ( vSpan ) {
+              if ( !/[1-9]/.test(vSpan.textContent) ) {
+                // no votes
+                unverifiedClName = currentClName + " " + tzaioslug + "_unverified_dl";
+              } else if ( /\-[0-9]/.test(vSpan.textContent) ) {
+                // negative votes
+                unverifiedClName = currentClName + " " + tzaioslug + "_fake_dl";
+              }
+              // Keyword check
+              if ( doColorize && this.searchGenres && this.searchGenres.length ) {
+                dtContent = dlElements[i].getElementsByTagName("dt");
+                dtContent = dtContent.length ? dtContent[0].textContent : "";
+                coloredClName = this.colorizeMatch(dtContent, this.searchGenres, torrTitle);
+              }
+            }
+            coloredClName = coloredClName.length ? " " + coloredClName : "";
+            if ( doColorize ) {
+              isActive = this.isActiveTorr( dlElements[i] );
+            }
+            if ( !isActive ) {
+              coloredClName = coloredClName.length ? coloredClName + " inactive" : "";
+            }
             dlElements[i].className = unverifiedClName + coloredClName;
           }
         }
@@ -1428,6 +1449,33 @@
         if ( callback && typeof callback === "function" ) {
           callback(resultsElement);
         }
+      },
+
+      isActiveTorr        : function (el) {
+        var activeTorrent = true,
+          seedsEl         = el.getElementsByClassName("u"),
+          seedsEl         = seedsEl && seedsEl.length ? seedsEl[0] : null,
+          leachEl         = el.getElementsByClassName("d"),
+          leachEl         = leachEl && leachEl.length ? leachEl[0] : null,
+          seeders,
+          leachers,
+          torrDateEl      = el.getElementsByClassName("a"),
+          torrDateEl      = torrDateEl && torrDateEl.length
+            ? torrDateEl[0].getElementsByTagName("span") : null,
+          torrDateEl      = torrDateEl && torrDateEl.length ? torrDateEl[0] : null,
+          torrDate        = torrDateEl ? torrDateEl.title : "",
+          torrDate        = torrDate ? new Date(torrDate).getTime() : 0,
+          // less than one month old
+          isNew           = (((new Date().getTime() - torrDate) / 1000 / 60 / 60 / 24) <= 31)
+        ;
+        if ( !isNew && seedsEl && leachEl ) {
+          seeders = this.getNodeNumber(seedsEl);
+          leachers = this.getNodeNumber(leachEl);
+          if ( seeders === 0 && leachers <= 5 ) {
+            activeTorrent = false;
+          }
+        }
+        return activeTorrent;
       },
 
       colorizeMatch       : function (text, genres, title) {
@@ -1739,6 +1787,7 @@
             GM_addStyle(cachedCss);
           } else {
             // updated css version or fresh session
+            sendLog("flushing sessionStorage");
             w.sessionStorage.removeItem(this.userScript.slug + "_SS_cached_css");
             newCss = this.getCss();
             GM_addStyle(newCss);

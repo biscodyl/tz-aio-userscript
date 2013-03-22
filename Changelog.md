@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.1.2** (2013-03-22)
+* When colorizing results it also checks for torrents older than 1 month that have no seeders, and less than 5 downloaders, and if so it dims that one out to indicate an inactive torrent. Thanks to [kharn](https://userscripts.org/users/510357) for the suggestion!
+
 **2.1.1** (2013-03-12)
 * Validation of user settings before saving is now fixed, magnetlink click error was fixed, and a bunch of internal optimizations. README.md and Changelog.md typos fixed.
 
