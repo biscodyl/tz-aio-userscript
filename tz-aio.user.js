@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.3
-// @date          2013-03-22
+// @version       2.1.4
+// @date          2013-05-31
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -24,8 +24,8 @@
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-3-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-3-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-4-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-4-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAABGElEQVRYw2N4RCFgGCYG6FiTB+AGWPuTB0YNGDVg1ADaGIA9v7sg1Pc+eJRGugHKKOpD8RmwdS0U7Hn06OFqGEcOpjrvygMCBvgbGkHAVKABnEYwAJLpACp68IiQC+BgFtAAfhSRDpiHyDWg/RYQ3HhIvgH+xnpAQIELiIuFUQOGnQFwUOdLpgH5RUCQ8+iRkAeZXuCxAoKrj7y5/CgIg6UP5zD4UhCIFQ+PMjhQEAvxj+4waFMSjY8ecYtSkg6OPAph86MgHUx7OJPBHS7S+RAIQKUiiH54m7iEtHv/ISBYjFomgsFJVQIGTD92GA7mguOhFUnk8OHtKoSqNhEOOGB3RhcBAq3R6n3UgFEDBqsB5IKHw6PvDAAzFqvUZqMf1wAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -41,14 +41,8 @@
 
 /*
  *
- * Tested in Chrome 25.0.1364.97 (Tampermonkey v2.12.3124.16)
- * and Firefox 19.0 (GreaseMonkey 1.8, Scriptish 0.1.8) on Ubuntu 12.10 32-bit
- * 
- * TODO's:
- *  Check if removing iframes needs more care (LastPass fails ex.)
- *    >> removed that, torretz seems to have stopped adding iframes
- *  Add keyups to select-to-search > re-build
- *    >> skipped that and added a delay and a better RegExp instead
+ * Tested in Chrome 25+ (Tampermonkey v2.12.3124.16+)
+ * and Firefox 19+ (GreaseMonkey 1.8+, Scriptish 0.1.8+) on Ubuntu 13.04
  *  
 */
 
@@ -449,8 +443,27 @@
       },
 
       removeDocOnclick    : function () {
-        if ( document.onclick !== null ) {
-          document.onclick = null;
+        var ckExpDate = new Date( loadStartMS + (60*60*24*1000) ),
+          ckVal       = "wm_popundertz=" + escape("1|" + ckExpDate.toString())
+            + "; expires=" + ckExpDate.toString() + "; path=/"
+        ;
+        // Why remove when it's better to be sure?
+        document.onclick && (document.onclick = null);
+        document.onmouseup && (document.onmouseup = null);
+        document.onmousedown && (document.onmousedown = null);
+        /* 2013-05-30 _wm event handler ads w/ click/mouseup + cookies
+         * 
+         *  Seemed simple enough at first, just create a cookie and it stops.
+         *  But userScripts load After the damn things checks for it,
+         *  and the event is anonymous inside a jQuery function,
+         *  so the "easiest" and most maintainable way seems to be a
+         *  quiet refresh if the cookie is missing.
+         *
+         */
+        if ( typeof document.cookie === "string"
+          && document.cookie.indexOf("wm_popundertz") === -1 ) {
+          document.cookie = ckVal;
+          w.top.location.reload();
         }
       },
 
@@ -723,6 +736,7 @@
             this.selectors.$body.addClass("no_ads")
               // removed: might remove addons like LastPass
               // .find("object, embed, iframe").filter(":not([src^='crome'])").addClass(adRemovedClass).end()
+              .find("iframe[src*='clkads.com']").parent("div[style]").addClass(adRemovedClass).end()
               .find("p.generic").has("iframe").addClass(adRemovedClass);
             this.removeDocOnclick();
           }
@@ -1346,10 +1360,13 @@
                       && ($(window).scrollTop() - tzAio.selectors.$ajaxedResult.offset().top) > 0 ) {
                       tzAio.selectors.$bodyANDhtml.animate({ scrollTop : 0 }, "slow");
                     }
-                    if ( tzAio.selectors.$theSearchBox.length && tzAio.page.search ) {
-                      var filterMatch = tzAio.page.search.replace(/^\?(?:[a-z]+\=)?\+?(.+)/i,"$1").match(/^([^\&]+)/i);
-                      if ( filterMatch && filterMatch.length === 2 && filterMatch[1] ) {
-                        tzAio.selectors.$theSearchBox.val(decodeURIComponent(filterMatch[1].replace(/\+/g," ")));
+                    if ( tzAio.selectors.$theSearchBox.length ) {
+                      tzAio.selectors.$theSearchBox.parents("form:first").prop("action", tzAio.page.path);
+                      if ( tzAio.page.search ) {
+                        var filterMatch = tzAio.page.search.replace(/^\?(?:[a-z]+\=)?\+?(.+)/i,"$1").match(/^([^\&]+)/i);
+                        if ( filterMatch && filterMatch.length === 2 && filterMatch[1] ) {
+                          tzAio.selectors.$theSearchBox.val(decodeURIComponent(filterMatch[1].replace(/\+/g," ")));
+                        }
                       }
                     }
                     tzAio.bindAjaxLinks(target);
@@ -1522,11 +1539,11 @@
           resultsH2, dmcaDl
         ;
         if ( $resultsEl && $resultsEl.length ) {
-          
+
           if ( this.cachedValues.isSearch || this.cachedValues.isSingle )  {
             // Add class to 'X results removed in compliance with EUCD / DMCA' first
             lastListItem = $resultsEl.find("dl:last");
-            if ( lastListItem.length && lastListItem.text().match(/removed.+compliance/i) ) {
+            if ( lastListItem.length && lastListItem[0].innerHTML.indexOf("removed in compliance") !== -1 ) {
               lastListItem.addClass("dmca");
             }
             // now insert a final 'p' for single page search results
@@ -1840,7 +1857,7 @@
         + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}",""),
       linkifyPatt        : /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)?/gi,
       matchUrlPatt       : /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i,
-      selectTrashPatt    : /(\s+\d+(\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i,
+      selectTrashPatt    : /(\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i,
       warnAboutOptions   : false,
       // https://en.wikipedia.org/wiki/Magnet_URI_scheme
       magnetURI          : "magnet:?xt=urn:btih:",
@@ -1917,11 +1934,11 @@
               || tzAio.page.path.match(/^\/(search|any|verified|advanced|tracker_)/)
               || tzAio.page.path.match(/^\/[a-z]{2,}\//) ) {
 
+              tzAio.cachedValues.isSearch = true;
               tzAio.removeAds("search", options, tzAio.cachedValues.$searchResults);
 
               tzAio.initSearchPage(tzAio.cachedValues.$searchResults, options, function (results) {
                 if ( tzAio.page.path !== "/i" ) {
-                  tzAio.cachedValues.isSearch = true;
                   if ( options.ajaxedSorting ) {
                     tzAio.bindAjaxLinks(results);
                   }

@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.1.4** (2013-05-31)
+* Fixed removal of new (click) ads, fixed search box to update when using ajax, fixed various CSS bugs, and improved select-to-search.
+
 **2.1.3** (2013-03-22)
 * Fix for new inactive feature in [`dlResultsActions`].
 
