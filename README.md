@@ -5,9 +5,9 @@ Torrentz All-in-one Userscript
 This userscript enhances Torrentz (on all SSL domains) to include a bunch of new features. Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey.
 
 This userscript enhances Torrentz.eu (and all other mirror domains) to include a bunch of new features. Among them are customizable magnet-links, ajaxed sorting, intelligent stats, and much much more... Tested in Firefox 19.0 (GreaseMonkey 1.8, Scriptish 0.1.8), Chrome 25.0.1364.97 (Tampermonkey v2.12.3124.16). Will __not__ work using Chrome's built in userscript installation. Passes AdBlock default filter-rules.
-Please [https://userscripts.org/scripts/reviews/125001](rate and/or leave a review) if you like it, and please feel free to ask for more features!
+Please [rate and/or leave a review](https://userscripts.org/scripts/reviews/125001) if you like it, and please feel free to ask for more features!
 
-This project is mainly maintained and hosted on [https://github.com/elundmark/tz-aio-userscript/](github), so please report any issues or requests @ [https://github.com/elundmark/tz-aio-userscript/issues](github.com/elundmark/tz-aio-userscript/issues).
+This project is mainly maintained and hosted on [github](https://github.com/elundmark/tz-aio-userscript/), so please report any issues or requests @ [github.com/elundmark/tz-aio-userscript/issues](https://github.com/elundmark/tz-aio-userscript/issues).
 
 Applies to these sites
 ----------------------
@@ -32,7 +32,7 @@ Features
 * _Hide Ads_ (Wouldn't be a UserScript without this. As ads change, this script will be updated).
 * _Colorful results_ (Uses a pretty solid `RegExp` pattern to figure out what is what and adds a background color so it's easier to read, and also dims out seemingly inactive torrents).
 * _Ajaxed sorting_  (Applies to all search results, uses `history.pushState`).
-* _Exclude filter_  (Remove unwanted torrens by keywprd or `RegExp`).
+* _Exclude filter_  (Remove unwanted torrens by keywords or `RegExp`).
 * _Fix comment links_ (Changes all valid un-anchored links inside comments to links).
 * _All these settings are imported for **pre 2.1.0** users, and can be flushed and reset on demand._
 
