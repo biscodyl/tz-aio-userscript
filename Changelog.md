@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.1.6** (2013-06-04)
+* Fix for "Exclude filter" not showing the number of excluded torrents on some pages.
+
 **2.1.5** (2013-06-04)
 * Added new "Exclude filter" feature.
 * Cleaned up and added some new trackers.

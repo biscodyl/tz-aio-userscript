@@ -1583,12 +1583,13 @@
               + "<dt style='text-align: right'><span class='" + this.userScript.slug
               + "_exclude_filter_count'></span></dt><dd></dd></dl>");
           }
-          $logEl = $(list).find(" > .dmca ." + this.userScript.slug + "_exclude_filter_count");
+          if ( $dmcaElement && $dmcaElement.length ) {
+              $dmcaElement.addClass(dmcaClass)
+                .find("dt").prepend("<span class='" + this.userScript.slug + "_exclude_filter_count'></span>");
+          }
+          $logEl = $(list).find("span." + this.userScript.slug + "_exclude_filter_count");
+          sendLog($logEl);
           this.updateExcludeLog($logEl, deletedByFilterCount);
-        }
-        if ( $dmcaElement && $dmcaElement.length ) {
-            $dmcaElement.addClass(dmcaClass)
-              .find("dt").prepend("<span class='" + this.userScript.slug + "_exclude_filter_count'></span>");
         }
         if ( callback && typeof callback === "function" ) {
           callback(list);
@@ -1957,7 +1958,7 @@
 
       updateExcludeLog : function ($target, count) {
         var logHtml = count + " result"
-            + this.stringValueS(this.cachedValues.count)
+            + this.stringValueS(count)
             + " removed using TzAio filter"
         ;
         logHtml += ($target.parents("dt:eq(0)").text().match(/\S/) ? "&nbsp;&ndash;&nbsp;" : "");
