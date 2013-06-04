@@ -1,8 +1,17 @@
 Changelog
 ---------
 
+**2.1.5** (2013-06-04)
+* Added new "Exclude filter" feature.
+* Cleaned up and added some new trackers.
+* Added some more direct links, and updated some old urls.
+* Various bugfixes.
+
 **2.1.4** (2013-05-31)
-* Fixed removal of new (click) ads, fixed search box to update when using ajax, fixed various CSS bugs, and improved select-to-search.
+* Fixed removal of new (click) ads.
+* Fixed search box to update when using ajax.
+* Fixed various CSS bugs.
+* Improved select-to-search.
 
 **2.1.3** (2013-03-22)
 * Fix for new inactive feature in [`dlResultsActions`].

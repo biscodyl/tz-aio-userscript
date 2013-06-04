@@ -1,4 +1,4 @@
-/* 2.1.4  
+/* 2.1.5  
    makes sessionStorage work
    do not alter the first line, ever, other than the version number
 */
@@ -44,10 +44,11 @@
 }*/
 
 .tz_aio_b.tz_aio_v2 textarea,
-.tz_aio_b.tz_aio_v2 .tz_aio_settings_form input[type='text'] {
-  width: 99%;
-  min-width: 99%;
-  max-width: 99%;
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form input[type='text'],
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form p {
+  width: 98%;
+  min-width: 98%;
+  max-width: 98%;
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box;
@@ -334,9 +335,10 @@
   content: "X";
 }
 
-./*tz_aio_b.tz_aio_v2 .tz_aio_settings_form fieldset {
-
-}*/
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form fieldset > p:first-of-type {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
 .tz_aio_b.tz_aio_v2 .generic.tz_aio_info_p em,
 .tz_aio_b.tz_aio_v2 .generic.tz_aio_info_p .warn_old_user {
@@ -386,7 +388,7 @@
 }
 
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form p {
-  padding-right: 3%;
+  /* padding-right: 3%; */
 }
 
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form input[type='text'] {
@@ -440,13 +442,14 @@
   color: $BLACK;
   border-bottom: 1px dashed $WHITE;
 }
-
-.tz_aio_b.tz_aio_v2 #settings_reset {
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form  #tz_aio_show_excluded_titles {
+  margin-top: 10px;
+}
+.tz_aio_b.tz_aio_v2 #tz_aio_settings_reset {
   margin-right: 15px;
   font-size: 13px;
   display: inline-block;
 }
-
 .tz_aio_b.tz_aio_v2 .results > dl {
   position: relative !important;
   background-color: $WHITE;
@@ -454,18 +457,16 @@
      -moz-transition: background-color 0.3s ease-in;
           transition: background-color 0.3s ease-in;
 }
-
 .tz_aio_b.tz_aio_v2 .results > dl:hover {
   position: relative;
   z-index: 9;
 }
-
 .tz_aio_b.tz_aio_v2 .results.tz_aio_colorized > dl:hover {
   border-bottom-color: $WHITE;
 }
-
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized > dl.dmca:hover {
+.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized > dl.dmca.colorizeme:hover {
   position: static;
+  border-bottom-color: transparent;
 }
 
 .tz_aio_b.tz_aio_v2 .results .tz_aio_magnet {
@@ -521,7 +522,7 @@
 .tz_aio_b.tz_aio_v2 .approximate_rss_link:hover img {
   opacity: 1;
 }
-.tz_aio_b.tz_aio_v2 .results .dmca {
+.tz_aio_b.tz_aio_v2 .results .dmca.colorizeme {
   background-color: $DMCA;
 }
 /* empty ugly white status vote */

@@ -27,6 +27,7 @@ Features
 * _Hide Ads_ (Wouldn't be a UserScript without this. As ads change, this script will be updated).
 * _Colorful results_ (Uses a pretty solid `RegExp` pattern to figure out what is what and adds a background color so it's easier to read, and also dims out seemingly inactive torrents).
 * _Ajaxed sorting_  (Applies to all search results, uses `history.pushState`).
+* _Exclude filter_  (Remove unwanted torrens by keywprd or `RegExp`).
 * _Fix comment links_ (Changes all valid un-anchored links inside comments to links).
 * _All these settings are imported for **pre 2.1.0** users, and can be flushed and reset on demand._
 
@@ -84,6 +85,4 @@ How to use
 TODO's
 ----------
 
-1. Improve select-to-search population [`fillSearchBar`].
-2. Build script for easier maintenance.
-
+1. Build script for easier maintenance.
