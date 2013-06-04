@@ -4,6 +4,11 @@ Torrentz All-in-one Userscript
 [Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
 This userscript enhances Torrentz (on all SSL domains) to include a bunch of new features. Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey.
 
+This userscript enhances Torrentz.eu (and all other mirror domains) to include a bunch of new features. Among them are customizable magnet-links, ajaxed sorting, intelligent stats, and much much more... Tested in Firefox 19.0 (GreaseMonkey 1.8, Scriptish 0.1.8), Chrome 25.0.1364.97 (Tampermonkey v2.12.3124.16). Will __not__ work using Chrome's built in userscript installation. Passes AdBlock default filter-rules.
+Please [https://userscripts.org/scripts/reviews/125001](rate and/or leave a review) if you like it, and please feel free to ask for more features!
+
+This project is mainly maintained and hosted on [https://github.com/elundmark/tz-aio-userscript/](github), so please report any issues or requests @ [https://github.com/elundmark/tz-aio-userscript/issues](github.com/elundmark/tz-aio-userscript/issues).
+
 Applies to these sites
 ----------------------
 
@@ -86,3 +91,4 @@ TODO's
 ----------
 
 1. Build script for easier maintenance.
+2. Remove old imports and clean up the code.
