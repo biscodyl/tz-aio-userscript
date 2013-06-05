@@ -38,4 +38,4 @@ remains
 build/buildinfo.properties
 build/config/buildinfo.properties
 jshint
-
+build.sh

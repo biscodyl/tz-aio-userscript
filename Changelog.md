@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.1.7** (2013-06-06)
+* Fix for "Exclude filter" not escaping special chars before converting string to a RegExp object.
+
 **2.1.6** (2013-06-04)
 * Fix for "Exclude filter" not showing the number of excluded torrents on some pages.
 
