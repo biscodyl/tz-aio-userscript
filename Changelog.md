@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.1.8** (2013-06-09)
+* New image ad removed.
+
 **2.1.7** (2013-06-06)
 * Fix for "Exclude filter" not escaping special chars before converting string to a RegExp object.
 
