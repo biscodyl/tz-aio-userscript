@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.9
+// @version       2.1.10
 // @date          2013-06-14
 // @author        elundmark
 // @contact       mail@elundmark.se
@@ -24,8 +24,8 @@
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-9-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-9-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-10-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-10-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAABGElEQVRYw2N4RCFgGCYG6FiTB+AGWPuTB0YNGDVg1ADaGIA9v7sg1Pc+eJRGugHKKOpD8RmwdS0U7Hn06OFqGEcOpjrvygMCBvgbGkHAVKABnEYwAJLpACp68IiQC+BgFtAAfhSRDpiHyDWg/RYQ3HhIvgH+xnpAQIELiIuFUQOGnQFwUOdLpgH5RUCQ8+iRkAeZXuCxAoKrj7y5/CgIg6UP5zD4UhCIFQ+PMjhQEAvxj+4waFMSjY8ecYtSkg6OPAph86MgHUx7OJPBHS7S+RAIQKUiiH54m7iEtHv/ISBYjFomgsFJVQIGTD92GA7mguOhFUnk8OHtKoSqNhEOOGB3RhcBAq3R6n3UgFEDBqsB5IKHw6PvDAAzFqvUZqMf1wAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -70,7 +70,7 @@
       : isSC ? "Firefox/Scriptish " : "unknown ",
     execStartMS,
     startLogMsg,
-    $doc            = $(document),
+    d               = w.document,
     scriptSource    = isGM ? GM_info.scriptMetaStr : isTM ? GM_info.scriptSource : "",
     UserScript      = function () {
       var userjsObject = {
@@ -163,7 +163,7 @@
           protocol : w.location.protocol,
           host     : w.location.hostname,
           path     : w.location.pathname,
-          domain   : w.document.domain,
+          domain   : d.domain,
           thash    : w.location.pathname.replace(/\x2F/g,""),
           search   : w.location.search,
           // remove hash to enable refreshing the page with location.href
@@ -429,9 +429,9 @@
             + "; expires=" + ckExpDate.toString() + "; path=/"
         ;
         // Why remove when it's better to be sure?
-        document.onclick && (document.onclick = null);
-        document.onmouseup && (document.onmouseup = null);
-        document.onmousedown && (document.onmousedown = null);
+        d.onclick && (d.onclick = null);
+        d.onmouseup && (d.onmouseup = null);
+        d.onmousedown && (d.onmousedown = null);
         /* 2013-05-30 _wm event handler ads w/ click/mouseup + cookies
          * 
          *  Seemed simple enough at first, just create a cookie and it stops.
@@ -441,9 +441,9 @@
          *  quiet refresh if the cookie is missing.
          *
          */
-        if ( typeof document.cookie === "string"
-          && document.cookie.indexOf("wm_popundertz") === -1 ) {
-          document.cookie = ckVal;
+        if ( typeof d.cookie === "string"
+          && d.cookie.indexOf("wm_popundertz") === -1 ) {
+          d.cookie = ckVal;
           w.top.location.reload();
         }
       },
@@ -521,7 +521,7 @@
       },
 
       isAnyInputFocused   : function () {
-        var $activeEl   = $(document.activeElement),
+        var $activeEl   = $(d.activeElement),
           $activeParent = $activeEl.parent(),
           $activeParent = $activeParent.length ? $activeParent : $activeEl
         ;
@@ -849,7 +849,7 @@
 
       getSelected         : function () {
         // TODO: 
-        // (w||$doc[0]).getSelection().anchorNode.nodeValue
+        // (w||d).getSelection().anchorNode.nodeValue
         //  = the targets text node,
         //    counting the node that was the start of the selection.
         //    anchordNode is null if no selection, nodeValue null
@@ -857,10 +857,10 @@
         var t = "";
         if ( w.getSelection ) {
           t = w.getSelection();
-        } else if ( $doc[0].getSelection ) {
-          t = $doc[0].getSelection();
-        } else if ( $doc[0].selection ) {
-          t = $doc[0].selection.createRange().text;
+        } else if ( d.getSelection ) {
+          t = d.getSelection();
+        } else if ( d.selection ) {
+          t = d.selection.createRange().text;
         }
         return t;
       },
@@ -1409,9 +1409,9 @@
           }
           torrHash = torrLink.href.match(linkPatt)[0];
           torrTitle = torrLink.textContent;
-          spanMagnet = document.createElement("SPAN");
+          spanMagnet = d.createElement("SPAN");
           spanMagnet.className = tzaioslug + "_magnet";
-          linkMagnet = document.createElement("A");
+          linkMagnet = d.createElement("A");
           linkMagnet.href = this.getMagnetUrl(torrHash, torrTitle, this.cachedValues.userString);
           linkMagnet.title = "Download " + torrTitle + magnetTitleAppend;
           spanMagnet.appendChild(linkMagnet);
@@ -1925,7 +1925,7 @@
 
     $.ajaxSetup({ cache : true });
 
-    $doc.ready(function () {
+    $(d).ready(function () {
 
       // Start exec timer
       execStartMS = (new Date().getTime());
@@ -2008,7 +2008,7 @@
               });
             }
             // listen for keyups on all pages
-            $doc.on("keyup", tzAio.handleKeyUps);
+            $(d).on("keyup", tzAio.handleKeyUps);
           });
 
         });

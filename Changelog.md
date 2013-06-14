@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.1.10** (2013-06-14)
+* Changed `document` to `unsafeWindow.document`. Added missing leglal disclaimer to `README.md`.
+
 **2.1.9** (2013-06-14)
 * Old import functions for pre 2.1.0 users removed.
 * Removed jStorage and jQuery Json plugin, not needed anymore.

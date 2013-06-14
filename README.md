@@ -74,6 +74,12 @@ How to use
 2. Install the userscript itself from [userscripts.org](http://userscripts.org/scripts/show/125001), click on `Install`.
 
 TODO's
-----------
+------
 
 Nothing planned at the moment.
+
+Legality
+--------
+
+Released under [CC0 1.0 Universal (CC0 1.0)](http://creativecommons.org/publicdomain/zero/1.0/).
+The author of this script takes no responsibility for any potetial harm done to any hamsters, servers, browsers or wallets. While browsing affected sites with this script is fully legal, downloading illegal copyrighted material still isn't.
