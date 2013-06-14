@@ -26,7 +26,7 @@ Features
 --------
 
 * **Default trackerlist**  _Customizable_ - Magically sorted trackers, that apply to all magnet-links.
-* **Search engines list **  _Customizable_ - Select some text in the title and search these sites.
+* **Search engines list**  _Customizable_ - Select some text in the title and search these sites.
 * **Force HTTPS**  Off by default, but forces SSL if enabled.
 * **Ad removal**  Wouldn't be a UserScript without this. As new ads are added, this script will be updated.
 * **Direct .torrent links**  Applies to all avaliable sites listed on each 'single page'.
@@ -37,7 +37,7 @@ Features
     * All torrents in all search-results have their own magnet-link that includes your custom trackers.
     * Old/dead-ish torrents are dimmed out to visually help you search faster.
     * If you have an exclude-filter, the number of excluded torrents are noted at the bottom of the list.
-* **No referer url **  _Customizable_ - An optional url that is prepended to all outgoing non-torrent-ish sites.
+* **No referer url**  _Customizable_ - An optional url that is prepended to all outgoing non-torrent-ish sites.
 * **Fix comment links**  Changes all valid un-anchored links inside comments to links.
 * **Smart keyboard shortcuts**  `C` to toggle the Copy-trackers box, `D` to download with the magnet-link, `SHIFT+D` to download the first available .torrent file, `ESCAPE` for general exit / reset.
 
