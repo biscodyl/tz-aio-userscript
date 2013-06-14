@@ -17,6 +17,7 @@
 .cache
 .project
 .settings
+.sass-sache
 nbproject
 thumbs.db
 
@@ -39,3 +40,4 @@ build/buildinfo.properties
 build/config/buildinfo.properties
 jshint
 build.sh
+config.rb

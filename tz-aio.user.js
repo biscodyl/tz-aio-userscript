@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.8
-// @date          2013-06-09
+// @version       2.1.9
+// @date          2013-06-14
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -24,8 +24,8 @@
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-8-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-8-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-9-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-9-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAABGElEQVRYw2N4RCFgGCYG6FiTB+AGWPuTB0YNGDVg1ADaGIA9v7sg1Pc+eJRGugHKKOpD8RmwdS0U7Hn06OFqGEcOpjrvygMCBvgbGkHAVKABnEYwAJLpACp68IiQC+BgFtAAfhSRDpiHyDWg/RYQ3HhIvgH+xnpAQIELiIuFUQOGnQFwUOdLpgH5RUCQ8+iRkAeZXuCxAoKrj7y5/CgIg6UP5zD4UhCIFQ+PMjhQEAvxj+4waFMSjY8ecYtSkg6OPAph86MgHUx7OJPBHS7S+RAIQKUiiH54m7iEtHv/ISBYjFomgsFJVQIGTD92GA7mguOhFUnk8OHtKoSqNhEOOGB3RhcBAq3R6n3UgFEDBqsB5IKHw6PvDAAzFqvUZqMf1wAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -49,7 +49,6 @@
 (function(w, $, underScore){
 
   if ( typeof w !== "object" || typeof underScore !== "function" || typeof $ !== "function"
-    || typeof $.toJSON !== "function" || typeof $.jStorage !== "object"
     || (typeof GM_info !== "object" && typeof GM_getMetadata !== "function")  // added for Scriptish
     || typeof GM_addStyle !== "function"
     || typeof GM_log !== "function"
@@ -70,7 +69,6 @@
     environment     = isGM ? "Firefox/GreaseMonkey " : isTM ? "Chrome(-ium)/TamperMonkey "
       : isSC ? "Firefox/Scriptish " : "unknown ",
     execStartMS,
-    newCss,
     startLogMsg,
     $doc            = $(document),
     scriptSource    = isGM ? GM_info.scriptMetaStr : isTM ? GM_info.scriptSource : "",
@@ -174,50 +172,7 @@
       },
 
       cssElements         : {
-        // search results highlighing
-        // added as css classes, not by style
-        // if you change these, remember to flush the session storage
-        SRTV         : "#F5C0BF",
-        SRMOVIE      : "#FCD1C0",
-        SRGAME       : "#F2C3A1",
-        SRBOOK       : "#CCDBEB",
-        SRMUSIC      : "#D3E8C2",
-        SRAPP        : "#EDEDF0",
-        SRPICTURE    : "#E0C4DA",
-        SRMISC       : "#DDBFDD",
-        SRANIME      : "#F4DE7A",
-        SRPINK       : "#FFBFE2",
-        // DMCA         : "#EDF2F8",
-        DMCA         : "#FFE8DF",
-        // all other elements
-        TZBLUE       : "#369",
-        LIGHTTZBLUE  : "#90B2D5",
-        DARKTZBLUE   : "#0C2C4C",
-        TZPINK       : "#f5dfd6",
-        LIGHTPINK    : "#faefeb",
-        WHITE        : "#fff",
-        BLACK        : "#000",
-        INACTIVEGRAY : "#888",
-        FORMGRAY     : "#F1F2F3",
-        LOGOHOVER    : "#b3cce6",
-        DARKGRAY     : "#333",
-        MILKWHITE    : "#eee",
-        GREEN        : "#00b900",
-        BROWN        : "#805B4D",
-        TEXTBROWN    : "#6B3F2E",
-        GRAY         : "#AAA",
-        LIGHTGRAY    : "#ccc",
-        LIGHTGREEN   : "#d4ffd4",
-        ORANGE       : "#F51",
-        WARNRED      : "#CC0000",
-        SOFTBLUE     : "#BCC6CF",
-        RGBAWHITE08  : "rgba(255,255,255,0.8)",
-        RGBAWHITE03  : "rgba(255,255,255,0.3)",
-        RGBABLACK02  : "rgba(0,0,0,0.2)",
-        RGBABLACK01  : "rgba(0,0,0,0.1)",
-        RGBATRANSP   : "rgba(255,255,255,0)",
-        INFORMATION  : "/img/information.png",
-        RSSIMG       : "/img/rss.png"
+        RSSIMG : "/img/rss.png"
       },
 
       searchGenres        : [
@@ -300,8 +255,9 @@
             // www.torrentdownloads.me/torrent/1652094016/ubuntu-10+10-desktop-i386+iso
             // www.torrentdownloads.me/download/1652094016/ubuntu-10+10-desktop-i386+iso
             directHref = href.replace(/(\.me\/)torrent(\/)/i,"$1download$2");
-          } else if ( ~href.indexOf("kat.ph/") || ~href.indexOf("kickasstorrents.com/") || ~href.indexOf("katmirror.com/") ) {
-            // last checked 2013-06-02
+          } else if ( ~href.indexOf("kat.ph/") || ~href.indexOf("kickasstorrents.com/")
+            || ~href.indexOf("katmirror.com/") || ~href.indexOf("kickass.to/") ) {
+            // last checked 2013-06-14
             // www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
             // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
             directHref = torCacheUrl;
@@ -493,8 +449,7 @@
       },
 
       setStorageOptions    : function (storeObj, callback) {
-        var jStorageKeys,
-          returnSavedValue,
+        var returnSavedValue,
           tzCl = this.userScript.slug,
           i
         ;
@@ -507,27 +462,10 @@
         // reset values
         } else if ( !storeObj ) {
           GM_deleteValue(tzCl + "_useroptions");
-          $.jStorage.deleteKey(tzCl + "_versionCheck");
-          $.jStorage.deleteKey(tzCl + "_searchEngines");
-          $.jStorage.deleteKey(tzCl + "_defaultTrackers");
-          $.jStorage.deleteKey(tzCl + "_removeAds");
-          $.jStorage.deleteKey(tzCl + "_searchHighlight");
-          $.jStorage.deleteKey(tzCl + "_linkComments");
         } 
         if ( callback && typeof callback === "function" ) {
           callback(returnSavedValue);
         }
-      },
-
-      importOldOptions    : function () {
-        var tzCl = this.userScript.slug;
-        return {
-          searchEngines     : $.jStorage.get(tzCl + "_searchEngines"),
-          defaultTrackers   : $.jStorage.get(tzCl + "_defaultTrackers"),
-          removeAds         : $.jStorage.get(tzCl + "_removeAds"),
-          searchHighlight   : $.jStorage.get(tzCl + "_searchHighlight"),
-          linkComments      : $.jStorage.get(tzCl + "_linkComments")
-        };
       },
 
       getGMstorage        : function () {
@@ -715,18 +653,6 @@
         return returnStr;
       },
 
-      getCss              : function () {
-        var cssProps = this.cssElements,
-          patt       = null,
-          cssStr     = GM_getResourceText("css1")
-        ;
-        // sass-ish variable replacing $VARIABLE with cssElements.VALUE
-        underScore.each(cssProps, function (value, key, cssProps) {
-          cssStr = cssStr.replace(new RegExp("\\$" + key + "([^A-Z0-9]|$)","g"), value + "$1");
-        });
-        return cssStr;
-      },
-
       getMagnetUrl        : function (hash, title, trackers, htmlEnc) {
         var returnStr = this.cachedValues.magnetURI + hash + "&dn="
             + encodeURIComponent(title) + "&tr=",
@@ -750,9 +676,7 @@
           + "<li>Report issues and feature requests here: <a href='" + this.userScript.gitHubIssues + "'>"
           + this.userScript.gitHubIssues + "</a></li>"
           + "<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, "
-          + "<a href='http://underscorejs.org/'>underscore.js</a>, "
-          + "<a href='http://www.jstorage.info/'>jStorage</a>, "
-          + "<a href='http://code.google.com/p/jquery-json/'>jQuery JSON Plugin</a> "
+          + "<a href='http://underscorejs.org/'>underscore.js</a> "
           + "&amp; the <a href='http://github.com/cowboy/jquery-replacetext/'>jQuery replaceText Plugin</a>."
           + "</li></ul>";
         return str;
@@ -830,15 +754,13 @@
         }
       },
 
-      getSettingsHtml     : function (opts, trackersString, oldUser) {
+      getSettingsHtml     : function (opts, trackersString) {
         var tzCl            = this.userScript.slug,
           checkHighlight    = opts.searchHighlight ? " checked='checked' " : " ",
           checkAds          = opts.removeAds ?       " checked='checked' " : " ",
           checkCommentLinks = opts.linkComments ?    " checked='checked' " : " ",
           checkAjaxSorting  = opts.ajaxedSorting ?   " checked='checked' " : " ",
           checkForceHTTPS   = opts.forceHTTPS ?      " checked='checked' " : " ",
-          oldUserInfo       = oldUser ? "<br><span class='warn_old_user'>Your old settings were "
-            + "imported and will be saved more permanently when you hit save!</span>" : "",
           str = "<p class='generic " + tzCl + "_info_p' style='"
           + "background-image:url("+ this.userScript.icon + ");'>"
           + "<a href='" + this.userScript.link + "'>Torrent All-in-One</a> "
@@ -847,7 +769,7 @@
           + "to trigger the magnet-link, and <kbd>'SHIFT+D'</kbd> to download the first "
           + "torrent-file listed. &mdash; "
           + "Like this userscript? Then please take a minute to rate and/or review this on <a href='"
-          + this.userScript.link + "'>userscipts.org</a>." + oldUserInfo + "<br><em>Also hosted on "
+          + this.userScript.link + "'>userscipts.org</a>.<br><em>Also hosted on "
           + "<a href='" + this.userScript.gitHub + "'>GitHub</a>, please report all "
           + "issues and bugs <a href='" + this.userScript.gitHubIssues + "'>here</a> &mdash; "
           + "Last modified: " + this.userScript.date + "</em></p>"
@@ -1529,54 +1451,55 @@
         }
       },
 
-      initialFilterOfList : function (list, opts, $dmcaElement, callback) {
-        var getNodeText = function (el) {
-            var text = el.textContent,
-              returnText
-            ;
-            if ( text.indexOf("»") ) {
-              returnText = text.split("»")[0];
-            } else {
-              returnText = text;
+      makeExcludePatt     : function (userString) {
+        var convertedPattern, commaArr, i;
+        if ( userString.match(/^\//) && userString.match(/\/$/) ) {
+          convertedPattern = userString.replace(/(^\/|\/$)/g,"");
+        } else {
+          userString = userString
+            .replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|\<|\>|\||\:|\-|\"|\')/g,"\\$1")
+            .replace(/\s/g,".")
+          ;
+          if ( userString.indexOf(",") !== -1 ) {
+            convertedPattern = "(";
+            commaArr = userString.split(",");
+            for ( i = 0; i < commaArr.length; i++ ) {
+              convertedPattern += (i !== 0 ? "|" + commaArr[i] : commaArr[i]);
             }
-            return returnText;
-          },
-          i,
+            convertedPattern += ")";
+          } else {
+            convertedPattern = userString;
+          }
+        }
+        return new RegExp(convertedPattern,"i");
+      },
+
+      getResultTitle      : function (el) {
+        var text = el.textContent,
+          returnText
+        ;
+        if ( text.indexOf("»") ) {
+          returnText = text.split("»")[0];
+        } else {
+          returnText = text;
+        }
+        return returnText.replace(/\s+/g," ");
+      },
+
+      initialFilterOfList : function (list, opts, $dmcaElement, callback) {
+        var i,
           dls          = list.getElementsByTagName("dl"),
           dlsLen       = dls.length,
           dlText,
           $logEl,
           dmcaClass    = opts.searchHighlight ? "dmca colorizeme" : "dmca",
-          deletedByFilterCount,
-          excludePatt = function (userString) {
-            var convertedPattern, commaArr, i;
-            if ( userString.match(/^\//) && userString.match(/\/$/) ) {
-              convertedPattern = userString.replace(/(^\/|\/$)/g,"");
-            } else {
-              userString = userString
-                .replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|\<|\>|\||\:|\-|\"|\')/g,"\\$1")
-                .replace(/\s/g,".")
-              ;
-              if ( userString.indexOf(",") !== -1 ) {
-                convertedPattern = "(";
-                commaArr = userString.split(",");
-                for ( i = 0; i < commaArr.length; i++ ) {
-                  convertedPattern += (i !== 0 ? "|" + commaArr[i] : commaArr[i]);
-                }
-                convertedPattern += ")";
-              } else {
-                convertedPattern = userString;
-              }
-            }
-            return new RegExp(convertedPattern,"i");
-          }
+          deletedByFilterCount
         ;
         deletedByFilterCount = 0;
         if ( opts.excludeFilter ) {
           for ( i = 0; i < dlsLen; i++ ) {
-            dlText = getNodeText(dls[i]);
-            dlText = dlText.replace(/\s{2,}/g," ");
-            if ( dls[i].className !== "dmca" && dlText.match(excludePatt(opts.excludeFilter)) ) {
+            dlText = tzAio.getResultTitle(dls[i]);
+            if ( dls[i].className !== "dmca" && dlText.match(tzAio.makeExcludePatt(opts.excludeFilter)) ) {
               deletedByFilterCount++;
               dls[i].style.display = "none";
             }
@@ -1761,7 +1684,7 @@
         this.removeAds("common", options);
         this.selectors.$topDiv = this.selectors.$body.find("div.top:eq(0)");
         this.selectors.$settingsEl = this.selectors.$topDiv.after(
-            this.getSettingsHtml(options, trackers.userString, this.cachedValues.warnAboutOptions)
+            this.getSettingsHtml(options, trackers.userString)
           ).find(" > ul").prepend(settingsButton).end();
         this.selectors.$settingsLink = this.selectors.$topDiv.find(" > ul > li."
           + tzCl + "_settings a");
@@ -1772,8 +1695,6 @@
             var saveTrackers,
               disabledInput    = tzAio.selectors.$settingsForm.find("input[type='submit']")
                 .prop("disabled", true),
-              importedNotice   = tzAio.cachedValues.warnAboutOptions
-                ? "\n(Your previous settings were imported, but nothing is guaranteed!)" : "",
               saveSearchEngines,
               confirmNewStorageRules,
               trackersVal,
@@ -1819,8 +1740,7 @@
                 .replace(/\,{2,}/g,",").replace(/(^\s+|\s+$)/g,"");
               if ( tzAio.cachedValues.freshUser ) {
                 confirmNewStorageRules = confirm("Settings are now being stored and used "
-                  + "across all Torrentz's domains.\nSave and continue?"
-                  + importedNotice);
+                  + "across all Torrentz's domains.\nSave and continue?");
               }
               if ( !tzAio.cachedValues.freshUser || confirmNewStorageRules ) {
                 tzAio.setStorageOptions(submittedOptions, function (thisWasSaved) {
@@ -1888,21 +1808,15 @@
       setupUserSettings   : function (callback) {
         // Theory: Skip storing anything until user saves manually the first time,
         //   helps avoid errors that breaks every first [unsaved] visit,
-        //   plus it's evil to store anything and not letting anyone know
+        //   plus it's evil to store anything and not letting the user know first
         var newSettings,
           trackers
         ;
         if ( !GM_getValue(this.userScript.slug + "_useroptions", false) ) {
+          // first time user
           this.cachedValues.freshUser = true;
-          if ( $.jStorage.get(this.userScript.slug + "_defaultTrackers") !== null ) {
-            // pre 2.1.0 user with jStorage options
-            newSettings = this.importOldOptions();
-            this.cachedValues.warnAboutOptions = true;
-          } else {
-            // first time user
-            newSettings = this.userScript;
-            sendLog( "Thanks for using " + this.userScript.name + "!" );
-          }
+          newSettings = this.userScript;
+          sendLog( "Thanks for using " + this.userScript.name + "!" );
         } else {
           // returning user with storage
           newSettings = this.getGMstorage();
@@ -1928,34 +1842,6 @@
         }
         if ( callback && typeof callback === "function" ) {
           callback(newSettings, trackers);
-        }
-      },
-
-      injectCss             : function () {
-        // sessionStorage is a tiny bit faster because we're replacing colors in the file
-        //   before appending it, so let's save some ms by caching it
-        //   to manually flush: > window.sessionStorage.removeItem("tz_aio_SS_cached_css")
-        var tzCl = this.userScript.slug;
-        if ( w.sessionStorage ) {
-
-          var cachedCss = w.sessionStorage.getItem(tzCl + "_SS_cached_css");
-
-          if ( cachedCss && typeof cachedCss === "string"
-            && cachedCss.match(this.cachedValues.cssVersionPatt)
-            && ( this.userScript.version === cachedCss.match(this.cachedValues.cssVersionPatt)[1] ) ) {
-            // cached css and the same version, safe to re-use
-            GM_addStyle(cachedCss);
-          } else {
-            // updated css version or fresh session
-            sendLog("flushing sessionStorage");
-            w.sessionStorage.removeItem(tzCl + "_SS_cached_css");
-            newCss = this.getCss();
-            GM_addStyle(newCss);
-            w.sessionStorage.setItem(tzCl + "_SS_cached_css", newCss);
-          }
-
-        } else {
-          GM_addStyle(this.getCss());
         }
       },
 
@@ -2015,14 +1901,12 @@
       freshUser            : false,
       sKeywordPatt         : /»\s+?(.*)$/i,
       hashPatt             : /[a-zA-Z0-9]{40}/,
-      cssVersionPatt       : /^\s*\/\*\s*([0-9.]+)/,
       twoPartDomainPatt    : new RegExp("(\\.com|\\.co|\\.info|\\.mobi|\\.net|\\.ar|\\.as|\\.at|"
         + "\\.bb|\\.bg|\\.br|\\.ca|\\.ch|\\.cn|\\.cs|\\.dk|\\.ee|\\.es|\\.fi|\\.fr|\\.gr|\\.in|"
         + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}",""),
       linkifyPatt          : /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)?/gi,
       matchUrlPatt         : /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i,
       selectTrashPatt      : /(\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i,
-      warnAboutOptions     : false,
       // https://en.wikipedia.org/wiki/Magnet_URI_scheme
       magnetURI            : "magnet:?xt=urn:btih:",
       bugReportMsg         : "\n(If this problem persists, please get in touch and I'll fix it\n"
@@ -2037,9 +1921,9 @@
       }
     });
 
-    $.ajaxSetup({ cache : true });
+    GM_addStyle(GM_getResourceText("css1"));
 
-    tzAio.injectCss();
+    $.ajaxSetup({ cache : true });
 
     $doc.ready(function () {
 

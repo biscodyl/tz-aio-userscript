@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+**2.1.9** (2013-06-14)
+* Old import functions for pre 2.1.0 users removed.
+* Removed jStorage and jQuery Json plugin, not needed anymore.
+* Some internal optimizing of the Exclude Filter.
+* Support for kickass.to.
+* Build script; moved CSS variables to sass locally.
+* No longer stores the CSS in `sessionStorage`.
+
 **2.1.8** (2013-06-09)
 * New image ad removed.
 

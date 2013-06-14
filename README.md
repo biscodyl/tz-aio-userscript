@@ -25,39 +25,30 @@ Applies to these sites
 Features
 --------
 
-* _Default trackerlist_ (Magically sorted trackers, that apply to all magnet-links).
-* _Search engines list_ (Select some text in the title and search these sites).
-* _No referer url_ (An optional url that is prepended to all outgoing non-torrent-ish sites).
-* _Force HTTPS_ (Off by default, but forces SSL if enabled).
-* _Hide Ads_ (Wouldn't be a UserScript without this. As ads change, this script will be updated).
-* _Colorful results_ (Uses a pretty solid `RegExp` pattern to figure out what is what and adds a background color so it's easier to read, and also dims out seemingly inactive torrents).
-* _Ajaxed sorting_  (Applies to all search results, uses `history.pushState`).
-* _Exclude filter_  (Remove unwanted torrens by keywords or `RegExp`).
-* _Fix comment links_ (Changes all valid un-anchored links inside comments to links).
-* _All these settings are imported for **pre 2.1.0** users, and can be flushed and reset on demand._
+* **Default trackerlist**  _Customizable_ - Magically sorted trackers, that apply to all magnet-links.
+* **Search engines list **  _Customizable_ - Select some text in the title and search these sites.
+* **Force HTTPS**  Off by default, but forces SSL if enabled.
+* **Ad removal**  Wouldn't be a UserScript without this. As new ads are added, this script will be updated.
+* **Direct .torrent links**  Applies to all avaliable sites listed on each 'single page'.
+* **Stats-bar**  Get all the important info right away, like seed-ratio, a Copy trackerlist button, a Magnet-link, links to the comments and the files, and the total amout of peers.
+* **Ajaxed sorting**  Applies to all search results, uses `history.pushState`.
+* **Exclude filter**  _Customizable_ - Remove unwanted torrens by keywords or `RegExp`.
+* **Colorful results**  Uses a pretty solid `RegExp` pattern to figure out what is what and adds a background color so it's easier to read, and also dims out seemingly inactive torrents.
+    * All torrents in all search-results have their own magnet-link that includes your custom trackers.
+    * Old/dead-ish torrents are dimmed out to visually help you search faster.
+    * If you have an exclude-filter, the number of excluded torrents are noted at the bottom of the list.
+* **No referer url **  _Customizable_ - An optional url that is prepended to all outgoing non-torrent-ish sites.
+* **Fix comment links**  Changes all valid un-anchored links inside comments to links.
+* **Smart keyboard shortcuts**  `C` to toggle the Copy-trackers box, `D` to download with the magnet-link, `SHIFT+D` to download the first available .torrent file, `ESCAPE` for general exit / reset.
 
-* __NEW__ Global settings panel with these options **1**:
-    * Force SSL on all domains.
-    * Ad removal.
-    * Ajaxed sorting of results.
-    * Colorful results.
-    * Saved custom trackers with intelligent sorting (now fixed).
-    * Add your own Select-to-search search-engines links.
-    * Linked comment-links.
-    * Optional no-referer url for all outgoing links.
+_All these settings are accessed by clicking 'TzAio' at the top of each page, and can be flushed and reset if you want to start over, or take advantage of (any) new default trackers that might have been added._
 
-**1** ) Applies to all mirrors, unlike before. Old users settings are imported automatically.
+More worth mentioning
+---------------------
 
-Under the hood
-----------------
-
-* (v2.1.0 improved) Colorized search-results and magnet-link for each result.
-* Direct download links for torrent files.
-* Optimized magnet-link.
-* Copy-trackers button for easy copying.
+* Copy-trackers button for easy copying, that sorts you trackers automagically.
 * Stats on seed-ratio and trackers (now generated a lot faster).
 * wmv file warning.
-* Smart keyboard shortcuts (`C` to toggle the Copy-trackers box, `D` to download with the magnet-link, `SHIFT+D` to download the first available .torrent file, `ESCAPE` for general exit / reset).
 * (v2.0.18) Passes AdBlocker default list.
 
 Included plugins
@@ -69,11 +60,6 @@ Included plugins
   Copyright 2005, 2012 jQuery Foundation, Inc. and other contributors
   Released under the MIT license
   [jquery.org/license](http://jquery.org/license)
-* jQuery JSON Plugin, version: 2.4 (2012-11-13)
-  MIT license: [opensource.org/licenses/mit-license.php](http://www.opensource.org/licenses/mit-license.php)
-  Influenced by MochiKit's serializeJSON, (c) 2005 by Bob Ippolito.
-* JSTORAGE, Copyright (c) 2010 Andris Reinman, andris.reinman@gmail.com
-  Licensed under MIT license: [opensource.org/licenses/mit-license.php](http://www.opensource.org/licenses/mit-license.php)
 * [jQuery replaceText](http://github.com/cowboy/jquery-replacetext/), Copyright (c) 2009 "Cowboy" Ben Alman
   Version: 1.1, Last updated: 11/21/2009*
   [Dual licensed](http://benalman.com/about/license/) under the MIT and GPL licenses.
@@ -90,5 +76,4 @@ How to use
 TODO's
 ----------
 
-1. Build script for easier maintenance.
-2. Remove old imports and clean up the code.
+Nothing planned at the moment.
