@@ -18,6 +18,7 @@ if [[ "$PWD" =~ TzAiOv2$ ]]; then
     --exclude ".*" --exclude "build.sh" --exclude "*sublime*" --exclude "jshint" \
     -e ssh "$PWD/" \
   "$SSHUSER""@""$SSHURL"":""$SSHHOME""/elundmark.se/public_html/_files/js/tz-aio/"
+  sleep 3
 else
   exit 1
 fi
