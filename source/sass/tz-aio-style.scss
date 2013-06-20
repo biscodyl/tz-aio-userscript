@@ -497,9 +497,6 @@ $RSSIMG: "/img/rss.png";
       color: $BLACK;
       border-bottom: 1px dashed $WHITE;
     }
-    #tz_aio_show_excluded_titles {
-      margin-top: 10px;
-    }
 
   }
 
@@ -593,6 +590,9 @@ $RSSIMG: "/img/rss.png";
   }
   .results dl .v:empty {
     visibility: hidden;
+  }
+  .results .tz_aio_exclude_filter_count:hover {
+    cursor: pointer;
   }
 
   > div > .results.tz_aio_colorized > h2 {

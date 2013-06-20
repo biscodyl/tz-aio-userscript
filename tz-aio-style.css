@@ -421,9 +421,6 @@
   color: black;
   border-bottom: 1px dashed white;
 }
-.tz_aio_b.tz_aio_v2 .tz_aio_settings_form #tz_aio_show_excluded_titles {
-  margin-top: 10px;
-}
 .tz_aio_b.tz_aio_v2 #tz_aio_settings_reset {
   margin-right: 15px;
   font-size: 13px;
@@ -500,6 +497,9 @@
 }
 .tz_aio_b.tz_aio_v2 .results dl .v:empty {
   visibility: hidden;
+}
+.tz_aio_b.tz_aio_v2 .results .tz_aio_exclude_filter_count:hover {
+  cursor: pointer;
 }
 .tz_aio_b.tz_aio_v2 > div > .results.tz_aio_colorized > h2 {
   border-bottom: 0 none;

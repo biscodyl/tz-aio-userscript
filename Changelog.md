@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+**2.1.11** (2013-06-20)
+* Updated `jQuery` to version 2.0.2 and changed it's host to [cdnjs](http://cdnjs.cloudflare.com/).
+* Removed link underneith Exclude filter to show hidden titles, click the info text below the list instead.
+
 **2.1.10** (2013-06-14)
 * Changed `document` to `unsafeWindow.document`. Added missing leglal disclaimer to `README.md`.
 

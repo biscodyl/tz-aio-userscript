@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.10
-// @date          2013-06-14
+// @version       2.1.11
+// @date          2013-06-20
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -23,9 +23,9 @@
 // @exclude       /^https?://[^/]+/announcelist_.*/
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
-// @require       https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-10-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-10-0
+// @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-11-1
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-11-1
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAABGElEQVRYw2N4RCFgGCYG6FiTB+AGWPuTB0YNGDVg1ADaGIA9v7sg1Pc+eJRGugHKKOpD8RmwdS0U7Hn06OFqGEcOpjrvygMCBvgbGkHAVKABnEYwAJLpACp68IiQC+BgFtAAfhSRDpiHyDWg/RYQ3HhIvgH+xnpAQIELiIuFUQOGnQFwUOdLpgH5RUCQ8+iRkAeZXuCxAoKrj7y5/CgIg6UP5zD4UhCIFQ+PMjhQEAvxj+4waFMSjY8ecYtSkg6OPAph86MgHUx7OJPBHS7S+RAIQKUiiH54m7iEtHv/ISBYjFomgsFJVQIGTD92GA7mguOhFUnk8OHtKoSqNhEOOGB3RhcBAq3R6n3UgFEDBqsB5IKHw6PvDAAzFqvUZqMf1wAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -823,8 +823,7 @@
           + "that makes things a whole lot easier. Advanced: This supports "
           + "<a href='http://www.regular-expressions.info/javascript.html' target='_blank'>RegExp</a> too"
           + ", to use it, type your pattern inside 2 forward slashes, ex: "
-          + "<code>/.+\\.iso[^a-z0-9.]/</code><span id='" + this.userScript.slug
-          + "_show_excluded_titles'><a href='#'></a></span></p>"
+          + "<code>/.+\\.iso[^a-z0-9.]/</code></p>"
           + "<div class='s'><a href='#' id='" + tzCl + "_settings_reset'><span>Reset?</span></a>"
           + "<input type='submit' value='Save' name='save'></div></fieldset></form>"
         ;
@@ -1515,7 +1514,7 @@
                 .find("dt").prepend("<span class='" + this.userScript.slug + "_exclude_filter_count'></span>");
           }
           $logEl = $(list).find("span." + this.userScript.slug + "_exclude_filter_count");
-          this.updateExcludeLog($logEl, deletedByFilterCount);
+          this.updateExcludeLog($logEl, deletedByFilterCount, list);
         }
         if ( callback && typeof callback === "function" ) {
           callback(list);
@@ -1777,7 +1776,8 @@
         this.selectors.$settingsLink.on("click", function (event) {
           tzAio.selectors.$scriptInfoP.toggleClass("expand");
           tzAio.selectors.$settingsForm.toggleClass("expand");
-          tzAio.selectors.$settingsLink.parent("li").toggleClass("tz_aio_settings_open");
+          tzAio.selectors.$settingsLink.parent("li")
+            .toggleClass(this.userScript.slug + "_settings_open");
           if ( tzAio.selectors.$copyTextArea && tzAio.selectors.$copyTextArea.length ) {
             tzAio.toggleCopyBox(false, true);
           }
@@ -1845,25 +1845,15 @@
         }
       },
 
-      updateExcludeLog : function ($target, count) {
+      updateExcludeLog : function ($target, count, resultsList) {
         var logHtml = count + " result"
             + this.stringValueS(count)
             + " removed using TzAio filter"
         ;
         logHtml += ($target.parents("dt:eq(0)").text().match(/\S/) ? "&nbsp;&ndash;&nbsp;" : "");
-        $target.html(logHtml);
-        if ( count ) {
-          $("#" + this.userScript.slug + "_show_excluded_titles").css("display","block")
-            .find("a").text("Click here to show all " + count + " hidden torrent" + tzAio.stringValueS(count))
-            .on("click", function () {
-              tzAio.selectors.$settingsLink.trigger("click");
-              var showTimeout = setTimeout(function () {
-                $(".results > dl:hidden").css("display", "block");
-              }, 200);
-              return false;
-            })
-          ;
-        }
+        $target.html(logHtml).one("click", function () {
+          $(resultsList).find("dl:hidden").css("display", "block");
+        });
       },
 
       lastAction          : function () {
