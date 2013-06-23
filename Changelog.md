@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+**2.1.12** (2013-06-23)
+* Small optimizations.
+* Added `/feed` urls to exclude list, stops feeds in Firefox from refreshing in a loop.
+
 **2.1.11** (2013-06-20)
 * Updated `jQuery` to version 2.0.2 and changed it's host to [cdnjs](http://cdnjs.cloudflare.com/).
 * Removed link underneith Exclude filter to show hidden titles, click the info text below the list instead.

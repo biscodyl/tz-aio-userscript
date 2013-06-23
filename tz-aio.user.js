@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.11
-// @date          2013-06-20
+// @version       2.1.12
+// @date          2013-06-23
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -20,6 +20,7 @@
 // @include       /^https?://(www\.)?torrentz\.hk/.*/
 // @include       /^https?://(www\.)?torrents\.de/.*/
 // @include       /^https?://(www\.)?tz\.ai/*
+// @exclude       /^https?://[^/]+/feed\?.*/
 // @exclude       /^https?://[^/]+/announcelist_.*/
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
@@ -823,7 +824,7 @@
           + "that makes things a whole lot easier. Advanced: This supports "
           + "<a href='http://www.regular-expressions.info/javascript.html' target='_blank'>RegExp</a> too"
           + ", to use it, type your pattern inside 2 forward slashes, ex: "
-          + "<code>/.+\\.iso[^a-z0-9.]/</code></p>"
+          + "<code>/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/</code></p>"
           + "<div class='s'><a href='#' id='" + tzCl + "_settings_reset'><span>Reset?</span></a>"
           + "<input type='submit' value='Save' name='save'></div></fieldset></form>"
         ;
@@ -1774,6 +1775,7 @@
           })
         ;
         this.selectors.$settingsLink.on("click", function (event) {
+          event.preventDefault();
           tzAio.selectors.$scriptInfoP.toggleClass("expand");
           tzAio.selectors.$settingsForm.toggleClass("expand");
           tzAio.selectors.$settingsLink.parent("li")
@@ -1781,7 +1783,6 @@
           if ( tzAio.selectors.$copyTextArea && tzAio.selectors.$copyTextArea.length ) {
             tzAio.toggleCopyBox(false, true);
           }
-          event.preventDefault();
           return false;
         });
         this.selectors.$resetEl = $("#" + tzCl + "_settings_reset");
