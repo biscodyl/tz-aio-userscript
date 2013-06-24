@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.12
-// @date          2013-06-23
+// @version       2.1.13
+// @date          2013-06-24
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -25,8 +25,8 @@
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-11-1
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-11-1
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-13-1
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-13-1
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAABGElEQVRYw2N4RCFgGCYG6FiTB+AGWPuTB0YNGDVg1ADaGIA9v7sg1Pc+eJRGugHKKOpD8RmwdS0U7Hn06OFqGEcOpjrvygMCBvgbGkHAVKABnEYwAJLpACp68IiQC+BgFtAAfhSRDpiHyDWg/RYQ3HhIvgH+xnpAQIELiIuFUQOGnQFwUOdLpgH5RUCQ8+iRkAeZXuCxAoKrj7y5/CgIg6UP5zD4UhCIFQ+PMjhQEAvxj+4waFMSjY8ecYtSkg6OPAph86MgHUx7OJPBHS7S+RAIQKUiiH54m7iEtHv/ISBYjFomgsFJVQIGTD92GA7mguOhFUnk8OHtKoSqNhEOOGB3RhcBAq3R6n3UgFEDBqsB5IKHw6PvDAAzFqvUZqMf1wAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -38,6 +38,7 @@
 // @grant         GM_deleteValue
 // @grant         GM_openInTab
 // @grant         GM_getMetadata
+// @grant         GM_setClipboard
 // ==/UserScript==
 
 /*
@@ -522,16 +523,12 @@
       },
 
       isAnyInputFocused   : function () {
-        var $activeEl   = $(d.activeElement),
-          $activeParent = $activeEl.parent(),
-          $activeParent = $activeParent.length ? $activeParent : $activeEl
+        var $activeEl    = $(d.activeElement),
+          $activeParent  = $activeEl.length && $activeEl[0].nodeName.match(/^(input|textarea)$/i)
+            ? $activeEl : $activeEl.parents("input, textarea").eq(0)
         ;
-        return (
-          $activeEl.length
-          && $activeEl.is(":input")
-          && $activeParent.attr("id")
-          && $activeParent.attr("id").indexOf("_copy_tr_textarea") === -1
-        );
+        return !!($activeParent.length && $activeParent.attr("id") && !$activeParent.attr("id")
+          .match(/_copy_tr_textarea/i));
       },
 
       getNodeNumber       : function (nodeEl, getNumber) {
@@ -554,20 +551,29 @@
         var forceShow  = typeof forceShow !== "undefined" ? forceShow : false,
           forceHide  = typeof forceHide !== "undefined" ? forceHide : false,
           isVisible,
-          linkHeight = this.cachedValues.copyTrackersLinkHeight
+          linkHeight = this.cachedValues.copyTrackersLinkHeight,
+          useClipboard = typeof GM_setClipboard === "function"
         ;
         // if it's created
         if ( this.selectors.$copyTextArea.length && this.selectors.$copyTrackersLink.length ) {
           isVisible = this.selectors.$copyTextArea.is(":visible");
           if ( forceShow || (!isVisible && !forceHide) ) {
             // Show it
-            this.selectors.$copyTextArea.css({
-              top : (this.selectors.$copyTrackersLink.offset().top + linkHeight) + "px",
-              left : (this.selectors.$copyTrackersLink.offset().left) + "px"
-            }).stop().show(300).find("textarea")[0].select();
+            if ( useClipboard ) {
+              GM_setClipboard(this.selectors.$copyTextArea.find("textarea")[0].innerHTML);
+              this.selectors.$copyTrackersLink.addClass("active");
+              this.selectors.$copyTrackersLink.text(this.selectors.$copyTrackersLink.text().replace("Copy ","Copied "));
+            } else {
+              this.selectors.$copyTextArea.css({
+                top : (this.selectors.$copyTrackersLink.offset().top + linkHeight) + "px",
+                left : (this.selectors.$copyTrackersLink.offset().left) + "px"
+              }).stop().show(300).find("textarea")[0].select();
+            }
           } else if ( forceHide || (isVisible && !forceShow) ) {
             // Hide it
-            this.selectors.$copyTextArea.stop().hide(200).blur();
+            if ( !useClipboard ) {
+              this.selectors.$copyTextArea.stop().hide(200).blur();
+            }
           }
         }
       },
@@ -1779,7 +1785,7 @@
           tzAio.selectors.$scriptInfoP.toggleClass("expand");
           tzAio.selectors.$settingsForm.toggleClass("expand");
           tzAio.selectors.$settingsLink.parent("li")
-            .toggleClass(this.userScript.slug + "_settings_open");
+            .toggleClass(tzAio.userScript.slug + "_settings_open");
           if ( tzAio.selectors.$copyTextArea && tzAio.selectors.$copyTextArea.length ) {
             tzAio.toggleCopyBox(false, true);
           }
