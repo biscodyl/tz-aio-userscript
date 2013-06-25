@@ -2,13 +2,13 @@
 
 if [[ "$PWD" =~ TzAiOv2$ ]]; then
   WORKDIR="$PWD"
-  echo "\$ compass compile ""$PWD"
-  cd "$WORKDIR/source" && compass compile "$PWD"
-  cd "$WORKDIR"
   echo -n "Enter a description for the commit: "
   read gitcommitmsg
   read -p "Is '""$gitcommitmsg""' correct? (y/n): " CONT
   if [ "$CONT" == "y" ]; then
+    echo "\$ compass compile ""$WORKDIR/source"
+    cd "$WORKDIR/source" && compass compile "$PWD"
+    cd "$WORKDIR"
     echo "\$ git add . ; git commit -am ""$gitcommitmsg""; git push origin master"
     git add .
     git commit -am "$gitcommitmsg"

@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+**2.1.14** (2013-06-25)
+* Modified the default trackerlist.
+* More bugfixes for keyboard shortcuts.
+
 **2.1.13** (2013-06-24)
 * Added `GM_setClipboard` in place of the copybox, for engines that supports it (GreaseMonkey 1.10+).
 * Minor bugfixes for keyboard shortcuts.
