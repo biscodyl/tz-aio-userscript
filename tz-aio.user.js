@@ -42,10 +42,21 @@
 // ==/UserScript==
 
 /*
+ * Compatibility
+ * -------------
  *
  * Tested in Chrome 25+ (Tampermonkey v2.12.3124.16+)
  * and Firefox 19+ (GreaseMonkey 1.8+, Scriptish 0.1.8+) on Ubuntu 13.04
  *  
+ * Legality
+ * --------
+ * 
+ * Released under CC0 1.0 Universal (http://creativecommons.org/publicdomain/zero/1.0/).
+ * The author of this script takes no responsibility for any potetial harm
+ * done to any hamsters, servers, browsers or wallets. While browsing
+ * affected sites with this script is fully legal,
+ * downloading illegal copyrighted material still isn’t.
+ * 
 */
 
 (function(w, $, underScore){
@@ -96,11 +107,12 @@
           "google|https://www.google.com/search?q=%s"
         ],
         defaultTrackers : [
-          "udp://tracker.istole.it:80/",
           "udp://tracker.openbittorrent.com:80/",
           "udp://tracker.ccc.de:80/",
           "udp://tracker.publicbt.com:80/",
           "udp://denis.stalker.h3q.com:6969/announce",
+          "udp://tracker.istole.it:6969/",
+          "udp://tracker.istole.it:80/",
           "http://tracker.istole.it:80/",
           "http://tracker.openbittorrent.com:80/",
           "http://tracker.ccc.de:80/",
@@ -117,7 +129,7 @@
           "http://tracker.hexagon.cc:2710/announce",
           "http://tracker.torrentbox.com:2710/announce",
           "http://tracker.xpear.de:6969/announce",
-          "udp://open.demonii.com:1337/"
+          "udp://open.demonii.com:1337/announce"
         ],
         noRefUrl        : "http://href.li/?",
         excludeFilter   : "",

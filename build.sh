@@ -7,7 +7,7 @@ if [[ "$PWD" =~ TzAiOv2$ ]]; then
   cd "$WORKDIR"
   echo -n "Enter a description for the commit: "
   read gitcommitmsg
-  read -p "Is '""$gitcommitmsg""' correct? (y/n)" CONT
+  read -p "Is '""$gitcommitmsg""' correct? (y/n): " CONT
   if [ "$CONT" == "y" ]; then
     echo "\$ git add . ; git commit -am ""$gitcommitmsg""; git push origin master"
     git add .
