@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.14
-// @date          2013-06-25
+// @version       2.1.15
+// @date          2013-06-27
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -409,7 +409,7 @@
       },
 
       makeBool            : function (e) {
-        var testStr  = e ? this.truncateString(e.toString()) : "",
+        var testStr  = e ? this.zipString(e.toString()) : "",
           returnBool = testStr.match(/^true$/i) ? true : testStr.match(/^false$/i)
             ? false : undefined;
         return returnBool;
@@ -417,6 +417,13 @@
 
       stringValueS        : function (i) {
         return ( i === 1 ? "" : "s" );
+      },
+
+      truncate            : function (string, length) {
+        var truncation = "...";
+        length = length || 25;
+        return string.length > length ?
+          string.slice(0, length - truncation.length) + truncation : String(string);
       },
 
       formatNumbers       : function (i, roundHundreds) {
@@ -511,7 +518,7 @@
           && this.isFalse(i.metaKey));
       },
 
-      truncateString      : function (s) {
+      zipString           : function (s) {
         var returnStr = s ? s.toString().replace(/^\s+/,"").replace(/\s+$/,"") : s;
         return returnStr;
       },
@@ -523,9 +530,9 @@
         ;
         // pass through empty values
         if ( urls.match(/\S/) ) {
-          checkArray = underScore.compact(this.truncateString(urls).split(/\s+/));
+          checkArray = underScore.compact(this.zipString(urls).split(/\s+/));
           for ( i = 0; i < checkArray.length; i++ ) {
-            if ( !this.truncateString(checkArray[i]).match(this.cachedValues.matchUrlPatt) ) {
+            if ( !this.zipString(checkArray[i]).match(this.cachedValues.matchUrlPatt) ) {
               returnBool = false;
               break;
             }
@@ -678,7 +685,7 @@
       getMagnetUrl        : function (hash, title, trackers, htmlEnc) {
         var returnStr = this.cachedValues.magnetURI + hash + "&dn="
             + encodeURIComponent(title) + "&tr=",
-          trackerStr = encodeURIComponent(this.truncateString(trackers).replace(/\n+/g,"&tr="))
+          trackerStr = encodeURIComponent(this.zipString(trackers).replace(/\n+/g,"&tr="))
             .replace(/\%26tr\%3D/g, "&tr=")
         ;
         returnStr += trackerStr;
@@ -1166,21 +1173,10 @@
         while ( (++trackerLinksI < trackerLinksLen) ) {
           currTrackerList.push( (trackerLinks[trackerLinksI].textContent||"") );
         }
-        // trackerLinks.each(function (index, element) {
-        //   currTrackerList.push( (element.textContent||"") );
-        // });
-        trackers = this.makeTrackersObject(
-          underScore.union(
-            currTrackerList,
-            trackers.userArray
-          ),
-          trackers.userArray
-        );
+        trackers = this.makeTrackersObject(underScore.union(currTrackerList, trackers.userArray),
+          trackers.userArray);
         trackerLen = trackers.allArray.length;
         // final magnetlink uri
-        // this.cachedValues.magnetURI + this.page.thash + "&amp;dn="
-        //  + this.page.titleEnc + "&amp;tr=" + trackers.allString.replace(/\n+/g,"&amp;tr=") 
-        // getMagnetUrl(this.page.thash, this.page.title, trackers.allString, true)
         magnetLinkHtml = "<a id='" + tzCl + "_magnet_link" + "' class='" + tzCl
           + "_mlink " + tzCl + verDownloadCl + "' href='"
           + (this.getMagnetUrl(this.page.thash, this.page.title, trackers.allString, true))
@@ -1434,7 +1430,7 @@
           spanMagnet.className = tzaioslug + "_magnet";
           linkMagnet = d.createElement("A");
           linkMagnet.href = this.getMagnetUrl(torrHash, torrTitle, this.cachedValues.userString);
-          linkMagnet.title = "Download " + torrTitle + magnetTitleAppend;
+          linkMagnet.title = "Download " + this.truncate(torrTitle, 20) + magnetTitleAppend;
           spanMagnet.appendChild(linkMagnet);
           dlElements[i].appendChild(spanMagnet);
           vSpan = dlElements[i].getElementsByClassName("v");
@@ -1470,6 +1466,26 @@
         if ( callback && typeof callback === "function" ) {
           callback(resultsElement);
         }
+      },
+
+      validateRegExp      : function (pattStr) {
+        var returnBool,
+          fooPatt
+        ;
+        if ( pattStr.match(/^\s*\//) && pattStr.match(/\/\s*$/) ) {
+          pattStr = pattStr.replace(/(^\s*\/|\/\s*$)/g, "");
+          try {
+            fooPatt = new RegExp(pattStr,"i");
+            returnBool = underScore.isRegExp(fooPatt);
+          } catch (error) {
+            sendLog("not a valid regexp pattern!");
+            sendLog(error);
+            returnBool = false;
+          }
+        } else {
+          returnBool = true;
+        }
+        return returnBool;
       },
 
       makeExcludePatt     : function (userString) {
@@ -1724,7 +1740,7 @@
               noRefVal,
               excludeFilterVal,
               invalidItemName,
-              trValid, seValid, nrValid,
+              trValid, seValid, nrValid, exValid,
               submittedOptions = {}
             ;
             tzAio.selectors.$settingsForm.find(":checkbox").each(function (index, element) {
@@ -1748,8 +1764,9 @@
             seValid = (!searchEnginesVal.match(/\S/i) || (tzAio.validUserInput(searchEnginesVal)
               && searchEnginesVal.indexOf("%s") >= 13 && searchEnginesVal.indexOf("|") > 0) );
             nrValid = tzAio.validUserInput(noRefVal);
+            exValid = tzAio.validateRegExp(excludeFilterVal);
             
-            if ( seValid && trValid && nrValid ) {
+            if ( seValid && trValid && nrValid && exValid ) {
               saveTrackers = trackersVal.split(/\s+/);
               saveTrackers = underScore.compact(saveTrackers);
               saveSearchEngines = searchEnginesVal.split(/\s+/);
@@ -1787,7 +1804,8 @@
               }
             } else {
               invalidItemName = !seValid ? "Search engines list" : !trValid
-              ? "Default trackerlist" : !nrValid ? "No referer url" : "[ERROR]";
+                ? "Default trackerlist" : !nrValid ? "No referer url" : !exValid
+                ? "Exclude filter (regexp)" : "[ERROR]";
               alert("Invalid input in the '" + invalidItemName + "', check your spelling!"
                 + tzAio.cachedValues.bugReportMsg);
               disabledInput.prop("disabled", false);

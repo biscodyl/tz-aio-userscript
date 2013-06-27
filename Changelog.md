@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+**2.1.15** (2013-06-27)
+* Sanitized regexp input; submitting an invalid pattern no longer breaks the page.
+* Truncated magnetlink titles in searchresults.
+
 **2.1.14** (2013-06-25)
 * Modified the default trackerlist.
 * More bugfixes for keyboard shortcuts.
