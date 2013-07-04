@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+**2.1.16** (2013-07-04)
+* Fixed publichd.se links.
+* Internal code structure changes.
+* Bug fixed on `/help` pages.
+* New logo.
+
 **2.1.15** (2013-06-27)
 * Sanitized regexp input; submitting an invalid pattern no longer breaks the page.
 * Truncated magnetlink titles in searchresults.

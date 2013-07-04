@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.15
-// @date          2013-06-27
+// @version       2.1.16
+// @date          2013-07-04
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -25,9 +25,9 @@
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-15-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-15-0
-// @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAACqVBMVEUKFB4KFR8LFR8LFiELFiIMGCQNGicNGigNGygNGykOHCsPGSIPHi0PHi4PHy8QIDEQITEQITIRGyQRIjMTJjoUKDwUKD0VJDUWHykWLEIXICoXL0cYIisYMEgZIiwZMksaIywaNE4cOVYdJi8dOlcdO1keJzAePFoePVwfKDEfPl4fP14fV48gKjMgQGAgQGEhQmMhQ2UiRWcjRmkkLTYkSW0lSm8mTHImTXMnTnYpUnspXpQqVH4rV4IsWIQsWIUsWYUsWYYtNT4tWocuSWQvSmQvXo4xYpMxYpQxY5QxY5UyOkIyZJcyZZcyZZgzZpk1Z5o2PkY2aJo3P0c3P0g6Qko6a5w8REw9RU1ASFBAcJ9BSVFBUGBCSlJCcaBDcqFEc6FFTVRFdKJGU19GaY1HT1ZJYHdJdqRMeaVNV2FNc5hOWGJRWF9TfqhTfqlUW2JWfKJaYWdaYWhad5Rag6xbhK1dY2pdhq5fh65giK9iibBjaXBjirFla3FlhKJli7FnbXNnbXRnjbJnjbNobnRqj7Rtc3ltkrZvk7dzlrl1e4F6m7x7nL18nL1/hIqCocCEo8GFo8KHpcOLqMWMkZaMnrCOlp6OqsaSorGTmJyVr8qWsMqYnKCZnaGanqKas8ybtMyctM2guM+nvdKovdOtwdWywtK7vsG/wsTC0eDFx8rGyMvHycvJy83Jy87Nz9HN09rP2ubQ2uTQ3OfT3ejU3+nX2dra3N3c3d/d3+Dg4uTh4uPi4+Tk5ufk6/Ho7fHo7fPp6uzp7vTq6+zq7/Tr7O3r7O7r7/Pr8PXs7e7s8PXu8fTv8/bw8fHw8fLy9fj09PX09/j19vf29vf2+Pr3+Pr3+fr4+Pn5+fn5+fr6+vr6+/z7+/v7/P38/Pz8/P39/f3+/v7///+abyX6AAABGElEQVRYw2N4RCFgGCYG6FiTB+AGWPuTB0YNGDVg1ADaGIA9v7sg1Pc+eJRGugHKKOpD8RmwdS0U7Hn06OFqGEcOpjrvygMCBvgbGkHAVKABnEYwAJLpACp68IiQC+BgFtAAfhSRDpiHyDWg/RYQ3HhIvgH+xnpAQIELiIuFUQOGnQFwUOdLpgH5RUCQ8+iRkAeZXuCxAoKrj7y5/CgIg6UP5zD4UhCIFQ+PMjhQEAvxj+4waFMSjY8ecYtSkg6OPAph86MgHUx7OJPBHS7S+RAIQKUiiH54m7iEtHv/ISBYjFomgsFJVQIGTD92GA7mguOhFUnk8OHtKoSqNhEOOGB3RhcBAq3R6n3UgFEDBqsB5IKHw6PvDAAzFqvUZqMf1wAAAABJRU5ErkJggg==
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-16-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-16-0
+// @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -254,11 +254,11 @@
             directMatch = href.match(/(\?|&)id=(\d+)/);
             directHref = directMatch && directMatch.length === 3 ? "http://movietorrents.eu/download.php?id="
               + directMatch[2] + "&name=" + titleEnc + ".torrent" : null;
-          } else if ( ~href.indexOf("publichd.eu/") ) {
-            // last checked 2012-07-23
-            // publichd.eu/index.php?page=torrent-details&id=bae62a9932ec69bc6687a6d399ccb9d89d00d455
-            // publichd.eu/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=ubuntu-10.10-dvd-i386.iso.torrent
-            directHref = "http://publichd.eu/download.php?id=" + hash + "&f=" + titleEnc + ".torrent";
+          } else if ( ~href.indexOf("publichd.se/") ) {
+            // last checked 2013-07-04
+            // publichd.se/index.php?page=torrent-details&id=bae62a9932ec69bc6687a6d399ccb9d89d00d455
+            // publichd.se/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=ubuntu-10.10-dvd-i386.iso.torrent
+            directHref = "http://publichd.se/download.php?id=" + hash + "&f=" + titleEnc + ".torrent";
           } else if ( ~href.indexOf("btmon.com/") ) {
             // last checked 2012-05-13
             // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent.html
@@ -696,19 +696,20 @@
       },
 
       getHelpHtml         : function () {
-        var str = "<p><b>" + this.userScript.name + " UserScript</b></p><ul>"
-          + "<li>Installed: v" + this.userScript.version + "</li>"
-          + "<li>Homepage: <a href='" + this.userScript.link + "'>" + this.userScript.link + "</a></li>"
-          + "<li>On Github: <a href='" + this.userScript.gitHub + "'>" + this.userScript.gitHub + "</a></li>"
-          + "<li>Changelog: <a href='" + this.userScript.gitHub + "blob/master/Changelog.md'>"
-          +   this.userScript.gitHub + "blob/master/Changelog.md</a></li>"
-          + "<li>Report issues and feature requests here: <a href='" + this.userScript.gitHubIssues + "'>"
-          + this.userScript.gitHubIssues + "</a></li>"
-          + "<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, "
-          + "<a href='http://underscorejs.org/'>underscore.js</a> "
-          + "&amp; the <a href='http://github.com/cowboy/jquery-replacetext/'>jQuery replaceText Plugin</a>."
-          + "</li></ul>";
-        return str;
+        var htmlArr = [ "<p><b>" + this.userScript.name + " UserScript</b></p><ul>"
+          , "<li>Installed: v" + this.userScript.version + "</li>"
+          , "<li>Homepage: <a href='" + this.userScript.link + "'>" + this.userScript.link + "</a></li>"
+          , "<li>On Github: <a href='" + this.userScript.gitHub + "'>" + this.userScript.gitHub + "</a></li>"
+          , "<li>Changelog: <a href='" + this.userScript.gitHub + "blob/master/Changelog.md'>"
+          ,   this.userScript.gitHub + "blob/master/Changelog.md</a></li>"
+          , "<li>Report issues and feature requests here: <a href='" + this.userScript.gitHubIssues + "'>"
+          , this.userScript.gitHubIssues + "</a></li>"
+          , "<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, "
+          , "<a href='http://underscorejs.org/'>underscore.js</a> "
+          , "&amp; the <a href='http://github.com/cowboy/jquery-replacetext/'>jQuery replaceText Plugin</a>."
+          , "</li></ul>" ]
+        ;
+        return htmlArr.join("");
       },
 
       removeAds           : function (page, userOpts, element) {
@@ -790,73 +791,72 @@
           checkCommentLinks = opts.linkComments ?    " checked='checked' " : " ",
           checkAjaxSorting  = opts.ajaxedSorting ?   " checked='checked' " : " ",
           checkForceHTTPS   = opts.forceHTTPS ?      " checked='checked' " : " ",
-          str = "<p class='generic " + tzCl + "_info_p' style='"
-          + "background-image:url("+ this.userScript.icon + ");'>"
-          + "<a href='" + this.userScript.link + "'>Torrent All-in-One</a> "
-          + "v" + this.userScript.version + " &mdash; "
-          + "Use <kbd>'C'</kbd> to toggle the tracker box, <kbd>'D'</kbd> "
-          + "to trigger the magnet-link, and <kbd>'SHIFT+D'</kbd> to download the first "
-          + "torrent-file listed. &mdash; "
-          + "Like this userscript? Then please take a minute to rate and/or review this on <a href='"
-          + this.userScript.link + "'>userscipts.org</a>.<br><em>Also hosted on "
-          + "<a href='" + this.userScript.gitHub + "'>GitHub</a>, please report all "
-          + "issues and bugs <a href='" + this.userScript.gitHubIssues + "'>here</a> &mdash; "
-          + "Last modified: " + this.userScript.date + "</em></p>"
-          + "<form id='" + tzCl + "_settings_submit' class='"
-          + tzCl + "_settings_form profile' method='get' action='"
-          + this.page.path + "'><fieldset><legend>TzAio Settings</legend>"
-          +   "<p><input type='checkbox' name='" + tzCl + "_forceHTTPS' value='forceHTTPS'" + checkForceHTTPS
-          + "id='" + tzCl + "_forceHTTPS' />"
-          +   "<label for='" + tzCl + "_forceHTTPS' title='This will redirect all pages to secure SSL, "
-          + "beware that if HTTPS is unavailable, you have to try another mirror and turn this option off again. "
-          +   "That`s why this option is turned off by default.'>Force HTTPS</label>"
-          +   "<input type='checkbox' name='" + tzCl + "_removeAds' value='removeAds'"
-          + checkAds + "id='" + tzCl + "_removeAds' />"
-          +   "<label for='" + tzCl + "_removeAds'>Hide Ads</label>"
-          +   "<input type='checkbox' name='" + tzCl + "_searchHighlight' value='searchHighlight' "
-          +     "id='" + tzCl + "_searchHighlight'" + checkHighlight + " />"
-          +   "<label for='" + tzCl + "_searchHighlight'>Colorful results</label>"
-          +   "<input type='checkbox' name='" + tzCl + "_ajaxedSorting' value='ajaxedSorting'"
-          +     checkAjaxSorting + "id='" + tzCl + "_ajaxedSorting'>"
-          +   "<label for='" + tzCl + "_ajaxedSorting'>Ajaxed sorting</label>"
-          +   "<input type='checkbox' name='" + tzCl + "_linkComments' value='linkComments'"
-          +     checkCommentLinks + "id='" + tzCl + "_linkComments'>"
-          +   "<label for='" + tzCl + "_linkComments'>Fix comment links</label></p>"
-          + "<label for='" + tzCl + "_default_trackers_textarea'>Default trackerlist</label>"
-          + "<textarea rows='6' name='track' class='i' id='" + tzCl + "_default_trackers_textarea' wrap='off'>"
-          + trackersString + "</textarea><p>Optional. Default trackerlist (these are added to all torrents\' "
-          + "trackers, if absent). Note that these are combined with the torrents own trackers, and "
-          + "after that duplicates are removed, they get sorted by domain, and finally grouped "
-          + "with any backup udp protocols.</p>"
-          + "<label for='" + tzCl + "_norefurl'>No referer url</label><input type='text' class='i' id='"
-          + tzCl + "_norefurl' name='" + tzCl + "_norefurl' "
-          +  "value='" + opts.noRefUrl + "' placeholder='http://' />"
-          + "<p>Optional. This url (if any) is prepended to all comment links, and search-engine links. "
-          + "<a href='http://href.li?http://href.li/' target='_blank'>No referer</a> means that outgoing "
-          + "links you click here can`t be traced back to " + this.page.domain + ". "
-          + "All depending on what url to set it to, of course.</p>"
-          + "<label for='" + tzCl + "_default_searchengines_textarea'>Search engines list</label>"
-          + "<textarea id='" + tzCl + "_default_searchengines_textarea' wrap='off' "
-          + "rows='6' name='searching' class='i'>" + (opts.searchEngines.join("\n"))
-          + "</textarea><p>Optional. Search engines for the select-to-search feature (title|url formatting, "
-          + "use <code>%s</code> to indicate keyword, and <code>_</code> to indicate a space). "
-          + "<em>How do I use it?</em> &mdash; On the torrent page, select some text in the title "
-          + "with the name of the torrent, and the links listed here will appear as links underneith.</p>"
-          + "<label for='" + tzCl + "_exclude_filter_input'>Exclude filter</label>"
-          + "<input type='text' class='i' id='" + tzCl + "_exclude_filter_input' "
-          + "name='" + tzCl + "_exclude_filter_input' value='" + opts.excludeFilter + "' "
-          + "placeholder='keyword1,keyword2,keyword3' /><p>Optional. If you want to hide "
-          + "certain torrents (based on name), enter some key phrases here (comma seperated)."
-          + " Remember that they are <em>not</em> case-sensitive, and that spaces will match any letter."
-          + " Also note that before applying the filter, any 2 or more spaces in the title are replaced by one, "
-          + "that makes things a whole lot easier. Advanced: This supports "
-          + "<a href='http://www.regular-expressions.info/javascript.html' target='_blank'>RegExp</a> too"
-          + ", to use it, type your pattern inside 2 forward slashes, ex: "
-          + "<code>/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/</code></p>"
-          + "<div class='s'><a href='#' id='" + tzCl + "_settings_reset'><span>Reset?</span></a>"
-          + "<input type='submit' value='Save' name='save'></div></fieldset></form>"
+          htmlArr           = [ "<p class='generic " + tzCl + "_info_p' style='"
+          , "background-image:url("+ this.userScript.icon + ");'>"
+          , "<a href='" + this.userScript.link + "'>Torrent All-in-One</a> "
+          , "v" + this.userScript.version + " (" + this.userScript.date + ") &mdash; "
+          , "Use <kbd>'C'</kbd> to toggle the tracker box, <kbd>'D'</kbd> "
+          , "to trigger the magnet-link, and <kbd>'SHIFT+D'</kbd> to download the first "
+          , "torrent-file listed. &mdash; "
+          , "Like this userscript? Then please take a minute to rate and/or review this on <a href='"
+          , this.userScript.link + "'>userscipts.org</a>. <em>Also hosted on "
+          , "<a href='" + this.userScript.gitHub + "'>GitHub</a>, please report all "
+          , "issues and bugs <a href='" + this.userScript.gitHubIssues + "'>here</a>.</em></p>"
+          , "<form id='" + tzCl + "_settings_submit' class='"
+          , tzCl + "_settings_form profile' method='get' action='"
+          , this.page.path + "'><fieldset><legend>TzAio Settings</legend>"
+          , "<p><input type='checkbox' name='" + tzCl + "_forceHTTPS' value='forceHTTPS'" + checkForceHTTPS
+          , "id='" + tzCl + "_forceHTTPS' />"
+          , "<label for='" + tzCl + "_forceHTTPS' title='This will redirect all pages to secure SSL, "
+          , "beware that if HTTPS is unavailable, you have to try another mirror and turn this option off again. "
+          , "That`s why this option is turned off by default.'>Force HTTPS</label>"
+          , "<input type='checkbox' name='" + tzCl + "_removeAds' value='removeAds'"
+          , checkAds + "id='" + tzCl + "_removeAds' />"
+          , "<label for='" + tzCl + "_removeAds'>Hide Ads</label>"
+          , "<input type='checkbox' name='" + tzCl + "_searchHighlight' value='searchHighlight' "
+          , "id='" + tzCl + "_searchHighlight'" + checkHighlight + " />"
+          , "<label for='" + tzCl + "_searchHighlight'>Colorful results</label>"
+          , "<input type='checkbox' name='" + tzCl + "_ajaxedSorting' value='ajaxedSorting'"
+          , checkAjaxSorting + "id='" + tzCl + "_ajaxedSorting'>"
+          , "<label for='" + tzCl + "_ajaxedSorting'>Ajaxed sorting</label>"
+          , "<input type='checkbox' name='" + tzCl + "_linkComments' value='linkComments'"
+          , checkCommentLinks + "id='" + tzCl + "_linkComments'>"
+          , "<label for='" + tzCl + "_linkComments'>Fix comment links</label></p>"
+          , "<label for='" + tzCl + "_default_trackers_textarea'>Default trackerlist</label>"
+          , "<textarea rows='6' name='track' class='i' id='" + tzCl + "_default_trackers_textarea' wrap='off'>"
+          , trackersString + "</textarea><p>Optional. Default trackerlist (these are added to all torrents\' "
+          , "trackers, if absent). Note that these are combined with the torrents own trackers, and "
+          , "after that duplicates are removed, they get sorted by domain, and finally grouped "
+          , "with any backup udp protocols.</p>"
+          , "<label for='" + tzCl + "_norefurl'>No referer url</label><input type='text' class='i' id='"
+          , tzCl + "_norefurl' name='" + tzCl + "_norefurl' "
+          , "value='" + opts.noRefUrl + "' placeholder='http://' />"
+          , "<p>Optional. This url (if any) is prepended to all comment links, and search-engine links. "
+          , "<a href='http://href.li?http://href.li/' target='_blank'>No referer</a> means that outgoing "
+          , "links you click here can`t be traced back to " + this.page.domain + ". "
+          , "All depending on what url to set it to, of course.</p>"
+          , "<label for='" + tzCl + "_default_searchengines_textarea'>Search engines list</label>"
+          , "<textarea id='" + tzCl + "_default_searchengines_textarea' wrap='off' "
+          , "rows='6' name='searching' class='i'>" + (opts.searchEngines.join("\n"))
+          , "</textarea><p>Optional. Search engines for the select-to-search feature (title|url formatting, "
+          , "use <code>%s</code> to indicate keyword, and <code>_</code> to indicate a space). "
+          , "<em>How do I use it?</em> &mdash; On the torrent page, select some text in the title "
+          , "with the name of the torrent, and the links listed here will appear as links underneith.</p>"
+          , "<label for='" + tzCl + "_exclude_filter_input'>Exclude filter</label>"
+          , "<input type='text' class='i' id='" + tzCl + "_exclude_filter_input' "
+          , "name='" + tzCl + "_exclude_filter_input' value='" + opts.excludeFilter + "' "
+          , "placeholder='keyword1,keyword2,keyword3' /><p>Optional. If you want to hide "
+          , "certain torrents (based on name), enter some key phrases here (comma seperated)."
+          , " Remember that they are <em>not</em> case-sensitive, and that spaces will match any letter."
+          , " Also note that before applying the filter, any 2 or more spaces in the title are replaced by one, "
+          , "that makes things a whole lot easier. Advanced: This supports "
+          , "<a href='http://www.regular-expressions.info/javascript.html' target='_blank'>RegExp</a> too"
+          , ", to use it, type your pattern inside 2 forward slashes, ex: "
+          , "<code>/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/</code></p>"
+          , "<div class='s'><a href='#' id='" + tzCl + "_settings_reset'><span>Reset?</span></a>"
+          , "<input type='submit' value='Save' name='save'></div></fieldset></form>" ]
         ;
-        return str;
+        return htmlArr.join("");
       },
 
       setupCopyTextArea   : function (text) {
@@ -1944,10 +1944,8 @@
     };
 
     $.fn.extend({
-      lastAction : function (callback) {
-        if ( callback && typeof callback === "function" ) {
-          callback(this);
-        }
+      lastAction : function () {
+        tzAio.lastAction();
       }
     });
 
@@ -2006,7 +2004,7 @@
             } else if ( tzAio.page.path.match(/^\/help\/?$/) ) {
 
               tzAio.selectors.$helpDiv = tzAio.selectors.$body.find("div.help:eq(0)")
-                .append(tzAio.getHelpHtml()).lastAction(tzAio.lastAction);
+                .append(tzAio.getHelpHtml()).lastAction();
 
             } else if ( tzAio.page.path === "/" ) {
 

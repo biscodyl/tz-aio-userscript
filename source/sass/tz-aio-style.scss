@@ -58,6 +58,15 @@ $RSSIMG: "/img/rss.png";
   background-image : inline-image("comment.png");
 }
 
+.tzAioborderBoxForm {
+  width: 98%;
+  min-width: 98%;
+  max-width: 98%;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
 @-moz-keyframes blinker {  
   from { opacity: 1.0; }
   to { opacity: 0.0; }
@@ -91,12 +100,7 @@ $RSSIMG: "/img/rss.png";
   textarea,
   .tz_aio_settings_form input[type='text'],
   .tz_aio_settings_form p {
-    width: 98%;
-    min-width: 98%;
-    max-width: 98%;
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
+    @extend .tzAioborderBoxForm;
   }
 
   .autocomplete {
@@ -435,11 +439,16 @@ $RSSIMG: "/img/rss.png";
   }
 
   .generic.tz_aio_info_p.expand {
-    background-position: 98% 5px;
+    @extend .tzAioborderBoxForm;
+    -moz-background-size: auto 64px;
+         background-size: auto 64px;
+    background-position: center right;
     background-repeat: no-repeat;
-    margin-top: 15px;
-    padding-left: 52px;
-    padding-right: 105px;
+    margin-top: 20px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 10px;
+    padding-right: 85px;
     text-align: right;
     font-size: 13px;
   }

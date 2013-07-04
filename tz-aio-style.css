@@ -23,6 +23,17 @@
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAG/SURBVDjLjZK9T8JQFMVZTUyc3IyJg4mDi87+GyYu6qB/gcZdFxkkJM66qJMGSNRBxDzigJMRQ1jQ4EcQ+SgVKB+FtuL13EdJxNDq8Ev7Xu85797T51nwhqeAH5w6cAxWwDgReX7jwYfdaCIraroptB7NLlVQrOoiGEsL1G06GZyxuILicsMUH3VTlOqGKNUMUdTacj+j1Nng0NGAT2WxYosK1bbIVVoiW27J9V8G57WWKVSczMV5iK+Tudv1vVh5yXdlLQN+os4AFZss2Ob82CCgQmhYHSnmkzf2b6rIhTAaaT2aXZALIRdCLgRtkA1WfYG4iKcVYX52JIs7EYvFmJ8wGiEXQi6EXAhdyn2MxQaPcg68zIETTvzyLsPzWnwqixVbhFwI3RFykes+A9vkIBKX4jCoIxdCLrI4/0OcUXXK4/1dbbDBS088xGGCCzAJCsiF2lanT8xdKNhHXvRarLFBqmcwCrbAhL32+kP3lHguETKRsNlbqUFPeY2OoikW62DNM+jf2ibzQNN0g5ALC75AGiT59oIReQ+cDGyTB+TC4jaYGXiRXMTD3AFogVmnOjeDMRAC025duo7wH74BwZ8JlHrTPLcAAAAASUVORK5CYII=');
 }
 
+.tzAioborderBoxForm, .tz_aio_b.tz_aio_v2 textarea,
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form input[type='text'],
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form p, .tz_aio_b.tz_aio_v2 .generic.tz_aio_info_p.expand {
+  width: 98%;
+  min-width: 98%;
+  max-width: 98%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 @-moz-keyframes blinker {
   from {
     opacity: 1.0;
@@ -67,16 +78,6 @@
 }
 .tz_aio_b.tz_aio_v2.no_ads .SPECIFICELEMENT, .tz_aio_b.tz_aio_v2.no_ads .dontblockmebro, .tz_aio_b.tz_aio_v2.no_ads .dnotblockmebro, .tz_aio_b.tz_aio_v2.no_ads .removed_ad {
   display: none !important;
-}
-.tz_aio_b.tz_aio_v2 textarea,
-.tz_aio_b.tz_aio_v2 .tz_aio_settings_form input[type='text'],
-.tz_aio_b.tz_aio_v2 .tz_aio_settings_form p {
-  width: 98%;
-  min-width: 98%;
-  max-width: 98%;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
 }
 .tz_aio_b.tz_aio_v2 .autocomplete {
   z-index: 10;
@@ -366,11 +367,15 @@
   overflow: auto;
 }
 .tz_aio_b.tz_aio_v2 .generic.tz_aio_info_p.expand {
-  background-position: 98% 5px;
+  -moz-background-size: auto 64px;
+  background-size: auto 64px;
+  background-position: center right;
   background-repeat: no-repeat;
-  margin-top: 15px;
-  padding-left: 52px;
-  padding-right: 105px;
+  margin-top: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 10px;
+  padding-right: 85px;
   text-align: right;
   font-size: 13px;
 }
