@@ -1,4 +1,5 @@
 @import "compass/utilities";
+@import "compass/css3";
 
 $SRTV: #F5C0BF;
 $SRMOVIE: #FCD1C0;
@@ -62,22 +63,23 @@ $RSSIMG: "/img/rss.png";
   width: 98%;
   min-width: 98%;
   max-width: 98%;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+  @include box-sizing(border-box);
 }
 
+$blinkfrom: 1.0;
+$blinkto:   0.0;
+
 @-moz-keyframes blinker {  
-  from { opacity: 1.0; }
-  to { opacity: 0.0; }
+  from { opacity: $blinkfrom; }
+  to { opacity: $blinkto; }
 }
 @-webkit-keyframes blinker {  
-  from { opacity: 1.0; }
-  to { opacity: 0.0; }
+  from { opacity: $blinkfrom; }
+  to { opacity: $blinkto; }
 }
 @-keyframes blinker {  
-  from { opacity: 1.0; }
-  to { opacity: 0.0; }
+  from { opacity: $blinkfrom; }
+  to { opacity: $blinkto; }
 }
 
 .tz_aio_b.tz_aio_v2 {
@@ -162,7 +164,7 @@ $RSSIMG: "/img/rss.png";
       background-image: url($TRANSPARENTGIF);
       background-repeat: no-repeat;
       background-position: 50% 50%;
-      background-size: 100% auto;
+      @include background-size(100% auto);
     }
 
     a.tz_aio_mlink.tz_aio_verified_dl::before {
@@ -258,16 +260,12 @@ $RSSIMG: "/img/rss.png";
     background: $TZPINK;
     white-space: nowrap;
     overflow: visible;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
+    @include border-radius(6px);
   }
   .tz_aio_dllink:hover em {
     background: $GREEN;
     color: $WHITE;
-    -webkit-box-shadow: inset 0 0 2px $GREEN;
-       -moz-box-shadow: inset 0 0 2px $GREEN;
-            box-shadow: inset 0 0 2px $GREEN;
+    @include box-shadow(inset 0 0 2px $GREEN);
   }
   .tz_aio_dllink:active {
     top: 2px;
@@ -280,9 +278,7 @@ $RSSIMG: "/img/rss.png";
   .download dl dt a.tz_aio_dllink:hover + a,
   .download dl dt a:hover {
     background-image: $LIGHTPINK;
-    background-image: -webkit-linear-gradient(left, $LIGHTPINK 0%, $LIGHTPINK 79%, $WHITE 100%);
-    background-image: -moz-linear-gradient(left, $LIGHTPINK 0%, $LIGHTPINK 79%, $WHITE 100%);
-    background-image: linear-gradient(left, $LIGHTPINK 0%, $LIGHTPINK 79%, $WHITE 100%);
+    @include background-image(linear-gradient(left, $LIGHTPINK 0%, $LIGHTPINK 79%, $WHITE 100%));
   }
   h2 span::selection,
   .tz_aio_copy_textarea textarea::selection {
@@ -304,12 +300,10 @@ $RSSIMG: "/img/rss.png";
     left: 0;
     display: none;
     padding: 10px;
-    -webkit-border-radius: 0 3px 3px 3px;
-       -moz-border-radius: 0 3px 3px 3px;
-            border-radius: 0 3px 3px 3px;
-    -webkit-box-shadow: 0 5px 15px $TZBLUE;
-       -moz-box-shadow: 0 5px 15px $TZBLUE;
-            box-shadow: 0 5px 15px $TZBLUE;
+    @include border-corner-radius(top, right, 3px);
+    @include border-corner-radius(bottom, right, 3px);
+    @include border-corner-radius(bottom, left, 3px);
+    @include box-shadow(0 5px 15px $TZBLUE);
     background: $COPYAREABG;
   }
   .tz_aio_copy_textarea textarea {
@@ -357,9 +351,8 @@ $RSSIMG: "/img/rss.png";
     margin-right: 8px;
     padding: 0 10px 3px;
     background: $TZPINK;
-    -webkit-border-radius: 0 0 6px 6px;
-       -moz-border-radius: 0 0 6px 6px;
-            border-radius: 0 0 6px 6px;
+    @include border-corner-radius(bottom, right, 6px);
+    @include border-corner-radius(bottom, left, 6px);
   }
   &.search_ready .tz_aio_searchbar .search_link:hover {
     color: $BLACK;
@@ -382,7 +375,7 @@ $RSSIMG: "/img/rss.png";
   &.tz_aio_settings_saved .tz_aio_settings a::after, 
   .tz_aio_settings.tz_aio_settings_open a::after {
     background-color: $WARNRED;
-    border-radius: 0 0 0 3px;
+    @include border-bottom-left-radius(3px);
     color: white;
     font-size: 12px;
     font-weight: bold;
@@ -440,10 +433,9 @@ $RSSIMG: "/img/rss.png";
 
   .generic.tz_aio_info_p.expand {
     @extend .tzAioborderBoxForm;
-    -moz-background-size: auto 64px;
-         background-size: auto 64px;
     background-position: center right;
     background-repeat: no-repeat;
+    @include background-size(auto 64px);
     margin-top: 20px;
     margin-right: auto;
     margin-left: auto;
@@ -457,11 +449,18 @@ $RSSIMG: "/img/rss.png";
     display: none !important;
   }
 
+  .tz_aio_new_version_msg {
+    font-weight: bold;
+  }
+  .tz_aio_current_version_mark {
+    background-color: $LIGHTGREEN;
+    @include border-radius(5px);
+    display: inline-block;
+    padding: 0 2px;
+  }
+
   .tz_aio_settings_form {
 
-    p {
-       // padding-right: 3%; 
-    }
     input[type='text'] {
       font-family: monospace;
       margin-bottom: 15px;
@@ -470,9 +469,7 @@ $RSSIMG: "/img/rss.png";
       height: 195px;
       border: 1px solid $SOFTBLUE;
       padding: 10px;
-      -webkit-border-radius: 5px;
-         -moz-border-radius: 5px;
-              border-radius: 5px;
+      @include border-radius(5px);
     }
     textarea + p,
     input + p,
@@ -517,9 +514,9 @@ $RSSIMG: "/img/rss.png";
   .results > dl {
     position: relative !important;
     background-color: $WHITE;
-    -webkit-transition: background-color 0.3s ease-in;
-       -moz-transition: background-color 0.3s ease-in;
-            transition: background-color 0.3s ease-in;
+    @include transition-property(background-color);
+    @include transition-duration(0.3s);
+    @include transition-timing-function(ease-in);
   }
   .results > dl:hover {
     position: relative;
@@ -543,9 +540,9 @@ $RSSIMG: "/img/rss.png";
     text-align: center;
     z-index: 5;
     opacity: 0;
-    -webkit-transition: opacity 0.3s ease-in;
-       -moz-transition: opacity 0.3s ease-in;
-            transition: opacity 0.3s ease-in;
+    @include transition-property(opacity);
+    @include transition-duration(0.3s);
+    @include transition-timing-function(ease-in);
   }
   .results .tz_aio_magnet {
     opacity: 1;
@@ -560,19 +557,19 @@ $RSSIMG: "/img/rss.png";
     right: 0;
     color: $WHITE;
     color: $RGBATRANSP;
-    -webkit-transition: all 0.15s linear;
-       -moz-transition: all 0.15s linear;
-            transition: all 0.15s linear;
+    @include transition-property(all);
+    @include transition-duration(0.15s);
+    @include transition-timing-function(linear);
     @extend .verified-image;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    background-size: 18px 18px;
+    @include background-size(18px 18px);
   }
   .results .tz_aio_magnet a:hover {
-    background-size: 24px 24px;
+    @include background-size(24px 24px);
   }
   .results .tz_aio_magnet a:active {
-    background-size: 14px 14px;
+    @include background-size(14px 14px);
   }
 
   .results .tz_aio_unverified_dl .tz_aio_magnet a,

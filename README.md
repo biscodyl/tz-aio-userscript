@@ -46,6 +46,7 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 More worth mentioning
 ---------------------
 
+* Checks for updates automatically and notifies you about them.
 * Copy-trackers button for easy copying, that sorts you trackers automagically.
 * Stats on seed-ratio and trackers (now generated a lot faster).
 * wmv file warning.

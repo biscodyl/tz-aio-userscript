@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+**2.1.18** (2013-07-06)
+* Added update checker.
+* Replaces css3 values with compass/css3.
+* Other small code changes.
+
 **2.1.17** (2013-07-05)
 * Added direct links for `katproxy.com`.
 
