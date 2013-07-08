@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+**2.2.0** (2013-07-08)
+* Better update checking, fyi it checks every 12 hours, only sends your current version number, nothing else. It now also enables me to "send" a message in case something major happens.
+* Code cleanup.
+* Many small optimizations.
+
 **2.1.18** (2013-07-06)
 * Added update checker.
 * Replaces css3 values with compass/css3.

@@ -21,7 +21,7 @@ if [[ "$PWD" =~ TzAiOv2$ ]]; then
     echo -n "Enter a description for the commit: "
     read gitcommitmsg
     read -p "Is '""$gitcommitmsg""' correct? (y/n): " CONT
-    if [ "$CONT" == "y" ]; then
+    if [[ $? -eq 0 ]] && [[ "$CONT" == "y" || ! $CONT || "$CONT" = "" ]]; then
       echo "\$ git add . ; git commit -am ""$gitcommitmsg""; git push origin master"
       git add .
       git commit -am "$gitcommitmsg"
@@ -43,12 +43,18 @@ if [[ "$PWD" =~ TzAiOv2$ ]]; then
         rsyncWeb
       fi
     done
+    echo "
+Did you remember to update all version info?
+    "
     sleep 3
     exit 0
   elif [[ "$1" ]] && [[ "$1" =~ ^all$ ]]; then
     sassCompile
     gitCommit
     rsyncWeb
+    echo "
+Did you remember to update all version info?
+    "
     sleep 3
     exit 0
   else

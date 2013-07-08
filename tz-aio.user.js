@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.1.18
-// @date          2013-07-06
+// @version       2.2.0
+// @date          2013-07-08
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -23,10 +23,11 @@
 // @exclude       /^https?://[^/]+/feed\?.*/
 // @exclude       /^https?://[^/]+/announcelist_.*/
 // @exclude       /^https?://[^/]+/report_.*/
+// @exclude       /^https?://[^/]+/comment_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-1-18-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-1-18-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-2-0-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-2-0-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -46,7 +47,7 @@
  * -------------
  *
  * Tested in Chrome 25+ (Tampermonkey v2.12.3124.16+)
- * and Firefox 19+ (GreaseMonkey 1.8+, Scriptish 0.1.8+) on Ubuntu 13.04
+ * and Firefox 19+ (and nightly dev) (GreaseMonkey 1.8+, Scriptish 0.1.8+) on Ubuntu 13.04
  *  
  * Legality
  * --------
@@ -72,80 +73,77 @@
     || typeof GM_openInTab !== "function" ) {
     throw new Error("Missing functions or window! Please report this error if you're reading this!");
   }
-  var tzAio,
+  var tzAio
     // Greasemonkey
-    isGM            = (typeof TM_log !== "function" && typeof GM_info === "object"),
+    ,isGM            = (typeof TM_log !== "function" && typeof GM_info === "object")
     // Scriptish
-    isSC            = (!isGM && typeof GM_info === "undefined" && typeof GM_getMetadata === "function"),
+    ,isSC            = (!isGM && typeof GM_info === "undefined" && typeof GM_getMetadata === "function")
     // Tampermonkey
-    isTM            = (!isGM && !isSC && typeof TM_log === "function"),
-    environment     = isGM ? "Firefox/GreaseMonkey " : isTM ? "Chrome(-ium)/TamperMonkey "
-      : isSC ? "Firefox/Scriptish " : "unknown ",
-    execStartMS,
-    startLogMsg,
-    d               = w.document,
-    scriptSource    = isGM ? GM_info.scriptMetaStr : isTM ? GM_info.scriptSource : "",
-    UserScript      = function () {
-      var userjsObject = {
-        name            : isSC ? GM_getMetadata("name")[0] : GM_info.script.name,
-        slug            : "tz_aio",
-        version         : isSC ? GM_getMetadata("version")[0] : GM_info.script.version,
-        date            : isSC ? GM_getMetadata("date")[0]
-          : tzAio.getMeta(new RegExp("//\\s*@date\\s+([0-9\\-]+)","i"), 1),
-        link            : isSC ? GM_getMetadata("homepage")[0]
-          : tzAio.getMeta(new RegExp("//\\s*@homepage\\s+(\\S+)","i"), 1),
-        icon            : isSC ? GM_getMetadata("icon")[0]
-          : tzAio.getMeta(new RegExp("//\\s*@icon\\s+(\\S+)","i"), 1),
-        gitHubIssues    : isSC ? GM_getMetadata("supporturl")[0]
-          : tzAio.getMeta(new RegExp("//\\s*@supportURL\\s+(\\S+)","i"), 1),
-        searchEngines   : [
-          "search_imdb|http://www.imdb.com/find?s=all&amp;q=%s",
-          "rotten_tomatoes|http://www.rottentomatoes.com/search/full_search.php?search=%s",
-          "itunes|http://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term=%s",
-          "amazon|http://www.amazon.com/s/?field-keywords=%s",
-          "wikipedia|http://en.wikipedia.org/w/index.php?search=%s",
-          "google|https://www.google.com/search?q=%s"
-        ],
-        defaultTrackers : [
-          "udp://tracker.openbittorrent.com:80/",
-          "udp://tracker.ccc.de:80/",
-          "udp://tracker.publicbt.com:80/",
-          "udp://denis.stalker.h3q.com:6969/announce",
-          "udp://tracker.istole.it:6969/",
-          "udp://tracker.istole.it:80/",
-          "http://tracker.istole.it:80/",
-          "http://tracker.openbittorrent.com:80/",
-          "http://tracker.ccc.de:80/",
-          "http://tracker.publicbt.com:80/",
-          "http://inferno.demonoid.com:3407/announce",
-          "http://tracker.ilibr.org:6969/announce",
-          "http://tracker.prq.to/announce",
-          "http://tracker.torrent.to:2710/announce",
-          "http://9.rarbg.com:2710/announce",
-          "http://bt1.the9.com:6969/announce",
-          "http://exodus.desync.com:6969/announce",
-          "http://genesis.1337x.org:1337/announce",
-          "http://nemesis.1337x.org:80/announce",
-          "http://tracker.hexagon.cc:2710/announce",
-          "http://tracker.torrentbox.com:2710/announce",
-          "http://tracker.xpear.de:6969/announce",
-          "udp://open.demonii.com:1337/announce"
-        ],
-        noRefUrl        : "http://href.li/?",
-        excludeFilter   : "",
-        removeAds       : true,
-        searchHighlight : true,
-        linkComments    : true,
-        ajaxedSorting   : true,
-        forceHTTPS      : false
-      };
+    ,isTM            = (!isGM && !isSC && typeof TM_log === "function")
+    ,environment     = isGM ? "Firefox/GreaseMonkey " : isTM ? "Chrome(-ium)/TamperMonkey "
+      : isSC ? "Firefox/Scriptish " : "unknown "
+    ,execStartMS
+    ,startLogMsg
+    ,d               = w.document
+    ,scriptSource    = isGM ? GM_info.scriptMetaStr : isTM ? GM_info.scriptSource : ""
+    ,UserScript      = function () {
       // if unknown script engine, it pbly breaks here
-      userjsObject.gitHub = userjsObject.gitHubIssues.replace(/issues\/?$/,"");
-      return userjsObject;
+      this.name = isSC ? GM_getMetadata("name")[0] : GM_info.script.name;
+      this.slug = "tz_aio";
+      this.version = isSC ? GM_getMetadata("version")[0] : GM_info.script.version;
+      this.date = isSC ? GM_getMetadata("date")[0]
+        : tzAio.getMeta(new RegExp("//\\s*@date\\s+([0-9\\-]+)","i"), 1);
+      this.link = isSC ? GM_getMetadata("homepage")[0]
+        : tzAio.getMeta(new RegExp("//\\s*@homepage\\s+(\\S+)","i"), 1);
+      this.icon = isSC ? GM_getMetadata("icon")[0]
+        : tzAio.getMeta(new RegExp("//\\s*@icon\\s+(\\S+)","i"), 1);
+      this.gitHubIssues = isSC ? GM_getMetadata("supporturl")[0]
+        : tzAio.getMeta(new RegExp("//\\s*@supportURL\\s+(\\S+)","i"), 1);
+      this.gitHub = this.gitHubIssues.replace(/issues\/?$/,"");
+      this.searchEngines = [
+        "search_imdb|http://www.imdb.com/find?s=all&amp;q=%s"
+        ,"rotten_tomatoes|http://www.rottentomatoes.com/search/full_search.php?search=%s"
+        ,"itunes|http://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term=%s"
+        ,"amazon|http://www.amazon.com/s/?field-keywords=%s"
+        ,"wikipedia|http://en.wikipedia.org/w/index.php?search=%s"
+        ,"google|https://www.google.com/search?q=%s"
+      ];
+      this.defaultTrackers = [
+        "udp://tracker.openbittorrent.com:80/"
+        ,"udp://tracker.ccc.de:80/"
+        ,"udp://tracker.publicbt.com:80/"
+        ,"udp://denis.stalker.h3q.com:6969/announce"
+        ,"udp://tracker.istole.it:6969/"
+        ,"udp://tracker.istole.it:80/"
+        ,"http://tracker.istole.it:80/"
+        ,"http://tracker.openbittorrent.com:80/"
+        ,"http://tracker.ccc.de:80/"
+        ,"http://tracker.publicbt.com:80/"
+        ,"http://inferno.demonoid.com:3407/announce"
+        ,"http://tracker.ilibr.org:6969/announce"
+        ,"http://tracker.prq.to/announce"
+        ,"http://tracker.torrent.to:2710/announce"
+        ,"http://9.rarbg.com:2710/announce"
+        ,"http://bt1.the9.com:6969/announce"
+        ,"http://exodus.desync.com:6969/announce"
+        ,"http://genesis.1337x.org:1337/announce"
+        ,"http://nemesis.1337x.org:80/announce"
+        ,"http://tracker.hexagon.cc:2710/announce"
+        ,"http://tracker.torrentbox.com:2710/announce"
+        ,"http://tracker.xpear.de:6969/announce"
+        ,"udp://open.demonii.com:1337/announce"
+      ];
+      this.noRefUrl = "http://href.li/?";
+      this.excludeFilter = "";
+      this.removeAds = true;
+      this.searchHighlight = true;
+      this.linkComments = true;
+      this.ajaxedSorting = true;
+      this.forceHTTPS = false;
     },
     sendLog         = function (message, callback) {
-      var logSize = 0,
-        pushed
+      var logSize = 0
+        ,pushed
       ;
       if ( typeof this.logs === "undefined" ) {
         this.logs = [];
@@ -153,7 +151,7 @@
       pushed = this.logs.push(message);
       logSize = this.logs.length;
       if ( typeof w.console == "object" && typeof w.console.log === "function" ) {
-        if ( !(message.toString().match(/^(Starting|Load\:|Exec\:|Thanks\sfor|Successfully.checked.for.updates)/)) ) {
+        if ( !(String(message).match(/^(Starting|Load\:|Exec\:|Thanks\sfor|Successfully.checked.for.updates)/)) ) {
           w.console.log("--- TzAio logs[" + (logSize-1) + "] ---");
         }
         w.console.log(message);
@@ -174,64 +172,59 @@
 
       getPageParmaters    : function () {
         return {
-          protocol : w.location.protocol,
-          host     : w.location.hostname,
-          path     : w.location.pathname,
-          domain   : d.domain,
-          thash    : w.location.pathname.replace(/\x2F/g,""),
-          search   : w.location.search,
+          protocol : w.location.protocol
+          ,host    : w.location.hostname
+          ,path    : w.location.pathname
+          ,domain  : d.domain
+          ,thash   : w.location.pathname.replace(/\x2F/g,"")
+          ,search  : w.location.search
           // remove hash to enable refreshing the page with location.href
-          href     : w.location.href.replace(w.location.hash,"").replace(/\#$/,"")
+          ,href    : w.location.href.replace(w.location.hash,"").replace(/\#$/,"")
         };
       },
 
-      cssElements         : {
-        RSSIMG : "/img/rss.png"
-      },
-
       searchGenres        : [
-        // remember to catch the obvious first, ten re-check / trap further down
+        // remember to catch the obvious first, then re-check further down
         {
-          name : "pink",
-          // idea: option to filter out the results, for the shy ones
-          pattern : new RegExp(unescape("%28%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30"
+          name     : "pink"
+          ,pattern : new RegExp(unescape("%28%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30"
             + "%6E%7C%78%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%2B%3F%5C%62%29"), "i")
         }, {
-          name : "tv",
-          pattern : new RegExp("((\\W|_)(sd|ez|et)?tv(\\W|_)|\\blol\\b|(\\W|_)s[0-9]{2}e[0-9]{2}(\\W|_)|"
+          name     : "tv"
+          ,pattern : new RegExp("((\\W|_)(sd|ez|et)?tv(\\W|_)|\\blol\\b|(\\W|_)s[0-9]{2}e[0-9]{2}(\\W|_)|"
             + "tvteam|discovery|hdtv|television|series|\\bshows?\\b|episodes?|\\bseasons?\\b)","i")
         }, {
-          name : "movie",
-          pattern : new RegExp("(movie|film|maxspeed|axxo|feature|video|dvdscr|screener|(\\W|_)cam(rip)?"
+          name     : "movie"
+          ,pattern : new RegExp("(movie|film|maxspeed|axxo|feature|video|dvdscr|screener|(\\W|_)cam(rip)?"
             + "\\b|\\br[3-6]\\b|\\bts\\b|telesync|\\bvod(rip)?)","i")
         }, {
-          name : "book",
-          pattern : new RegExp("(\\be?book|epub|pdf|document|m4b|audiobook|audible|\\bcbr\\b|comics)","i")
+          name     : "book"
+          ,pattern : new RegExp("(\\be?book|epub|pdf|document|m4b|audiobook|audible|\\bcbr\\b|comics)","i")
         }, {
-          name : "game",
-          pattern : new RegExp("(games?\\b|xbox|ps[x234]|wii|\\broms?(et)?\\b|playstation|nintendo)","i")
+          name     : "game"
+          ,pattern : new RegExp("(games?\\b|xbox|ps[x234]|wii|\\broms?(et)?\\b|playstation|nintendo)","i")
         }, {
-          name : "music",
-          pattern : new RegExp("(music|audio|\\bpop\\b|\\brock\\b|flac|lossless|album\\b|consert|"
+          name     : "music"
+          ,pattern : new RegExp("(music|audio|\\bpop\\b|\\brock\\b|flac|lossless|album\\b|consert|"
             + "bootleg|mp3|\\bogg\\b|wav|m4a|podcast|\\bost\\b)","i")
         }, {
-          name : "app",
-          pattern : new RegExp("(software|apps?(lications)?\\b|\\bos[a-z]?\\b|\\bos\\b|\\bunix\\b"
+          name     : "app"
+          ,pattern : new RegExp("(software|apps?(lications)?\\b|\\bos[a-z]?\\b|\\bos\\b|\\bunix\\b"
             + "|\\blinux\\b|\\bsolaris\\b|\\bwin(dows|([7-9]|xp))?\\b|\\bmac\\b|\\bx64\\b|\\bx86\\b"
             + "|\\bandroid\\b|\\bpsp\\b|\\bios\\b|\\bpc\\b)","i")
         }, {
-          name : "picture",
-          pattern : new RegExp("(picture|images|gallery)","i")
+          name     : "picture"
+          ,pattern : new RegExp("(picture|images|gallery)","i")
         }, {
-          name : "anime",
-          pattern : new RegExp("anime\\b","i")
+          name     : "anime"
+          ,pattern : new RegExp("anime\\b","i")
         }, {
-          name : "movie",
-          pattern : new RegExp("(1080p|720p|bluray|blueray|480p|wmv|avi|matroska|mkv"
+          name     : "movie"
+          ,pattern : new RegExp("(1080p|720p|bluray|blueray|480p|wmv|avi|matroska|mkv"
             + "|highres|264|xvid|divx|bdrip|brrip|hdrip)","i")
         }, {
-          name : "misc",
-          pattern : new RegExp("(other|\\bmisc|un(sorted|known|defined)|siterip)","i")
+          name     : "misc"
+          ,pattern : new RegExp("(other|\\bmisc|un(sorted|known|defined)|siterip)","i")
         }
       ],
 
@@ -239,13 +232,13 @@
         if ( !href || !hash || !title || !titleEnc ) {
           sendLog("[getDirectTorrentLinks] is missing paramenters!");
         } else {
-          var hash      = hash.toLowerCase(),
-            HASH        = hash.toUpperCase(),
-            torCacheUrl = "http://torcache.net/torrent/" + HASH + ".torrent?title=" + titleEnc,
-            torRageUrl  = "http://torrage.com/torrent/" + HASH + ".torrent",
-            directHref  = null,
-            directMatch = null,
-            slashSplit  = href.split("/")
+          var hash       = hash.toLowerCase()
+            ,HASH        = hash.toUpperCase()
+            ,torCacheUrl = "http://torcache.net/torrent/" + HASH + ".torrent?title=" + titleEnc
+            ,torRageUrl  = "http://torrage.com/torrent/" + HASH + ".torrent"
+            ,directHref  = null
+            ,directMatch = null
+            ,slashSplit  = href.split("/")
           ;
           if ( ~href.indexOf("movietorrents.eu/") ) {
             // last checked 2012-07-25
@@ -409,9 +402,10 @@
       },
 
       makeBool            : function (e) {
-        var testStr  = e ? this.zipString(e.toString()) : "",
-          returnBool = testStr.match(/^true$/i) ? true : testStr.match(/^false$/i)
-            ? false : undefined;
+        var testStr   = e ? this.zipString(e) : ""
+          ,returnBool = testStr.match(/^true$/i) ? true : testStr.match(/^false$/i)
+            ? false : undefined
+        ;
         return returnBool;
       },
 
@@ -437,17 +431,17 @@
               i = (500 * Math.round(i/500.0));
             }
           }
-          returnStr = (i.toString().replace(/(\d+)(\d{3})$/,"$1,$2"));
+          returnStr = (String(i).replace(/(\d+)(\d{3})$/,"$1,$2"));
         } else {
-          returnStr = i.toString();
+          returnStr = String(i);
         }
         return returnStr;
       },
 
       removeDocOnclick    : function () {
-        var ckExpDate = new Date( loadStartMS + (60*60*24*1000) ),
-          ckVal       = "wm_popundertz=" + escape("1|" + ckExpDate.toString())
-            + "; expires=" + ckExpDate.toString() + "; path=/"
+        var ckExpDate = new Date( loadStartMS + (60*60*24*1000) )
+          ,ckVal      = "wm_popundertz=" + escape("1|" + String(ckExpDate))
+            + "; expires=" + String(ckExpDate) + "; path=/"
         ;
         // Why remove when it's better to be sure?
         d.onclick && (d.onclick = null);
@@ -470,9 +464,9 @@
       },
 
       setStorageOptions    : function (storeObj, callback) {
-        var returnSavedValue,
-          tzCl = this.userScript.slug,
-          i
+        var returnSavedValue
+          ,tzCl = this.userScript.slug
+          ,i
         ;
         if ( storeObj ) {
           // pass though new values that are to be saved, ex. version (2.1.0)
@@ -518,20 +512,26 @@
       },
 
       zipString           : function (s) {
-        var returnStr = s ? s.toString().replace(/^\s+/,"").replace(/\s+$/,"") : s;
-        return returnStr;
+        var returnStr = s ? String(s).replace(/^\s+/,"").replace(/\s+$/,"") : s;
+        return String(returnStr);
+      },
+
+      getHoursPast        : function (then, now) {
+        then = +then;
+        now = now || new Date().getTime();
+        return Math.ceil((+now - then) / 1000 / 60 / 60);
       },
 
       validUserInput      : function (urls) {
-        var checkArray,
-          returnBool  = true,
-          i
+        var checkArray
+          ,returnBool  = true
+          ,i
         ;
         // pass through empty values
         if ( urls.match(/\S/) ) {
           checkArray = underScore.compact(this.zipString(urls).split(/\s+/));
           for ( i = 0; i < checkArray.length; i++ ) {
-            if ( !this.zipString(checkArray[i]).match(this.cachedValues.matchUrlPatt) ) {
+            if ( !this.zipString(checkArray[i]).match(this.cache.matchUrlPatt) ) {
               returnBool = false;
               break;
             }
@@ -541,8 +541,8 @@
       },
 
       isAnyInputFocused   : function () {
-        var returnBool = false,
-          activeEl     = d.activeElement
+        var returnBool = false
+          ,activeEl    = d.activeElement
         ;
         if ( activeEl && activeEl.nodeName
           && activeEl.nodeName.toLowerCase().match(/(input|textarea)/)
@@ -553,12 +553,12 @@
       },
 
       getNodeNumber       : function (nodeEl, getNumber) {
-        var getNumber  = getNumber !== undefined ? getNumber : true,
-          numberMatch  = nodeEl && nodeEl.textContent ? nodeEl.textContent
-            .replace(/[^\-\+0-9]/gi,"").match(/((?:\-|\+)?\d+)/) : null,
-          numberConv   = numberMatch && numberMatch.length === 2 ? Number(numberMatch[1]) : 0,
-          numberStr    = numberConv.toString(),
-          returnThis   = 0
+        var getNumber  = getNumber !== undefined ? getNumber : true
+          ,numberMatch = nodeEl && nodeEl.textContent ? nodeEl.textContent
+            .replace(/[^\-\+0-9]/gi,"").match(/((?:\-|\+)?\d+)/) : null
+          ,numberConv  = numberMatch && numberMatch.length === 2 ? Number(numberMatch[1]) : 0
+          ,numberStr   = String(numberConv)
+          ,returnThis  = 0
         ;
         if ( getNumber && numberConv && !isNaN(numberConv) ) {
           returnThis = numberConv;
@@ -569,11 +569,11 @@
       },
 
       toggleCopyBox       : function (forceShow, forceHide) {
-        var forceShow  = typeof forceShow !== "undefined" ? forceShow : false,
-          forceHide  = typeof forceHide !== "undefined" ? forceHide : false,
-          isVisible,
-          linkHeight = this.cachedValues.copyTrackersLinkHeight,
-          useClipboard = typeof GM_setClipboard === "function"
+        var forceShow   = typeof forceShow !== "undefined" ? forceShow : false
+          ,forceHide    = typeof forceHide !== "undefined" ? forceHide : false
+          ,linkHeight   = this.cache.copyTrackersLinkHeight
+          ,useClipboard = typeof GM_setClipboard === "function"
+          ,isVisible
         ;
         // if it's created
         if ( this.selectors.$copyTextArea.length && this.selectors.$copyTrackersLink.length ) {
@@ -600,13 +600,13 @@
       },
 
       handleKeyUps        : function (e, unselected) {
-        var noMods   = tzAio.noModKeys(e),
-          unselected = typeof unselected !== "undefined" ? unselected : false,
-          key        = +e.which,
-          safePlace  = !tzAio.isAnyInputFocused(),
-          newTabOpt,
-          torrentLinks,
-          nextPrevLink
+        var noMods    = tzAio.noModKeys(e)
+          ,unselected = typeof unselected !== "undefined" ? unselected : false
+          ,key        = +e.which
+          ,safePlace  = !tzAio.isAnyInputFocused()
+          ,newTabOpt
+          ,torrentLinks
+          ,nextPrevLink
         ;
         if ( !isNaN(key) && safePlace ) {
           if ( unselected || (key === 27 && noMods) ) {
@@ -619,7 +619,7 @@
                 tzAio.selectors.$bodyANDhtml.animate({ scrollTop : 0 }, 0);
               });
             }
-            if ( tzAio.cachedValues.isSingle ) {
+            if ( tzAio.cache.isSingle ) {
               tzAio.selectors.$magnetLink.removeClass("active");
               tzAio.selectors.$titleEl.trigger("mousedown");
               tzAio.selectors.$searchBar.empty();
@@ -635,7 +635,7 @@
                 // sendLog(error);
               }
             }
-          } else if ( tzAio.cachedValues.isSingle ) {
+          } else if ( tzAio.cache.isSingle ) {
             if ( key === 68 &&  tzAio.isTrue(e.shiftKey) ) {
               // first direct torrent file
               torrentLinks = $("." + tzAio.userScript.slug + "_dllink");
@@ -652,7 +652,7 @@
               // 'c'
               tzAio.toggleCopyBox();
             }
-          } else if ( tzAio.cachedValues.isSearch  ) {
+          } else if ( tzAio.cache.isSearch  ) {
             if ( key === 37 && noMods  ) {
               nextPrevLink = tzAio.selectors.$body.find(".results a[rel='prev']:eq(0)");
             } else if ( key === 39 && noMods ) {
@@ -670,11 +670,11 @@
       },
 
       getMeta             : function (patt, index) {
-        var matchObject = scriptSource.match(patt),
-          returnStr
+        var matchObject = scriptSource.match(patt)
+          ,returnStr
         ;
         if ( matchObject && matchObject.length >= (index+1) ) {
-          returnStr = matchObject[index].toString();
+          returnStr = String(matchObject[index]);
         } else {
           sendLog("[getMeta] " + patt.source + " did not find a match!");
         }
@@ -682,9 +682,9 @@
       },
 
       getMagnetUrl        : function (hash, title, trackers, htmlEnc) {
-        var returnStr = this.cachedValues.magnetURI + hash + "&dn="
-            + encodeURIComponent(title) + "&tr=",
-          trackerStr = encodeURIComponent(this.zipString(trackers).replace(/\n+/g,"&tr="))
+        var returnStr = this.cache.magnetURI + hash + "&dn="
+            + encodeURIComponent(title) + "&tr="
+          ,trackerStr = encodeURIComponent(this.zipString(trackers).replace(/\n+/g,"&tr="))
             .replace(/\%26tr\%3D/g, "&tr=")
         ;
         returnStr += trackerStr;
@@ -695,25 +695,27 @@
       },
 
       getHelpHtml         : function () {
-        var htmlArr = [ "<p><b>" + this.userScript.name + " UserScript</b></p><ul>"
-          , "<li>Installed: v" + this.userScript.version + "</li>"
-          , "<li>Homepage: <a href='" + this.userScript.link + "'>" + this.userScript.link + "</a></li>"
-          , "<li>On Github: <a href='" + this.userScript.gitHub + "'>" + this.userScript.gitHub + "</a></li>"
-          , "<li>Changelog: <a href='" + this.userScript.gitHub + "blob/master/Changelog.md'>"
-          ,   this.userScript.gitHub + "blob/master/Changelog.md</a></li>"
-          , "<li>Report issues and feature requests here: <a href='" + this.userScript.gitHubIssues + "'>"
-          , this.userScript.gitHubIssues + "</a></li>"
-          , "<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, "
-          , "<a href='http://underscorejs.org/'>underscore.js</a> "
-          , "&amp; the <a href='http://github.com/cowboy/jquery-replacetext/'>jQuery replaceText Plugin</a>."
-          , "</li></ul>" ]
-        ;
+        var latestVersionHtml = this.latestVersionObj.version && this.latestVersionObj.version
+          !== this.userScript.version ? " <a href='" + this.userScript.link + "'>Update available!</a>" : ""
+        ,htmlArr = [ "<p><b>" + this.userScript.name + " UserScript</b></p><ul>"
+          ,"<li>Installed: v" + this.userScript.version + latestVersionHtml + "</li>"
+          ,"<li>Homepage: <a href='" + this.userScript.link + "'>" + this.userScript.link + "</a></li>"
+          ,"<li>On Github: <a href='" + this.userScript.gitHub + "'>" + this.userScript.gitHub + "</a></li>"
+          ,"<li>Changelog: <a href='" + this.userScript.gitHub + "blob/master/Changelog.md'>"
+          ,  this.userScript.gitHub + "blob/master/Changelog.md</a></li>"
+          ,"<li>Report issues and feature requests here: <a href='" + this.userScript.gitHubIssues + "'>"
+          ,this.userScript.gitHubIssues + "</a></li>"
+          ,"<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, "
+          ,"<a href='http://underscorejs.org/'>underscore.js</a> "
+          ,"&amp; the <a href='http://github.com/cowboy/jquery-replacetext/'>jQuery replaceText Plugin</a>."
+          ,"</li></ul>"
+        ];
         return htmlArr.join("");
       },
 
       removeAds           : function (page, userOpts, element) {
-        var adRemovedClass = "removed_ad",
-          frontPageAd
+        var adRemovedClass = "removed_ad"
+          ,frontPageAd
         ;
         if ( userOpts.removeAds ) {
           if ( page === "common" ) {
@@ -756,8 +758,8 @@
       },
 
       linkifyCommentLinks : function (opts) {
-        var replaceWith = "<a href='" + opts.noRefUrl + "$1'>$1</a>",
-          delayInt
+        var replaceWith = "<a href='" + opts.noRefUrl + "$1'>$1</a>"
+          ,delayInt
         ;
         if ( opts.linkComments ) {
           delayInt = setTimeout(function(){
@@ -765,7 +767,7 @@
             if ( tzAio.selectors.$comments.length ) {
               tzAio.selectors.$commentsLinked = tzAio.selectors.$comments.find(".com:visible:contains('http')")
                 .each(function(i, el){
-                  $(el).replaceText(tzAio.cachedValues.linkifyPatt, replaceWith);
+                  $(el).replaceText(tzAio.cache.linkifyPatt, replaceWith);
                 }
               );
             }
@@ -775,8 +777,7 @@
 
       doDirectTorrentLink : function (index, link) {
         var dlink = link && link.href
-          ? tzAio.getDirectTorrentLinks(link.href, tzAio.page.thash, tzAio.page.title,
-            tzAio.page.titleEnc) : null;
+          ? tzAio.getDirectTorrentLinks(link.href, tzAio.page.thash, tzAio.page.title, tzAio.page.titleEnc) : null;
         if ( dlink ) {
           $(link).before("<a href='" + dlink + "' class='" + tzAio.userScript.slug
             + "_dllink' target='_blank'><em>Download&#160;.torrent</em></a>");
@@ -784,101 +785,105 @@
       },
 
       getSettingsHtml     : function (opts, trackersString) {
-        var tzCl            = this.userScript.slug,
-          checkHighlight    = opts.searchHighlight ? " checked='checked' " : " ",
-          checkAds          = opts.removeAds ?       " checked='checked' " : " ",
-          checkCommentLinks = opts.linkComments ?    " checked='checked' " : " ",
-          checkAjaxSorting  = opts.ajaxedSorting ?   " checked='checked' " : " ",
-          checkForceHTTPS   = opts.forceHTTPS ?      " checked='checked' " : " ",
-          latestVersion     = tzAio.latestVersionObj.checked && tzAio.latestVersionObj,
-          latestVersionMsg  = latestVersion && latestVersion.version !== this.userScript.version
+        var tzCl             = this.userScript.slug
+          ,checkHighlight    = opts.searchHighlight ? " checked='checked' " : " "
+          ,checkAds          = opts.removeAds ?       " checked='checked' " : " "
+          ,checkCommentLinks = opts.linkComments ?    " checked='checked' " : " "
+          ,checkAjaxSorting  = opts.ajaxedSorting ?   " checked='checked' " : " "
+          ,checkForceHTTPS   = opts.forceHTTPS ?      " checked='checked' " : " "
+          ,latest            = tzAio.latestVersionObj.checked && tzAio.latestVersionObj
+          ,latestVersionMsg  = latest && latest.version !== this.userScript.version
             ? "<p class='" + tzCl + "_new_version_msg'>New version available! Update or grab "
             + "the latest version <a href='" + this.userScript.link + "'>here</a><br>"
-            + "Latest version: " + latestVersion.version + " (" + latestVersion.date + ")<br>"
-            + "Changelog: " + latestVersion.changes + "</p>" : "",
-          versionHtml       = this.userScript.version + " (" + this.userScript.date + ")",
-          versionHtml       = latestVersion && latestVersion.version !== this.userScript.version
-            ? versionHtml : "<mark title='You have the latest version :)' "
-              + "class='" + tzCl + "_current_version_mark'>" + versionHtml + "</mark>",
-          copyTrackerDesc   = typeof GM_setClipboard === "function"
-            ? "copy all the trackers" : "toggle the tracker box",
-          htmlArr           = [ "<p class='generic " + tzCl + "_info_p' style='"
-          , "background-image:url("+ this.userScript.icon + ");'>"
-          , "<a href='" + this.userScript.link + "'>Torrent All-in-One</a> "
-          , versionHtml + " &mdash; "
-          , "Use <kbd>'C'</kbd> to " + copyTrackerDesc + ", <kbd>'D'</kbd> "
-          , "to trigger the magnet-link, and <kbd>'SHIFT+D'</kbd> to download the first "
-          , "torrent-file listed. &mdash; "
-          , "Like this userscript? Then please take a minute to rate and/or review this on <a href='"
-          , this.userScript.link + "'>userscipts.org</a>. <em>Also hosted on "
-          , "<a href='" + this.userScript.gitHub + "'>GitHub</a>, please report all "
-          , "issues and bugs <a href='" + this.userScript.gitHubIssues + "'>here</a>.</em></p>"
-          , "<form id='" + tzCl + "_settings_submit' class='"
-          , tzCl + "_settings_form profile' method='get' action='"
-          , this.page.path + "'><fieldset><legend>TzAio Settings</legend>"
-          , latestVersionMsg
-          , "<p><input type='checkbox' name='" + tzCl + "_forceHTTPS' value='forceHTTPS'" + checkForceHTTPS
-          , "id='" + tzCl + "_forceHTTPS' />"
-          , "<label for='" + tzCl + "_forceHTTPS' title='This will redirect all pages to secure SSL, "
-          , "beware that if HTTPS is unavailable, you have to try another mirror and turn this option off again. "
-          , "That`s why this option is turned off by default.'>Force HTTPS</label>"
-          , "<input type='checkbox' name='" + tzCl + "_removeAds' value='removeAds'"
-          , checkAds + "id='" + tzCl + "_removeAds' />"
-          , "<label for='" + tzCl + "_removeAds'>Hide Ads</label>"
-          , "<input type='checkbox' name='" + tzCl + "_searchHighlight' value='searchHighlight' "
-          , "id='" + tzCl + "_searchHighlight'" + checkHighlight + " />"
-          , "<label for='" + tzCl + "_searchHighlight'>Colorful results</label>"
-          , "<input type='checkbox' name='" + tzCl + "_ajaxedSorting' value='ajaxedSorting'"
-          , checkAjaxSorting + "id='" + tzCl + "_ajaxedSorting'>"
-          , "<label for='" + tzCl + "_ajaxedSorting'>Ajaxed sorting</label>"
-          , "<input type='checkbox' name='" + tzCl + "_linkComments' value='linkComments'"
-          , checkCommentLinks + "id='" + tzCl + "_linkComments'>"
-          , "<label for='" + tzCl + "_linkComments'>Fix comment links</label></p>"
-          , "<label for='" + tzCl + "_default_trackers_textarea'>Default trackerlist</label>"
-          , "<textarea rows='6' name='track' class='i' id='" + tzCl + "_default_trackers_textarea' wrap='off'>"
-          , trackersString + "</textarea><p>Optional. Default trackerlist (these are added to all torrents\' "
-          , "trackers, if absent). Note that these are combined with the torrents own trackers, and "
-          , "after that duplicates are removed, they get sorted by domain, and finally grouped "
-          , "with any backup udp protocols.</p>"
-          , "<label for='" + tzCl + "_norefurl'>No referer url</label><input type='text' class='i' id='"
-          , tzCl + "_norefurl' name='" + tzCl + "_norefurl' "
-          , "value='" + opts.noRefUrl + "' placeholder='http://' />"
-          , "<p>Optional. This url (if any) is prepended to all comment links, and search-engine links. "
-          , "<a href='http://href.li?http://href.li/' target='_blank'>No referer</a> means that outgoing "
-          , "links you click here can`t be traced back to " + this.page.domain + ". "
-          , "All depending on what url to set it to, of course.</p>"
-          , "<label for='" + tzCl + "_default_searchengines_textarea'>Search engines list</label>"
-          , "<textarea id='" + tzCl + "_default_searchengines_textarea' wrap='off' "
-          , "rows='6' name='searching' class='i'>" + (opts.searchEngines.join("\n"))
-          , "</textarea><p>Optional. Search engines for the select-to-search feature (title|url formatting, "
-          , "use <code>%s</code> to indicate keyword, and <code>_</code> to indicate a space). "
-          , "<em>How do I use it?</em> &mdash; On the torrent page, select some text in the title "
-          , "with the name of the torrent, and the links listed here will appear as links underneith.</p>"
-          , "<label for='" + tzCl + "_exclude_filter_input'>Exclude filter</label>"
-          , "<input type='text' class='i' id='" + tzCl + "_exclude_filter_input' "
-          , "name='" + tzCl + "_exclude_filter_input' value='" + opts.excludeFilter + "' "
-          , "placeholder='keyword1,keyword2,keyword3' /><p>Optional. If you want to hide "
-          , "certain torrents (based on name), enter some key phrases here (comma seperated)."
-          , " Remember that they are <em>not</em> case-sensitive, and that spaces will match any letter."
-          , " Also note that before applying the filter, any 2 or more spaces in the title are replaced by one, "
-          , "that makes things a whole lot easier. Advanced: This supports "
-          , "<a href='http://www.regular-expressions.info/javascript.html' target='_blank'>RegExp</a> too"
-          , ", to use it, type your pattern inside 2 forward slashes, ex: "
-          , "<code>/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/</code></p>"
-          , "<div class='s'><a href='#' id='" + tzCl + "_settings_reset'><span>Reset?</span></a>"
-          , "<input type='submit' value='Save' name='save'></div></fieldset></form>" ]
+            + "Latest version: " + latest.version + " (" + latest.date + ")<br>"
+            + "Changelog: " + latest.changes + "</p>" : ""
+          ,noticeMsg         = latest && latest.message ? "<p><mark>" + latest.message  + "</mark></p>" : ""
+          ,lastUpdate        = tzAio.latestVersionObj.checked && +tzAio.latestVersionObj.checked > 3600000
+            ? " (Last checked " + (tzAio.getHoursPast(tzAio.latestVersionObj.checked)) + " hours ago)" : ""
+          ,versionHtml       = this.userScript.version + " (" + this.userScript.date + ")"
+          ,versionHtml       = latest && latest.version !== this.userScript.version
+            ? versionHtml : "<mark title='You have the latest version! " + lastUpdate + "' "
+              + "class='" + tzCl + "_current_version_mark'>" + versionHtml + "</mark>"
+          ,copyTrackerDesc   = typeof GM_setClipboard === "function"
+            ? "copy all the trackers" : "toggle the tracker box"
+          ,htmlArr           = [ "<p class='generic " + tzCl + "_info_p' style='"
+            ,"background-image:url("+ this.userScript.icon + ");'>"
+            ,"<a href='" + this.userScript.link + "'>Torrent All-in-One</a> "
+            ,versionHtml + " &mdash; "
+            ,"Use <kbd>'C'</kbd> to " + copyTrackerDesc + ", <kbd>'D'</kbd> "
+            ,"to trigger the magnet-link, and <kbd>'SHIFT+D'</kbd> to download the first "
+            ,"torrent-file listed. &mdash; "
+            ,"Like this userscript? Then please take a minute to rate and/or review this on <a href='"
+            ,this.userScript.link + "'>userscipts.org</a>. <em>Also hosted on "
+            ,"<a href='" + this.userScript.gitHub + "'>GitHub</a>, please report all "
+            ,"issues and bugs <a href='" + this.userScript.gitHubIssues + "'>here</a>.</em></p>"
+            ,"<form id='" + tzCl + "_settings_submit' class='"
+            ,tzCl + "_settings_form profile' method='get' action='"
+            ,this.page.path + "'><fieldset><legend>TzAio Settings</legend>"
+            ,noticeMsg
+            ,latestVersionMsg
+            ,"<p><input type='checkbox' name='" + tzCl + "_forceHTTPS' value='forceHTTPS'" + checkForceHTTPS
+            ,"id='" + tzCl + "_forceHTTPS' />"
+            ,"<label for='" + tzCl + "_forceHTTPS' title='This will redirect all pages to secure SSL, "
+            ,"beware that if HTTPS is unavailable, you have to try another mirror and turn this option off again. "
+            ,"That`s why this option is turned off by default.'>Force HTTPS</label>"
+            ,"<input type='checkbox' name='" + tzCl + "_removeAds' value='removeAds'"
+            ,checkAds + "id='" + tzCl + "_removeAds' />"
+            ,"<label for='" + tzCl + "_removeAds'>Hide Ads</label>"
+            ,"<input type='checkbox' name='" + tzCl + "_searchHighlight' value='searchHighlight' "
+            ,"id='" + tzCl + "_searchHighlight'" + checkHighlight + " />"
+            ,"<label for='" + tzCl + "_searchHighlight'>Colorful results</label>"
+            ,"<input type='checkbox' name='" + tzCl + "_ajaxedSorting' value='ajaxedSorting'"
+            ,checkAjaxSorting + "id='" + tzCl + "_ajaxedSorting'>"
+            ,"<label for='" + tzCl + "_ajaxedSorting'>Ajaxed sorting</label>"
+            ,"<input type='checkbox' name='" + tzCl + "_linkComments' value='linkComments'"
+            ,checkCommentLinks + "id='" + tzCl + "_linkComments'>"
+            ,"<label for='" + tzCl + "_linkComments'>Fix comment links</label></p>"
+            ,"<label for='" + tzCl + "_default_trackers_textarea'>Default trackerlist</label>"
+            ,"<textarea rows='6' name='track' class='i' id='" + tzCl + "_default_trackers_textarea' wrap='off'>"
+            ,trackersString + "</textarea><p>Optional. Default trackerlist (these are added to all torrents\' "
+            ,"trackers, if absent). Note that these are combined with the torrents own trackers, and "
+            ,"after that duplicates are removed, they get sorted by domain, and finally grouped "
+            ,"with any backup udp protocols.</p>"
+            ,"<label for='" + tzCl + "_norefurl'>No referer url</label><input type='text' class='i' id='"
+            ,tzCl + "_norefurl' name='" + tzCl + "_norefurl' "
+            ,"value='" + opts.noRefUrl + "' placeholder='http://' />"
+            ,"<p>Optional. This url (if any) is prepended to all comment links, and search-engine links. "
+            ,"<a href='http://href.li?http://href.li/' target='_blank'>No referer</a> means that outgoing "
+            ,"links you click here can`t be traced back to " + this.page.domain + ". "
+            ,"All depending on what url to set it to, of course.</p>"
+            ,"<label for='" + tzCl + "_default_searchengines_textarea'>Search engines list</label>"
+            ,"<textarea id='" + tzCl + "_default_searchengines_textarea' wrap='off' "
+            ,"rows='6' name='searching' class='i'>" + (opts.searchEngines.join("\n"))
+            ,"</textarea><p>Optional. Search engines for the select-to-search feature (title|url formatting, "
+            ,"use <code>%s</code> to indicate keyword, and <code>_</code> to indicate a space). "
+            ,"<em>How do I use it?</em> &mdash; On the torrent page, select some text in the title "
+            ,"with the name of the torrent, and the links listed here will appear as links underneith.</p>"
+            ,"<label for='" + tzCl + "_exclude_filter_input'>Exclude filter</label>"
+            ,"<input type='text' class='i' id='" + tzCl + "_exclude_filter_input' "
+            ,"name='" + tzCl + "_exclude_filter_input' value='" + opts.excludeFilter + "' "
+            ,"placeholder='keyword1,keyword2,keyword3' /><p>Optional. If you want to hide "
+            ,"certain torrents (based on name), enter some key phrases here (comma seperated)."
+            ," Remember that they are <em>not</em> case-sensitive, and that spaces will match any letter."
+            ," Also note that before applying the filter, any 2 or more spaces in the title are replaced by one, "
+            ,"that makes things a whole lot easier. Advanced: This supports "
+            ,"<a href='http://www.regular-expressions.info/javascript.html' target='_blank'>RegExp</a> too"
+            ,", to use it, type your pattern inside 2 forward slashes, ex: "
+            ,"<code>/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/</code></p>"
+            ,"<div class='s'><a href='#' id='" + tzCl + "_settings_reset'><span>Reset?</span></a>"
+            ,"<input type='submit' value='Save' name='save'></div></fieldset></form>" ]
         ;
         return htmlArr.join("");
       },
 
       setupCopyTextArea   : function (text) {
-        var tzCl         = this.userScript.slug,
-          textareaHTML   = "<div id='" + tzCl + "_copy_tr_textarea' class='"
+        var tzCl        = this.userScript.slug
+          ,textareaHTML = "<div id='" + tzCl + "_copy_tr_textarea' class='"
             + tzCl + "_copy_textarea'>"
             + "<textarea readonly='readonly' cols='40' rows='10' wrap='off'>"
             + text + "</textarea></div>"
         ;
-        this.cachedValues.copyTrackersLinkHeight = this.selectors.$copyTrackersLink.outerHeight();
+        this.cache.copyTrackersLinkHeight = this.selectors.$copyTrackersLink.outerHeight();
         this.selectors.$body.append(textareaHTML);
         this.selectors.$copyTextArea = $("#" + tzCl + "_copy_tr_textarea");
         this.selectors.$copyTrackersLink.on("click", function () {
@@ -906,33 +911,37 @@
       },
 
       fillSearchBar       : function (event) {
-        var selected,
-          delayTimeout,
-          searchLink = "",
-          searchHtml = "",
-          _searchEgi = [],
-          tempStr, _temp, searchStr,
-          leftOffset, widthCalc, cssWidth,
-          engineHTMLArr,
-          i
+        var selected
+          ,delayTimeout
+          ,searchLink = ""
+          ,searchHtml = ""
+          ,_searchEgi = []
+          ,tempStr
+          ,_temp
+          ,searchStr
+          ,leftOffset
+          ,widthCalc
+          ,cssWidth
+          ,engineHTMLArr
+          ,i
         ;
         // a small delay hinders the (before) annoying double popup
         delayTimeout = setTimeout(function () {
           selected = tzAio.getSelected();
-          if ( selected.toString().match(/\S/i) ) {
+          if ( String(selected).match(/\S/i) ) {
             tzAio.selectors.$titleEl.removeAttr("title");
             tempStr = selected + "";
             tempStr = tempStr
               .replace(/(\W|\_)/ig," ")
-              .replace(tzAio.cachedValues.selectTrashPatt," ")
-              .replace(tzAio.cachedValues.discardThisForSelect," ")
+              .replace(tzAio.cache.selectTrashPatt," ")
+              .replace(tzAio.cache.discardThisForSelect," ")
               .replace(/\s*locations?\s*$/," ")
               .replace(/\s*download\s*$/," ")
               .replace(/\s*torrent\s*$/," ")
               .replace(/\s+/g,"+")
               .replace(/(^\+|\+$)/g,"");
             searchStr = tempStr;
-            for ( i = 0; i < tzAio.cachedValues.searchEnginesLen; i++ ) {
+            for ( i = 0; i < tzAio.cache.searchEnginesLen; i++ ) {
               engineHTMLArr = tzAio.storedSettings.searchEngines[i].split("|");
               searchHtml += "<a class='search_link' target='_blank' href='" + tzAio.storedSettings.noRefUrl
                 + (engineHTMLArr[1].replace(/%s/g, searchStr))
@@ -940,7 +949,7 @@
             }
             searchHtml += "<a class='search_link' href='"
               + "/search?f=" + searchStr + "'>torrentz</a><a href='/feed?q=" + searchStr
-              + "'><img src='" + tzAio.cssElements.RSSIMG + "' width='16' height='16'></a>";
+              + "'><img src='" + tzAio.cache.RSSIMG + "' width='16' height='16'></a>";
             if ( searchStr !== "" ) {
               tzAio.selectors.$searchBar.html(searchHtml);
               tzAio.selectors.$body.addClass("search_ready");
@@ -953,13 +962,13 @@
 
       setupSelectToSearch : function () {
         var discardMatch = this.selectors.$titleEl[0].textContent
-            .match(this.cachedValues.selectTrashPatt),
-          tzCl           = this.userScript.slug
+            .match(this.cache.selectTrashPatt)
+          ,tzCl          = this.userScript.slug
         ;
         this.selectors.$titleEl.after("<div id='" + tzCl + "_search_bar' class='"
           + tzCl + "_searchbar'></div>");
         this.selectors.$searchBar = $("#" + tzCl + "_search_bar");
-        this.cachedValues.discardThisForSelect = discardMatch && discardMatch.length
+        this.cache.discardThisForSelect = discardMatch && discardMatch.length
           ? discardMatch[0] : "";
         this.selectors.$titleEl
           .attr("title","Select the text in this title to start searching...")
@@ -971,14 +980,14 @@
       },
 
       isVerifiedDownload  : function (votebox) {
-        var returnDigit = 0,
-          statusDigit,
-          negativeEls,
-          negativeVotes = 0,
-          positiveVotes,
-          negativeElsLen,
-          negI          = -1,
-          negMatch
+        var returnDigit  = 0
+          ,negativeVotes = 0
+          ,negI          = -1
+          ,statusDigit
+          ,negativeEls
+          ,positiveVotes
+          ,negativeElsLen
+          ,negMatch
         ;
         if ( votebox && votebox.length ) {
           statusDigit = tzAio.getNodeNumber(votebox.find(".status")[0], true);
@@ -1006,16 +1015,16 @@
         // Debug log
         // sendLog( "statusDigit = " + statusDigit + "\nreturnDigit = " + returnDigit
         //   +  ( typeof positiveVotes === "number" ? "\n( positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2 )\n =  "
-        //   + "( " + (positiveVotes).toString() + " >= 7 && (" + (positiveVotes).toString()
-        //   + "+" + (negativeVotes).toString() + ") >= 2 )" + "\n >> "
-        //   + (( positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2 )).toString() : "") );
+        //   + "( " + String(positiveVotes) + " >= 7 && (" + String(positiveVotes)
+        //   + "+" + String(negativeVotes) + ") >= 2 )" + "\n >> "
+          // + String(( positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2 )) : "") );
         return returnDigit;
       },
 
       extractLeveledArray : function ( arr, level ) {
-        var returnArr = [],
-          i,
-          errMsg
+        var returnArr = []
+          ,i
+          ,errMsg
         ;
         for ( i = 0; i < arr.length; i++ ) {
           if ( arr[i] && arr[i][level] ) {
@@ -1032,10 +1041,10 @@
 
       sortTrByProtocol    : function (_arr) {
         // finalTrackerSorting
-        var newArr  = [],
-          udpPopped = null,
-          prev      = null,
-          i
+        var newArr   = []
+          ,udpPopped = null
+          ,prev      = null
+          ,i
         ;
         for ( i = 0; i < _arr.length; i++ ) {
           udpPopped = null;
@@ -1062,9 +1071,9 @@
       },
 
       getDividedTrackers  : function (arr) {
-        var newString = "",
-          next        = null,
-          i
+        var newString = ""
+          ,next       = null
+          ,i
         ;
         for (i = 0; i < arr.length; i++) {
           next = (i+1) < arr.length ? arr[(i+1)] : "";
@@ -1080,14 +1089,14 @@
       },
 
       makeTrackersObject  : function (trackersArray, userTrackers) {
-        var slashMatch,
-          cleanHost,
-          domainSplit,
-          domainSplitLen,
-          sortingArray = [],
-          i,
-          x,
-          returnObject
+        var slashMatch
+          ,cleanHost
+          ,domainSplit
+          ,domainSplitLen
+          ,sortingArray = []
+          ,i
+          ,x
+          ,returnObject
         ;
         for ( i = 0; i < trackersArray.length; i++ ) {
           // count slashes
@@ -1104,7 +1113,7 @@
           // !example.com
           if ( domainSplitLen > 2 ) {
             // example.co.uk
-            if ( cleanHost.match(this.cachedValues.twoPartDomainPatt) ) {
+            if ( cleanHost.match(this.cache.twoPartDomainPatt) ) {
               cleanHost = domainSplit[(domainSplitLen-3)] + "." + domainSplit[(domainSplitLen-2)]
                 + "." + domainSplit[(domainSplitLen-1)];
             // !127.0.0.1
@@ -1122,8 +1131,8 @@
             userString : sortedString,
             userArray  : newArray
           };
-          this.cachedValues.userString = returnObject.userString;
-          this.cachedValues.userArray = returnObject.userArray;
+          this.cache.userString = returnObject.userString;
+          this.cache.userArray = returnObject.userArray;
         } else if ( userTrackers ) {
           returnObject = {
             allString  : sortedString,
@@ -1136,51 +1145,50 @@
       },
 
       makeStatsBar        : function (options, trackers, callback) {
-        var mg_trackerList = "", magnetLinkHtml = "", finalHtml = "",
-          filesInfoText    = "", seedTleach, seedText, minPeersText, i,
-          commentText, trackerNumText, copyTrackersHtml, trackerLen, _upLen, _downLen,
-          tzCl             = this.userScript.slug,
-          wmvPatt          = new RegExp("\\.wmv$","i"),
-          trackersDiv      = this.selectors.$body.find("div.trackers:eq(0)"),
-          trackerLinks     = trackersDiv.find("dt a"),
-          trackerLinksI    = -1,
-          trackerLinksLen  = trackerLinks.length,
-          trackerDataEls   = trackersDiv.find("dl:has(a) dd"),
-          upElems          = trackerDataEls.find(".u"),
-          upElemsLen       = upElems.length,
-          upElemsLenI      = -1,
-          downElems        = trackerDataEls.find(".d"),
-          downElemsLen     = downElems.length,
-          downElemsLenI    = -1,
-          dhtEls           = trackersDiv[0].textContent.indexOf("(DHT)") !== -1
+        var mg_trackerList  = "", magnetLinkHtml = "", finalHtml = ""
+          ,filesInfoText    = "", seedTleach, seedText, minPeersText, i
+          ,commentText, trackerNumText, copyTrackersHtml, trackerLen, _upLen, _downLen
+          ,tzCl             = this.userScript.slug
+          ,wmvPatt          = new RegExp("\\.wmv$","i")
+          ,trackersDiv      = this.selectors.$body.find("div.trackers:eq(0)")
+          ,trackerLinks     = trackersDiv.find("dt a")
+          ,trackerLinksI    = -1
+          ,trackerLinksLen  = trackerLinks.length
+          ,trackerDataEls   = trackersDiv.find("dl:has(a) dd")
+          ,upElems          = trackerDataEls.find(".u")
+          ,upElemsLen       = upElems.length
+          ,upElemsLenI      = -1
+          ,downElems        = trackerDataEls.find(".d")
+          ,downElemsLen     = downElems.length
+          ,downElemsLenI    = -1
+          ,dhtEls           = trackersDiv[0].textContent.indexOf("(DHT)") !== -1
             ? trackersDiv.find("dl:eq(0):contains('(DHT)') span.u, "
-            + "dl:eq(0):contains('(DHT)') span.d") : [],
-          dhtElsLen        = dhtEls.length,
-          dhtElsLenI       = -1,
-          dhtElsMax,
-          seedColor        = "black",
-          seedTitle        = "S<span class='divided'>&frasl;</span>L &asymp;",
-          filesDiv         = this.selectors.$body.find("div.files:eq(0)"),
-          fileLinks        = filesDiv.find("a"),
-          fileLinksLen     = fileLinks.length,
-          fileLinksLenI    = fileLinksLen,
-          wmvWarning       = false,
-          notActive        = !!(this.selectors.$downloadDiv.next(".error").text()
-            .match(/active\s+locations?/i)),
-          verDownload      = this.isVerifiedDownload(this.selectors.$body.find(".votebox")),
-          verDownloadCl    = verDownload > 0 && !notActive ? "_verified_dl" : notActive
-            ? " not_active" : verDownload < 0 ? "_bogus_dl" : "_unverified_dl",
-          filesSizeText    = filesDiv.find("div:contains('Size:'):eq(0)").text()
-            .replace("Size: ",""),
-          commentDiv       = this.selectors.$body.find("div.comments"),
+            + "dl:eq(0):contains('(DHT)') span.d") : []
+          ,dhtElsLen        = dhtEls.length
+          ,dhtElsLenI       = -1
+          ,dhtElsMax
+          ,seedColor        = "black"
+          ,seedTitle        = "S<span class='divided'>&frasl;</span>L &asymp;"
+          ,filesDiv         = this.selectors.$body.find("div.files:eq(0)")
+          ,fileLinks        = filesDiv.find("a")
+          ,fileLinksLen     = fileLinks.length
+          ,fileLinksLenI    = fileLinksLen
+          ,wmvWarning       = false
+          ,notActive        = !!(this.selectors.$downloadDiv.next(".error").text()
+            .match(/active\s+locations?/i))
+          ,verDownload      = this.isVerifiedDownload(this.selectors.$body.find(".votebox"))
+          ,verDownloadCl    = verDownload > 0 && !notActive ? "_verified_dl" : notActive
+            ? " not_active" : verDownload < 0 ? "_bogus_dl" : "_unverified_dl"
+          ,filesSizeText    = filesDiv.find("div:contains('Size:'):eq(0)").text().replace("Size: ","")
+          ,commentDiv       = this.selectors.$body.find("div.comments")
           // not the settings form!
-          formFieldset     = this.selectors.$body.find("form.profile[method='post']:eq(0) fieldset"),
-          commentCount     = this.selectors.$comments.length,
-          htmlDivider      = " <span class='" + tzCl + "_sep'>&#124;</span> ",
-          currTrackerList = [], _up = [], _down = [],
-          upNum = 0, downNum = 0, topUpNum = 0, topDownNum = 0, seedMeter = 0, minPeers = 0,
-          magnetHtml,
-          magnetUrl
+          ,formFieldset     = this.selectors.$body.find("form.profile[method='post']:eq(0) fieldset")
+          ,commentCount     = this.selectors.$comments.length
+          ,htmlDivider      = " <span class='" + tzCl + "_sep'>&#124;</span> "
+          ,currTrackerList = [], _up = [], _down = []
+          ,upNum = 0, downNum = 0, topUpNum = 0, topDownNum = 0, seedMeter = 0, minPeers = 0
+          ,magnetHtml
+          ,magnetUrl
         ;
         while ( (++trackerLinksI < trackerLinksLen) ) {
           currTrackerList.push( (trackerLinks[trackerLinksI].textContent||"") );
@@ -1283,10 +1291,10 @@
           + (filesInfoText.length ? (htmlDivider + filesInfoText) : "" );
         this.selectors.$downloadDiv.before("<p id='" + tzCl
           + "' class='" + tzCl + "_info_bar generic "
-          + tzCl + verDownloadCl + "'" + this.cachedValues.infoBarCss + ">"
+          + tzCl + verDownloadCl + "'" + this.cache.infoBarCss + ">"
           + finalHtml + "</p>");
 
-        // edit torrentz own magnet link if avaliable
+        // edit torrentz own magnet link if available
         this.selectors.$copyTrackersLink = $("#" + tzCl + "_copylist");
         this.selectors.$magnetLink = $("#" + tzCl + "_magnet_link");
         this.selectors.$magnetLink.on("click", this.handleMagnetClicks);
@@ -1327,12 +1335,12 @@
                 && mutation.addedNodes[i].className.indexOf("results") !== -1
                 && mutation.addedNodes[i].tagName && mutation.addedNodes[i].tagName === "DIV" ) {
                 cachedSearchEl = $(mutation.addedNodes[i]);
-                tzAio.cachedValues.ajaxTimer = (new Date().getTime());
+                tzAio.cache.ajaxTimer = (new Date().getTime());
                 if ( !cachedSearchEl.hasClass(tzAio.userScript.slug + "_colorized") ) {
                   tzAio.initSearchPage(cachedSearchEl, tzAio.storedSettings, function (target) {
                     /* DEBUG callback
                     sendLog((target.length) + " ajaxed div." + target[0].className + " - Exec: "
-                      + ((new Date().getTime())-tzAio.cachedValues.ajaxTimer) + "ms");*/
+                      + ((new Date().getTime())-tzAio.cache.ajaxTimer) + "ms");*/
                   });
                 }
               }
@@ -1352,7 +1360,7 @@
           if ( relLink ) {
             tzAio.selectors.$ajaxedResult.removeClass(tzAio.userScript.slug + "_colorized")
               .load(relLink + " div.results > *", function (responseText, textStatus, xhr) {
-                tzAio.cachedValues.ajaxTimer = new Date().getTime();
+                tzAio.cache.ajaxTimer = new Date().getTime();
                 if ( textStatus == "error") {
                   // sendLog("Sorry, there was an error fetching the page '" + relLink + "'"
                   //   + xhr.status + " " + xhr.statusText);
@@ -1381,7 +1389,7 @@
                     }
                     tzAio.bindAjaxLinks(target);
                     // sendLog((target.length) + " ajaxed div." + target[0].className + " - Exec: "
-                    //   + ((new Date().getTime())-tzAio.cachedValues.ajaxTimer) + "ms");
+                    //   + ((new Date().getTime())-tzAio.cache.ajaxTimer) + "ms");
                   });
                 }
               })
@@ -1400,24 +1408,24 @@
       },
 
       dlResultsActions    : function (resultsElement, options, callback) {
-        var dlElements      = resultsElement.getElementsByTagName("dl"),
-          dlElsLen          = dlElements.length,
-          trackerLen        = this.cachedValues.userArray.length,
-          trackerSstr       = this.stringValueS(trackerLen),
-          tzaioslug         = this.userScript.slug,
-          linkPatt          = this.cachedValues.hashPatt,
-          doColorize        = options.searchHighlight,
-          magnetTitleAppend = " with magnetlink (" + trackerLen
-            + " default tracker" + trackerSstr + ")",
-          searchGenLen      = this.cachedValues.searchGenresLen,
-          currentClName,
-          unverifiedClName  = "",
-          coloredClName     = "",
-          isActive          = true,
-          i, torrHash, torrLink, torrLinks, torrTitle, vSpan, dtContent,
-          isTrackerList     = this.page.path.indexOf("/tracker_") === 0,
-          doneResultClName  = !isTrackerList ? " " + tzaioslug + "_colorized"
-            : " " + " " + tzaioslug + "_trackerlist"
+        var dlElements       = resultsElement.getElementsByTagName("dl")
+          ,dlElsLen          = dlElements.length
+          ,trackerLen        = this.cache.userArray.length
+          ,trackerSstr       = this.stringValueS(trackerLen)
+          ,tzCl              = this.userScript.slug
+          ,linkPatt          = this.cache.hashPatt
+          ,doColorize        = options.searchHighlight
+          ,magnetTitleAppend = " with magnetlink (" + trackerLen
+            + " default tracker" + trackerSstr + ")"
+          ,searchGenLen      = this.cache.searchGenresLen
+          ,currentClName
+          ,unverifiedClName  = ""
+          ,coloredClName     = ""
+          ,isActive          = true
+          ,isTrackerList     = this.page.path.indexOf("/tracker_") === 0
+          ,doneResultClName  = !isTrackerList ? " " + tzCl + "_colorized"
+            : " " + " " + tzCl + "_trackerlist"
+          ,i, torrHash, torrLink, torrLinks, torrTitle, vSpan, dtContent
         ;
         for ( i = 0; i < dlElsLen; i++ ) {
           if ( dlElements[i].style.display.toLowerCase() === "none" ) {
@@ -1439,9 +1447,9 @@
           torrHash = torrLink.href.match(linkPatt)[0];
           torrTitle = torrLink.textContent;
           spanMagnet = d.createElement("SPAN");
-          spanMagnet.className = tzaioslug + "_magnet";
+          spanMagnet.className = tzCl + "_magnet";
           linkMagnet = d.createElement("A");
-          linkMagnet.href = this.getMagnetUrl(torrHash, torrTitle, this.cachedValues.userString);
+          linkMagnet.href = this.getMagnetUrl(torrHash, torrTitle, this.cache.userString);
           linkMagnet.title = "Download " + this.truncate(torrTitle, 20) + magnetTitleAppend;
           spanMagnet.appendChild(linkMagnet);
           dlElements[i].appendChild(spanMagnet);
@@ -1452,10 +1460,10 @@
             if ( vSpan ) {
               if ( !/[1-9]/.test(vSpan.textContent) ) {
                 // no votes
-                unverifiedClName = currentClName + " " + tzaioslug + "_unverified_dl";
+                unverifiedClName = currentClName + " " + tzCl + "_unverified_dl";
               } else if ( /\-[0-9]/.test(vSpan.textContent) ) {
                 // negative votes
-                unverifiedClName = currentClName + " " + tzaioslug + "_fake_dl";
+                unverifiedClName = currentClName + " " + tzCl + "_fake_dl";
               }
               // Keyword check
               if ( doColorize && this.searchGenres && this.searchGenres.length ) {
@@ -1481,8 +1489,8 @@
       },
 
       validateRegExp      : function (pattStr) {
-        var returnBool,
-          fooPatt
+        var returnBool
+          ,fooPatt
         ;
         if ( pattStr.match(/^\s*\//) && pattStr.match(/\/\s*$/) ) {
           pattStr = pattStr.replace(/(^\s*\/|\/\s*$)/g, "");
@@ -1501,7 +1509,10 @@
       },
 
       makeExcludePatt     : function (userString) {
-        var convertedPattern, commaArr, i;
+        var convertedPattern
+          ,commaArr
+          ,i
+        ;
         if ( userString.match(/^\//) && userString.match(/\/$/) ) {
           convertedPattern = userString.replace(/(^\/|\/$)/g,"");
         } else {
@@ -1524,8 +1535,8 @@
       },
 
       getResultTitle      : function (el) {
-        var text = el.textContent,
-          returnText
+        var text = el.textContent
+          ,returnText
         ;
         if ( text.indexOf("»") ) {
           returnText = text.split("»")[0];
@@ -1536,15 +1547,14 @@
       },
 
       initialFilterOfList : function (list, opts, $dmcaElement, callback) {
-        var i,
-          dls          = list.getElementsByTagName("dl"),
-          dlsLen       = dls.length,
-          dlText,
-          $logEl,
-          dmcaClass    = opts.searchHighlight ? "dmca colorizeme" : "dmca",
-          deletedByFilterCount
+        var i
+          ,dls                  = list.getElementsByTagName("dl")
+          ,dlsLen               = dls.length
+          ,deletedByFilterCount = 0
+          ,dmcaClass            = opts.searchHighlight ? "dmca colorizeme" : "dmca"
+          ,dlText
+          ,$logEl
         ;
-        deletedByFilterCount = 0;
         if ( opts.excludeFilter ) {
           for ( i = 0; i < dlsLen; i++ ) {
             dlText = tzAio.getResultTitle(dls[i]);
@@ -1572,21 +1582,21 @@
       },
 
       isActiveTorr        : function (el) {
-        var activeTorrent = true,
-          seedsEl         = el.getElementsByClassName("u"),
-          seedsEl         = seedsEl && seedsEl.length ? seedsEl[0] : null,
-          leachEl         = el.getElementsByClassName("d"),
-          leachEl         = leachEl && leachEl.length ? leachEl[0] : null,
-          seeders,
-          leachers,
-          torrDateEl      = el.getElementsByClassName("a"),
-          torrDateEl      = torrDateEl && torrDateEl.length
-            ? torrDateEl[0].getElementsByTagName("span") : null,
-          torrDateEl      = torrDateEl && torrDateEl.length ? torrDateEl[0] : null,
-          torrDate        = torrDateEl ? torrDateEl.title : "",
-          torrDate        = torrDate ? new Date(torrDate).getTime() : 0,
+        var activeTorrent = true
+          ,seedsEl        = el.getElementsByClassName("u")
+          ,seedsEl        = seedsEl && seedsEl.length ? seedsEl[0] : null
+          ,leachEl        = el.getElementsByClassName("d")
+          ,leachEl        = leachEl && leachEl.length ? leachEl[0] : null
+          ,torrDateEl     = el.getElementsByClassName("a")
+          ,torrDateEl     = torrDateEl && torrDateEl.length
+            ? torrDateEl[0].getElementsByTagName("span") : null
+          ,torrDateEl     = torrDateEl && torrDateEl.length ? torrDateEl[0] : null
+          ,torrDate       = torrDateEl ? torrDateEl.title : ""
+          ,torrDate       = torrDate ? new Date(torrDate).getTime() : 0
           // less than one month old
-          isNew           = (((new Date().getTime() - torrDate) / 1000 / 60 / 60 / 24) <= 31)
+          ,isNew          = (((new Date().getTime() - torrDate) / 1000 / 60 / 60 / 24) <= 31)
+          ,seeders
+          ,leachers
         ;
         if ( !isNew && seedsEl && leachEl ) {
           seeders = this.getNodeNumber(seedsEl);
@@ -1599,14 +1609,14 @@
       },
 
       colorizeMatch       : function (text, genres, title) {
-        var torrKeywords = text.replace(title, " "),
-          dlTagsMatch    = torrKeywords.match(tzAio.cachedValues.sKeywordPatt),
-          dlTags         = dlTagsMatch && dlTagsMatch.length >= 2 && dlTagsMatch[1] ? dlTagsMatch[1] : "",
-          secondTryText  = !dlTags ? title.replace(/[^0-9a-zA-Z\-\+]+/," ") : "",
-          coloredClName  = "",
-          isSecondMatch  = false,
-          sLen           = tzAio.cachedValues.searchGenresLen,
-          i
+        var torrKeywords = text.replace(title, " ")
+          ,dlTagsMatch   = torrKeywords.match(tzAio.cache.sKeywordPatt)
+          ,dlTags        = dlTagsMatch && dlTagsMatch.length >= 2 && dlTagsMatch[1] ? dlTagsMatch[1] : ""
+          ,secondTryText = !dlTags ? title.replace(/[^0-9a-zA-Z\-\+]+/," ") : ""
+          ,coloredClName = ""
+          ,isSecondMatch = false
+          ,sLen          = tzAio.cache.searchGenresLen
+          ,i
         ;
         for ( i = 0; i < sLen; i++ ) {
           // add spaces to let \\b match
@@ -1638,12 +1648,12 @@
       },
 
       initSearchPage      : function ($resultsEl, options, callback) {
-        var searchParameters = this.page.search.match(/^\?f\=(.+)$/i),
-          resultsH2, dmcaDl, $lastListItem, $dmcaEl
+        var searchParameters = this.page.search.match(/^\?f\=(.+)$/i)
+          ,resultsH2, dmcaDl, $lastListItem, $dmcaEl
         ;
         if ( $resultsEl && $resultsEl.length ) {
 
-          if ( this.cachedValues.isSearch || this.cachedValues.isSingle )  {
+          if ( this.cache.isSearch || this.cache.isSingle )  {
             // Add class to 'X results removed in compliance with EUCD / DMCA' first
             $lastListItem = $resultsEl.find("dl:last");
             if ( $lastListItem.length && $lastListItem[0].innerHTML.indexOf("removed in compliance") !== -1 ) {
@@ -1661,8 +1671,8 @@
             && searchParameters[1] && resultsH2.length && !resultsH2.has("img[src*='rss.png']").length ) {
 
             resultsH2.append("<a class='approximate_rss_link' href='/feed_anyA?q="
-              + (searchParameters[1].toString()) + "'>&nbsp;<img width='16' height='16' src='"
-              + this.cssElements.RSSIMG + "' title='This RSS feed is empty'></a>")
+              + String(searchParameters[1]) + "'>&nbsp;<img width='16' height='16' src='"
+              + this.cache.RSSIMG + "' title='This RSS feed is empty'></a>")
             ;
           }
           // for every .results div
@@ -1698,7 +1708,7 @@
         infoDivHeight = this.selectors.$firstInfoDiv.is(":visible")
           ? this.selectors.$firstInfoDiv.outerHeight() - 20 : 0;
           // 20 is the padding t+b of p.generic
-        this.cachedValues.infoBarCss = infoDivHeight ? " style='min-height:"
+        this.cache.infoBarCss = infoDivHeight ? " style='min-height:"
           + infoDivHeight + "px;line-height:" + infoDivHeight + "px;' " : " ";
         // single page selectors
         this.selectors.$downloadDiv = this.selectors.$body.find(".download:eq(0)");
@@ -1741,23 +1751,22 @@
         this.selectors.$settingsForm = $("#" + tzCl + "_settings_submit")
           .on("submit", function (event) {
             event.preventDefault();
-            var saveTrackers,
-              disabledInput    = tzAio.selectors.$settingsForm.find("input[type='submit']")
-                .prop("disabled", true),
-              saveSearchEngines,
-              confirmNewStorageRules,
-              trackersVal,
-              searchEnginesVal,
-              validateInput,
-              noRefVal,
-              excludeFilterVal,
-              invalidItemName,
-              trValid, seValid, nrValid, exValid,
-              submittedOptions = {}
+            var saveTrackers
+              ,disabledInput    = tzAio.selectors.$settingsForm.find("input[type='submit']")
+                .prop("disabled", true)
+              ,saveSearchEngines
+              ,confirmNewStorageRules
+              ,trackersVal
+              ,searchEnginesVal
+              ,validateInput
+              ,noRefVal
+              ,excludeFilterVal
+              ,invalidItemNames = ""
+              ,trValid, seValid, nrValid, exValid, submittedOptions = {}
             ;
             tzAio.selectors.$settingsForm.find(":checkbox").each(function (index, element) {
-              var settingName = element.name.replace(tzAio.userScript.slug + "_",""),
-                settingValue  = $(element).is(":checked")
+              var settingName = element.name.replace(tzAio.userScript.slug + "_","")
+                ,settingValue = $(element).is(":checked")
               ;
               submittedOptions[settingName] = settingValue;
             });
@@ -1788,11 +1797,11 @@
               submittedOptions.noRefUrl = noRefVal.replace(/(^\s+|\s+$)/g,"");
               submittedOptions.excludeFilter = excludeFilterVal.replace(/(^\s*\,|\,\s*$)/g,"")
                 .replace(/\,{2,}/g,",").replace(/(^\s+|\s+$)/g,"");
-              if ( tzAio.cachedValues.freshUser ) {
+              if ( tzAio.cache.freshUser ) {
                 confirmNewStorageRules = confirm("Settings are now being stored and used "
                   + "across all Torrentz's domains.\nSave and continue?");
               }
-              if ( !tzAio.cachedValues.freshUser || confirmNewStorageRules ) {
+              if ( !tzAio.cache.freshUser || confirmNewStorageRules ) {
                 tzAio.setStorageOptions(submittedOptions, function (thisWasSaved) {
                   // log before anything could break, as a debug toll for anyone to submit
                   sendLog( "thisWasSaved" );
@@ -1803,7 +1812,7 @@
                   } else {
                     disabledInput.prop("disabled", false);
                     alert("You broke something! Try reloading the page..."
-                      + tzAio.cachedValues.bugReportMsg);
+                      + tzAio.cache.bugReportMsg);
                     sendLog("GM_getValue(" + tzAio.userScript.slug + "_useroptions) returned false! "
                       + "Nothing stored, logging that plus 'submittedOptions'");
                     sendLog("Failed! > submittedOptions");
@@ -1815,11 +1824,12 @@
                 disabledInput.prop("disabled", false);
               }
             } else {
-              invalidItemName = !seValid ? "Search engines list" : !trValid
-                ? "Default trackerlist" : !nrValid ? "No referer url" : !exValid
-                ? "Exclude filter (regexp)" : "[ERROR]";
-              alert("Invalid input in the '" + invalidItemName + "', check your spelling!"
-                + tzAio.cachedValues.bugReportMsg);
+              invalidItemNames = !seValid ? invalidItemNames + " 'Search engines list'," : invalidItemNames;
+              invalidItemNames = !trValid ? invalidItemNames + " 'Default trackerlist'," : invalidItemNames;
+              invalidItemNames = !nrValid ? invalidItemNames + " 'No referer url'," : invalidItemNames;
+              invalidItemNames = !exValid ? invalidItemNames + " 'Exclude filter (regexp)'," : invalidItemNames;
+              alert("Invalid input in the " + invalidItemNames + " check your spelling!"
+                + tzAio.cache.bugReportMsg);
               disabledInput.prop("disabled", false);
             }
             return false;
@@ -1861,12 +1871,10 @@
         // Theory: Skip storing anything until user saves manually the first time,
         //   helps avoid errors that breaks every first [unsaved] visit,
         //   plus it's evil to store anything and not letting the user know first
-        var newSettings,
-          trackers
-        ;
+        var newSettings, trackers;
         if ( !GM_getValue(this.userScript.slug + "_useroptions", false) ) {
           // first time user
-          this.cachedValues.freshUser = true;
+          this.cache.freshUser = true;
           newSettings = this.userScript;
           sendLog( "Thanks for using " + this.userScript.name + "!" );
         } else {
@@ -1883,7 +1891,7 @@
         this.storedSettings = newSettings;
         // func return unescaped
         this.storedSettings.defaultTrackers = underScore.compact(this.storedSettings.defaultTrackers);
-        this.cachedValues.searchEnginesLen = this.storedSettings.searchEngines.length;
+        this.cache.searchEnginesLen = this.storedSettings.searchEngines.length;
         trackers = this.makeTrackersObject(this.storedSettings.defaultTrackers, false);
         // Redirect users with SSL forced
         if ( this.storedSettings.forceHTTPS ) {
@@ -1898,10 +1906,7 @@
       },
 
       updateExcludeLog : function ($target, count, resultsList) {
-        var logHtml = count + " result"
-            + this.stringValueS(count)
-            + " removed using TzAio filter"
-        ;
+        var logHtml = count + " result" + this.stringValueS(count) + " removed using TzAio filter";
         logHtml += ($target.parents("dt:eq(0)").text().match(/\S/) ? "&nbsp;&ndash;&nbsp;" : "");
         $target.html(logHtml).one("click", function () {
           $(resultsList).find("dl:hidden").css("display", "block");
@@ -1909,13 +1914,13 @@
       },
 
       lastAction          : function () {
-        if ( !this.cachedValues.lastActionDone ) {
-          this.cachedValues.lastActionDone = true;
+        if ( !this.cache.lastActionDone ) {
+          this.cache.lastActionDone = true;
           if ( this.makeBool( w.sessionStorage.getItem(this.userScript.slug + "_SS_useroptions_saved") ) === true ) {
             // scroll up bacause user just saved options and window is def. scrolled down a bit
             this.selectors.$bodyANDhtml.animate({ scrollTop : 1 }, 0, function () {
               w.sessionStorage.removeItem(tzAio.userScript.slug + "_SS_useroptions_saved");
-              if ( !tzAio.cachedValues.freshUser ) {
+              if ( !tzAio.cache.freshUser ) {
                 tzAio.selectors.$body.addClass(tzAio.userScript.slug + "_settings_saved");
                 setTimeout(function () {
                   tzAio.selectors.$body.removeClass(tzAio.userScript.slug + "_settings_saved");
@@ -1931,14 +1936,14 @@
 
       getLatestJson       : function () {
         setTimeout(function () {
-          var updateObject = {},
+          var updateObject  = {}
             // Enough to matter and no more than informative
-            updateInterval = (1000*60*60*12),
-            tzCl           = tzAio.userScript.slug,
-            now            = new Date().getTime(),
-            lastCheck      = tzAio.latestVersionObj.checked || "1359673200000",
-            lastCheck      = Number(lastCheck),
-            updateMessage
+            ,updateInterval = (1000*60*60*12)
+            ,tzCl           = tzAio.userScript.slug
+            ,now            = new Date().getTime()
+            ,lastCheck      = tzAio.latestVersionObj.checked || "1359673200000"
+            ,lastCheck      = Number(lastCheck)
+            ,updateMessage
           ;
           updateMessage = "New version of TzAio available! Please update the script now in "
             + (isGM ? "GreaseMonkey" : isTM ? "TamperMonkey" : isSC ? "Scriptish " : "your scriptengine")
@@ -1959,7 +1964,7 @@
                       + " - Latest: " + updateObject.version );
                   }
                 } else {
-                  sendLog("Tried to check for updates but failed! :(" + tzAio.cachedValues.bugReportMsg);
+                  sendLog("Tried to check for updates but failed! :(" + tzAio.cache.bugReportMsg);
                 }
               })
             ;
@@ -1969,8 +1974,6 @@
 
       selectors           : {},
 
-      tzaio               : true
-
     };
 
     // build internal objects
@@ -1978,20 +1981,21 @@
     tzAio.userScript = new UserScript();
     tzAio.latestVersionObj = JSON.parse(GM_getValue(tzAio.userScript.slug + "_json_update_check", "{}"));
 
-    tzAio.cachedValues = {
-      searchGenresLen      : tzAio.searchGenres.length,
-      freshUser            : false,
-      sKeywordPatt         : /»\s+?(.*)$/i,
-      hashPatt             : /[a-zA-Z0-9]{40}/,
-      twoPartDomainPatt    : new RegExp("(\\.com|\\.co|\\.info|\\.mobi|\\.net|\\.ar|\\.as|\\.at|"
+    tzAio.cache = {
+      RSSIMG             : "/img/rss.png"
+      ,searchGenresLen   : tzAio.searchGenres.length
+      ,freshUser         : false
+      ,sKeywordPatt      : /»\s+?(.*)$/i
+      ,hashPatt          : /[a-zA-Z0-9]{40}/
+      ,twoPartDomainPatt : new RegExp("(\\.com|\\.co|\\.info|\\.mobi|\\.net|\\.ar|\\.as|\\.at|"
         + "\\.bb|\\.bg|\\.br|\\.ca|\\.ch|\\.cn|\\.cs|\\.dk|\\.ee|\\.es|\\.fi|\\.fr|\\.gr|\\.in|"
-        + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}",""),
-      linkifyPatt          : /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)?/gi,
-      matchUrlPatt         : /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i,
-      selectTrashPatt      : /(\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i,
+        + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}","")
+      ,linkifyPatt       : /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)?/gi
+      ,matchUrlPatt      : /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i
+      ,selectTrashPatt   : /(\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i
       // https://en.wikipedia.org/wiki/Magnet_URI_scheme
-      magnetURI            : "magnet:?xt=urn:btih:",
-      bugReportMsg         : "\n(If this problem persists, please get in touch and I'll fix it\n"
+      ,magnetURI         : "magnet:?xt=urn:btih:"
+      ,bugReportMsg      : "\n(If this problem persists, please get in touch and I'll fix it\n"
         + tzAio.userScript.link + ")"
     };
 
@@ -2029,7 +2033,7 @@
           tzAio.initSettingsPanel(userOptions, trackers, function (options, trackers){
             
             // look for search results
-            tzAio.cachedValues.$searchResults = tzAio.selectors.$body.find("div.results");
+            tzAio.cache.$searchResults = tzAio.selectors.$body.find("div.results");
             tzAio.selectors.$theSearchBox = $("#thesearchbox").prop("tabindex", 1);
 
             if ( ~tzAio.page.path.indexOf("users/") ) {
@@ -2040,12 +2044,12 @@
 
               tzAio.lastAction();
 
-            } else if ( tzAio.page.thash.match(tzAio.cachedValues.hashPatt) ) {
-              tzAio.cachedValues.isSingle = true;
+            } else if ( tzAio.page.thash.match(tzAio.cache.hashPatt) ) {
+              tzAio.cache.isSingle = true;
               tzAio.initSingleTorrent(options, trackers, function (options, trackers) {
-                if ( tzAio.cachedValues.$searchResults.length ) {
+                if ( tzAio.cache.$searchResults.length ) {
                   // Related search results
-                  tzAio.initSearchPage(tzAio.cachedValues.$searchResults, options, function (searchElement) {
+                  tzAio.initSearchPage(tzAio.cache.$searchResults, options, function (searchElement) {
                     tzAio.lastAction();
                   });
                 } else {
@@ -2066,10 +2070,10 @@
               || tzAio.page.path.match(/^\/(search|any|verified|advanced|tracker_)/)
               || tzAio.page.path.match(/^\/[a-z]{2,}\//) ) {
 
-              tzAio.cachedValues.isSearch = true;
-              tzAio.removeAds("search", options, tzAio.cachedValues.$searchResults);
+              tzAio.cache.isSearch = true;
+              tzAio.removeAds("search", options, tzAio.cache.$searchResults);
 
-              tzAio.initSearchPage(tzAio.cachedValues.$searchResults, options, function (results) {
+              tzAio.initSearchPage(tzAio.cache.$searchResults, options, function (results) {
                 var observer;
                 if ( tzAio.page.path !== "/i" ) {
                   if ( options.ajaxedSorting ) {
@@ -2078,10 +2082,10 @@
                 } else if ( tzAio.page.path === "/i" ) {
                   observer = new MutationObserver(tzAio.ajaxResultsHandler);
                   observer.observe(tzAio.selectors.$body[0], {
-                    attributes    : true,
-                    subtree       : true,
-                    childList     : true,
-                    characterData : true
+                    attributes     : true
+                    ,subtree       : true
+                    ,childList     : true
+                    ,characterData : true
                   });
                 }
                 tzAio.lastAction();              
