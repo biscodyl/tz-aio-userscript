@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.2.2** (2013-07-09)
+* Important bug-fixes for the built-in updater.
+
 **2.2.1** (2013-07-09)
 * More improvements of update checker; less annoying, it now only shows an alert popup once, after that you can only see the notice in the settings-panel.
 * More intelligent; it deletes it's own storage when the scipt has just updates itself, and uses a nifty method to _really_ compare version numbers to see if it's really newer.
