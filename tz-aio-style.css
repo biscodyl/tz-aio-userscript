@@ -402,9 +402,6 @@
 .tz_aio_b.tz_aio_v2 form.expand ~ * {
   display: none !important;
 }
-.tz_aio_b.tz_aio_v2 .tz_aio_new_version_msg {
-  font-weight: bold;
-}
 .tz_aio_b.tz_aio_v2 .tz_aio_current_version_mark {
   background-color: #d4ffd4;
   -webkit-border-radius: 5px;
@@ -414,6 +411,29 @@
   border-radius: 5px;
   display: inline-block;
   padding: 0 2px;
+}
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_main_radioselect {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_new_version_msg, .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_update_message {
+  font-size: 16px;
+}
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_new_version_msg mark, .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_update_message mark {
+  background-color: #f4de7a;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  display: inline-block;
+  padding: 8px 10px;
+  -webkit-box-shadow: 3px 3px 0 #333333;
+  -moz-box-shadow: 3px 3px 0 #333333;
+  box-shadow: 3px 3px 0 #333333;
+}
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_new_version_msg mark.tz_aio_alt_msg, .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_update_message mark.tz_aio_alt_msg {
+  background-color: #ffb090;
 }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form input[type='text'] {
   font-family: monospace;

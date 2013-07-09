@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.2.0
-// @date          2013-07-08
+// @version       2.2.1
+// @date          2013-07-09
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -26,8 +26,8 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-2-0-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-2-0-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-2-1-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-2-1-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -156,7 +156,8 @@
         }
         w.console.log(message);
       } else if ( typeof GM_log === "function" ) {
-        GM_log((logSize-1) + ": " + message);
+        GM_log("--- TzAio logs[" + (logSize-1) + "] ---");
+        GM_log(message);
       } else {
         throw new Error((logSize-1) + ": " + "No log function available, " + message);
       }
@@ -438,6 +439,57 @@
         return returnStr;
       },
 
+      padZeroes           : function (n, width, z) {
+        z = z || "0";
+        n = n + "";
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+      },
+
+      compareVersions     : function (i, o) {
+        var status
+          ,validMatch = /^\d\.\d+\.\d+$/
+          ,x          = 3
+          ,iarr
+          ,oarr
+          ,inum
+          ,onum
+        ;
+        if ( i && o && i.match(validMatch) && o.match(validMatch) ) {
+          i = String(i);
+          o = String(o);
+          iarr = i.split("."); // ["2","2","0"]
+          oarr = o.split(".");
+          if ( i === o ) {
+            status = 0;
+          } else {
+            while ( --x > 0 ) {
+              // ex: 2.2.1 | 2.222.1 > 2.002.1 | 2.222.1
+              if ( iarr[x].length < oarr[x].length ) {
+                iarr[x] = this.padZeroes(iarr[x], oarr[x].length);
+              } else if ( iarr[x].length > oarr[x].length ) {
+                oarr[x] = this.padZeroes(oarr[x], iarr[x].length);
+              }
+            }
+            inum = +(iarr.join(""));
+            onum = +(oarr.join(""));
+            if ( inum === onum ) {
+              status = 0;
+            } else if ( inum < onum ) {
+              status = -1;
+            } else if ( inum > onum ) {
+              status = -2;
+            }
+          }
+        } else {
+          status = 1;
+        }
+        // -2 = Older
+        // -1 = Newer
+        //  0 = Same
+        //  1 = Error
+        return status;
+      },
+
       removeDocOnclick    : function () {
         var ckExpDate = new Date( loadStartMS + (60*60*24*1000) )
           ,ckVal      = "wm_popundertz=" + escape("1|" + String(ckExpDate))
@@ -695,8 +747,9 @@
       },
 
       getHelpHtml         : function () {
-        var latestVersionHtml = this.latestVersionObj.version && this.latestVersionObj.version
-          !== this.userScript.version ? " <a href='" + this.userScript.link + "'>Update available!</a>" : ""
+        var latestVersionHtml = this.lVer.version
+          && this.compareVersions(this.userScript.version, this.lVer.version) === -1
+          ? " <a href='" + this.userScript.link + "'>Update available!</a>" : ""
         ,htmlArr = [ "<p><b>" + this.userScript.name + " UserScript</b></p><ul>"
           ,"<li>Installed: v" + this.userScript.version + latestVersionHtml + "</li>"
           ,"<li>Homepage: <a href='" + this.userScript.link + "'>" + this.userScript.link + "</a></li>"
@@ -791,15 +844,17 @@
           ,checkCommentLinks = opts.linkComments ?    " checked='checked' " : " "
           ,checkAjaxSorting  = opts.ajaxedSorting ?   " checked='checked' " : " "
           ,checkForceHTTPS   = opts.forceHTTPS ?      " checked='checked' " : " "
-          ,latest            = tzAio.latestVersionObj.checked && tzAio.latestVersionObj
-          ,latestVersionMsg  = latest && latest.version !== this.userScript.version
-            ? "<p class='" + tzCl + "_new_version_msg'>New version available! Update or grab "
-            + "the latest version <a href='" + this.userScript.link + "'>here</a><br>"
-            + "Latest version: " + latest.version + " (" + latest.date + ")<br>"
-            + "Changelog: " + latest.changes + "</p>" : ""
-          ,noticeMsg         = latest && latest.message ? "<p><mark>" + latest.message  + "</mark></p>" : ""
-          ,lastUpdate        = tzAio.latestVersionObj.checked && +tzAio.latestVersionObj.checked > 3600000
-            ? " (Last checked " + (tzAio.getHoursPast(tzAio.latestVersionObj.checked)) + " hours ago)" : ""
+          ,latest            = tzAio.lVer.checked && tzAio.lVer
+          ,latestVersionMsg  = latest && this.compareVersions(this.userScript.version, latest.version) === -1
+            ? "<p class='" + tzCl + "_new_version_msg'><mark>New version available! Update or grab "
+            + "the latest version <a href='" + this.userScript.link + "'>here</a>.<br>"
+            + "Installed: " + this.userScript.version + " (" + this.userScript.date + ")<br>"
+            + "Latest version: <strong>" + latest.version + "</strong> (" + latest.date + ")<br>"
+            + "Changelog: " + latest.changes + "</mark></p>" : ""
+          ,noticeMsg         = latest && latest.message ? "<p class='" + tzCl + "_update_message'>"
+            + "<mark class='" + tzCl + "_alt_msg'>" + latest.message  + "</mark></p>" : ""
+          ,lastUpdate        = tzAio.lVer.checked && +tzAio.lVer.checked > 3600000
+            ? " (Last checked &lt;" + (tzAio.getHoursPast(tzAio.lVer.checked)) + " hours ago)" : ""
           ,versionHtml       = this.userScript.version + " (" + this.userScript.date + ")"
           ,versionHtml       = latest && latest.version !== this.userScript.version
             ? versionHtml : "<mark title='You have the latest version! " + lastUpdate + "' "
@@ -822,8 +877,8 @@
             ,this.page.path + "'><fieldset><legend>TzAio Settings</legend>"
             ,noticeMsg
             ,latestVersionMsg
-            ,"<p><input type='checkbox' name='" + tzCl + "_forceHTTPS' value='forceHTTPS'" + checkForceHTTPS
-            ,"id='" + tzCl + "_forceHTTPS' />"
+            ,"<p class='" + tzCl + "_main_radioselect'><input type='checkbox' name='"
+            , tzCl + "_forceHTTPS' value='forceHTTPS'" + checkForceHTTPS + "id='" + tzCl + "_forceHTTPS' />"
             ,"<label for='" + tzCl + "_forceHTTPS' title='This will redirect all pages to secure SSL, "
             ,"beware that if HTTPS is unavailable, you have to try another mirror and turn this option off again. "
             ,"That`s why this option is turned off by default.'>Force HTTPS</label>"
@@ -1941,27 +1996,37 @@
             ,updateInterval = (1000*60*60*12)
             ,tzCl           = tzAio.userScript.slug
             ,now            = new Date().getTime()
-            ,lastCheck      = tzAio.latestVersionObj.checked || "1359673200000"
+            // force re-check for new/updated installs
+            ,lastCheck      = tzAio.lVer.checked || (now-updateInterval-1000)
             ,lastCheck      = Number(lastCheck)
             ,updateMessage
           ;
-          updateMessage = "New version of TzAio available! Please update the script now in "
-            + (isGM ? "GreaseMonkey" : isTM ? "TamperMonkey" : isSC ? "Scriptish " : "your scriptengine")
-            + ", or grab the latest version here:\n" + tzAio.userScript.link;
+          updateMessage = "New version of TzAio available!\n" + tzAio.userScript.link;
           if ( (now - lastCheck) >= updateInterval ) {
             $.getJSON("http://elundmark.se/_files/js/tz-aio/log/update-check.php", {
                 version : tzAio.userScript.version
               }, function (data) {
                 if ( data && underScore.isObject(data) && data.version ) {
-                  updateObject = data;
+                  updateObject = underScore.defaults(data, tzAio.lVer);
                   updateObject.checked = String(now);
+                  updateObject.vStatus = tzAio.compareVersions(tzAio.userScript.version, updateObject.version);
                   sendLog("Successfully checked for updates, installed: " + tzAio.userScript.version
-                    + ", latest: " + updateObject.version);
-                  // store regardless to prevent empty date::multiple checks
-                  GM_setValue(tzCl + "_json_update_check", JSON.stringify(updateObject));
-                  if ( tzAio.userScript.version !== updateObject.version ) {
-                    alert( updateMessage + "\nInstalled: " + tzAio.userScript.version
-                      + " - Latest: " + updateObject.version );
+                    + ", latest: " + updateObject.version + "   [" + String(updateObject.vStatus) + "]");
+                  if ( updateObject.vStatus === -2 ) {
+                    // debugging newer version than available by $.getJSON
+                    GM_setValue(tzCl + "_json_update_check", "{}");
+                  } else {
+                    if ( updateObject.vStatus === -1 && updateObject.alerted !== updateObject.version ) {
+                      // new version available and not alerted yet
+                      //   {}.alerted will always be a bigger number
+                      //   and if user skips another version the alert should trigger again
+                      alert( updateMessage + "\nInstalled: " + tzAio.userScript.version
+                        + " - Latest: " + updateObject.version );
+                      updateObject.checked = (now-updateInterval-1000); // forces a re-check after update
+                      updateObject.alerted = updateObject.version;      // inhibits more annoying alerts
+                    }
+                    // now, save this to storage
+                    GM_setValue(tzCl + "_json_update_check", JSON.stringify(updateObject));
                   }
                 } else {
                   sendLog("Tried to check for updates but failed! :(" + tzAio.cache.bugReportMsg);
@@ -1972,17 +2037,22 @@
         }, 2500);
       },
 
-      selectors           : {},
+      selectors           : {}
 
     };
 
     // build internal objects
     tzAio.page = tzAio.getPageParmaters();
     tzAio.userScript = new UserScript();
-    tzAio.latestVersionObj = JSON.parse(GM_getValue(tzAio.userScript.slug + "_json_update_check", "{}"));
+    tzAio.lVer = JSON.parse(GM_getValue(tzAio.userScript.slug + "_json_update_check", "{}"));
+    if ( tzAio.userScript.version === tzAio.lVer.alerted ) {
+      // newly updated script, so reset stored value
+      tzAio.lVer = {};
+      GM_setValue(tzAio.userScript.slug + "_json_update_check", "{}");
+    }
 
     tzAio.cache = {
-      RSSIMG             : "/img/rss.png"
+      RSSIMG            : "/img/rss.png"
       ,searchGenresLen   : tzAio.searchGenres.length
       ,freshUser         : false
       ,sKeywordPatt      : /»\s+?(.*)$/i

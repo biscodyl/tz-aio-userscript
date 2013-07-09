@@ -41,13 +41,13 @@ Features
 * **No referer url**  _Customizable_ - An optional url that is prepended to all outgoing non-torrent-ish sites.
 * **Fix comment links**  _Customizable_ - Changes all valid un-anchored links inside comments to links.
 * **Smart keyboard shortcuts**  `C` to copy the trackers, `D` to download with the magnet-link, `SHIFT+D` to download the first available .torrent file, `ESCAPE` for general exit / reset.
+* **Update checker**  Checks for updates automatically and notifies you about them. _This is a work in progress and might not be 100% bullet-proof as of yet_.
 
 _All these settings are accessed by clicking 'TzAio' at the top of each page, and can be flushed and reset if you want to start over, or take advantage of (any) new default trackers that might have been added._
 
 More features worth mentioning
 ------------------------------
 
-* Checks for updates automatically and notifies you about them.
 * `.wmv` file warning.
 * Passes AdBlocker default blacklist.
 * All the data you save is stored permanently and applies across all domains, without the use of cookies or `localStorage`.

@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+**2.2.1** (2013-07-09)
+* More improvements of update checker; less annoying, it now only shows an alert popup once, after that you can only see the notice in the settings-panel.
+* More intelligent; it deletes it's own storage when the scipt has just updates itself, and uses a nifty method to _really_ compare version numbers to see if it's really newer.
+
 **2.2.0** (2013-07-08)
 * Better update checking, fyi it checks every 12 hours, only sends your current version number, nothing else. It now also enables me to "send" a message in case something major happens.
 * Code cleanup.

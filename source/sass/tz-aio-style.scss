@@ -13,6 +13,7 @@ $SRANIME: #F4DE7A;
 $SRPINK: #FFBFE2;
 $DMCA: #FFE8DF;
 $TZBLUE: #369;
+$TZORANGE: #FFB090;
 $LIGHTTZBLUE: #90B2D5;
 $DARKTZBLUE: #0C2C4C;
 $TZPINK: #f5dfd6;
@@ -449,9 +450,6 @@ $blinkto:   0.0;
     display: none !important;
   }
 
-  .tz_aio_new_version_msg {
-    font-weight: bold;
-  }
   .tz_aio_current_version_mark {
     background-color: $LIGHTGREEN;
     @include border-radius(5px);
@@ -460,6 +458,25 @@ $blinkto:   0.0;
   }
 
   .tz_aio_settings_form {
+
+    .tz_aio_main_radioselect {
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tz_aio_new_version_msg, .tz_aio_update_message {
+      font-size: 16px;
+      mark {
+        background-color: $SRANIME;
+        @include border-radius(5px);
+        display: inline-block;
+        padding: 8px 10px;
+        @include box-shadow(3px 3px 0 $DARKGRAY);
+      }
+      mark.tz_aio_alt_msg {
+        background-color: $TZORANGE;
+      }
+    }
 
     input[type='text'] {
       font-family: monospace;
