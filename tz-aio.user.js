@@ -60,8 +60,8 @@
  * 
 */
 
-(function(w, $, underScore){
-
+(function (w, $, underScore) {
+  "use strict";
   if ( typeof w !== "object" || typeof underScore !== "function" || typeof $ !== "function"
     || (typeof GM_info !== "object" && typeof GM_getMetadata !== "function")  // added for Scriptish
     || typeof GM_addStyle !== "function"
@@ -85,6 +85,7 @@
     ,execStartMS
     ,startLogMsg
     ,d               = w.document
+    ,logs            = 0
     ,scriptSource    = isGM ? GM_info.scriptMetaStr : isTM ? GM_info.scriptSource : ""
     ,UserScript      = function () {
       // if unknown script engine, it pbly breaks here
@@ -142,24 +143,17 @@
       this.forceHTTPS = false;
     },
     sendLog         = function (message, callback) {
-      var logSize = 0
-        ,pushed
-      ;
-      if ( typeof this.logs === "undefined" ) {
-        this.logs = [];
-      }
-      pushed = this.logs.push(message);
-      logSize = this.logs.length;
+      logs++;
       if ( typeof w.console == "object" && typeof w.console.log === "function" ) {
         if ( !(String(message).match(/^(Starting|Load\:|Exec\:|Thanks\sfor|Successfully.checked.for.updates)/)) ) {
-          w.console.log("--- TzAio logs[" + (logSize-1) + "] ---");
+          w.console.log("--- TzAio logs[" + (logs-1) + "] ---");
         }
         w.console.log(message);
       } else if ( typeof GM_log === "function" ) {
-        GM_log("--- TzAio logs[" + (logSize-1) + "] ---");
+        GM_log("--- TzAio logs[" + (logs-1) + "] ---");
         GM_log(message);
       } else {
-        throw new Error((logSize-1) + ": " + "No log function available, " + message);
+        throw new Error((logs-1) + ": " + "No log function available, " + message);
       }
       if ( callback && typeof callback === "function" ) {
         callback();
@@ -1149,6 +1143,8 @@
           ,domainSplit
           ,domainSplitLen
           ,sortingArray = []
+          ,sortedString
+          ,newArray
           ,i
           ,x
           ,returnObject
@@ -1477,6 +1473,8 @@
           ,unverifiedClName  = ""
           ,coloredClName     = ""
           ,isActive          = true
+          ,spanMagnet
+          ,linkMagnet
           ,isTrackerList     = this.page.path.indexOf("/tracker_") === 0
           ,doneResultClName  = !isTrackerList ? " " + tzCl + "_colorized"
             : " " + " " + tzCl + "_trackerlist"
@@ -2172,13 +2170,10 @@
     });
 
   } catch (error) {
-
     if ( typeof sendLog === "function" ) {
       sendLog(error);
     } else {
       throw new Error(error);
     }
-
   }
-
 }((unsafeWindow||window), jQuery, (this._||_||unsafeWindow._)));
