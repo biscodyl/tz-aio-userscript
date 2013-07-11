@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.2.2
-// @date          2013-07-09
+// @version       2.2.3
+// @date          2013-07-12
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -26,8 +26,8 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-2-2-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-2-2-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-2-3-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-2-3-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -60,9 +60,9 @@
  * 
 */
 
-(function (w, $, underScore) {
+(function (w, $, __) {
   "use strict";
-  if ( typeof w !== "object" || typeof underScore !== "function" || typeof $ !== "function"
+  if ( typeof w !== "object" || typeof __ !== "function" || typeof $ !== "function"
     || (typeof GM_info !== "object" && typeof GM_getMetadata !== "function")  // added for Scriptish
     || typeof GM_addStyle !== "function"
     || typeof GM_log !== "function"
@@ -396,15 +396,7 @@
         }
       },
 
-      makeBool            : function (e) {
-        var testStr   = e ? this.zipString(e) : ""
-          ,returnBool = testStr.match(/^true$/i) ? true : testStr.match(/^false$/i)
-            ? false : undefined
-        ;
-        return returnBool;
-      },
-
-      stringValueS        : function (i) {
+      getPlural           : function (i) {
         return ( i === 1 ? "" : "s" );
       },
 
@@ -516,7 +508,7 @@
         ;
         if ( storeObj ) {
           // pass though new values that are to be saved, ex. version (2.1.0)
-          storeObj = underScore.defaults(storeObj, this.userScript);
+          storeObj = __.defaults(storeObj, this.userScript);
           GM_setValue(tzCl + "_useroptions", JSON.stringify(storeObj));
           returnSavedValue = GM_getValue(tzCl + "_useroptions", false);
         // reset values
@@ -540,21 +532,9 @@
         w.getSelection().collapseToStart();
       },
 
-      isFalse             : function (x) {
-        if ( typeof x !== "undefined" && underScore.isBoolean(x) && x === false ) {
-          return true;
-        }
-      },
-
-      isTrue              : function (x) {
-        if ( typeof x !== "undefined" && underScore.isBoolean(x) && x === true ) {
-          return true;
-        }
-      },
-
       noModKeys           : function (i) {
-        return (this.isFalse(i.ctrlKey) && this.isFalse(i.shiftKey) && this.isFalse(i.altKey)
-          && this.isFalse(i.metaKey));
+        return ( __.isEqual(i.ctrlKey, false) && __.isEqual(i.shiftKey, false)
+          && __.isEqual(i.altKey, false) && __.isEqual(i.metaKey, false) );
       },
 
       zipString           : function (s) {
@@ -575,7 +555,7 @@
         ;
         // pass through empty values
         if ( urls.match(/\S/) ) {
-          checkArray = underScore.compact(this.zipString(urls).split(/\s+/));
+          checkArray = __.compact(this.zipString(urls).split(/\s+/));
           for ( i = 0; i < checkArray.length; i++ ) {
             if ( !this.zipString(checkArray[i]).match(this.cache.matchUrlPatt) ) {
               returnBool = false;
@@ -682,7 +662,7 @@
               }
             }
           } else if ( tzAio.cache.isSingle ) {
-            if ( key === 68 &&  tzAio.isTrue(e.shiftKey) ) {
+            if ( key === 68 &&  __.isEqual(e.shiftKey, true) ) {
               // first direct torrent file
               torrentLinks = $("." + tzAio.userScript.slug + "_dllink");
               if ( torrentLinks.length ) {
@@ -735,7 +715,7 @@
         ;
         returnStr += trackerStr;
         if ( htmlEnc ) {
-          returnStr = underScore.escape(returnStr);
+          returnStr = __.escape(returnStr);
         }
         return returnStr;
       },
@@ -1244,7 +1224,7 @@
         while ( (++trackerLinksI < trackerLinksLen) ) {
           currTrackerList.push( (trackerLinks[trackerLinksI].textContent||"") );
         }
-        trackers = this.makeTrackersObject(underScore.union(currTrackerList, trackers.userArray),
+        trackers = this.makeTrackersObject(__.union(currTrackerList, trackers.userArray),
           trackers.userArray);
         trackerLen = trackers.allArray.length;
         // final magnetlink uri
@@ -1252,7 +1232,7 @@
           + "_mlink " + tzCl + verDownloadCl + "' href='"
           + (this.getMagnetUrl(this.page.thash, this.page.title, trackers.allString, true))
           + "' title='Fully qualified magnet URI for newer BitTorrent clients, includes"
-          + " all " + trackerLen + " tracker" + (this.stringValueS(trackerLen)) + "'>Magnet Link</a>";
+          + " all " + trackerLen + " tracker" + (this.getPlural(trackerLen)) + "'>Magnet Link</a>";
         // create seed leach ratio
         while ( (++upElemsLenI < upElemsLen) ) {
           _up[upElemsLenI] = this.getNodeNumber(upElems[upElemsLenI], true);
@@ -1302,10 +1282,10 @@
         }
         seedText = seedTitle + " <span class='" + tzCl + "_seed_" + seedColor + "'>" + seedMeter + "</span>";
         minPeersText = " <span>" + this.formatNumbers(minPeers, true) + "+ peer"
-          + this.stringValueS(minPeers) + "</span>";
+          + this.getPlural(minPeers) + "</span>";
         copyTrackersHtml = "<a href='#' id='" + tzCl + "_copylist' class='" + tzCl
           + "_copylink' title='Click to copy the trackerlist'>Copy "
-          + trackerLen + " tracker" + (this.stringValueS(trackerLen)) + "</a>";
+          + trackerLen + " tracker" + (this.getPlural(trackerLen)) + "</a>";
         if ( commentCount ) {
           commentText = "<a href='#comments_" + tzCl + "' class='" + tzCl + "_comment_image'>";
           // commentDiv.attr("id","comments_" + tzCl);
@@ -1462,7 +1442,7 @@
         var dlElements       = resultsElement.getElementsByTagName("dl")
           ,dlElsLen          = dlElements.length
           ,trackerLen        = this.cache.userArray.length
-          ,trackerSstr       = this.stringValueS(trackerLen)
+          ,trackerSstr       = this.getPlural(trackerLen)
           ,tzCl              = this.userScript.slug
           ,linkPatt          = this.cache.hashPatt
           ,doColorize        = options.searchHighlight
@@ -1549,7 +1529,7 @@
           pattStr = pattStr.replace(/(^\s*\/|\/\s*$)/g, "");
           try {
             fooPatt = new RegExp(pattStr,"i");
-            returnBool = underScore.isRegExp(fooPatt);
+            returnBool = __.isRegExp(fooPatt);
           } catch (error) {
             sendLog("not a valid regexp pattern!");
             sendLog(error);
@@ -1842,9 +1822,9 @@
             
             if ( seValid && trValid && nrValid && exValid ) {
               saveTrackers = trackersVal.split(/\s+/);
-              saveTrackers = underScore.compact(saveTrackers);
+              saveTrackers = __.compact(saveTrackers);
               saveSearchEngines = searchEnginesVal.split(/\s+/);
-              saveSearchEngines = underScore.compact(saveSearchEngines);
+              saveSearchEngines = __.compact(saveSearchEngines);
               submittedOptions.defaultTrackers = saveTrackers;
               submittedOptions.searchEngines = saveSearchEngines;
               submittedOptions.noRefUrl = noRefVal.replace(/(^\s+|\s+$)/g,"");
@@ -1940,10 +1920,10 @@
         }
         // merge any new settings into newSettings
         //   not when saving because that depends on people always saving
-        newSettings = underScore.defaults(newSettings, this.userScript);
+        newSettings = __.defaults(newSettings, this.userScript);
         this.storedSettings = newSettings;
         // func return unescaped
-        this.storedSettings.defaultTrackers = underScore.compact(this.storedSettings.defaultTrackers);
+        this.storedSettings.defaultTrackers = __.compact(this.storedSettings.defaultTrackers);
         this.cache.searchEnginesLen = this.storedSettings.searchEngines.length;
         trackers = this.makeTrackersObject(this.storedSettings.defaultTrackers, false);
         // Redirect users with SSL forced
@@ -1959,7 +1939,7 @@
       },
 
       updateExcludeLog : function ($target, count, resultsList) {
-        var logHtml = count + " result" + this.stringValueS(count) + " removed using TzAio filter";
+        var logHtml = count + " result" + this.getPlural(count) + " removed using TzAio filter";
         logHtml += ($target.parents("dt:eq(0)").text().match(/\S/) ? "&nbsp;&ndash;&nbsp;" : "");
         $target.html(logHtml).one("click", function () {
           $(resultsList).find("dl:hidden").css("display", "block");
@@ -1969,7 +1949,7 @@
       lastAction          : function () {
         if ( !this.cache.lastActionDone ) {
           this.cache.lastActionDone = true;
-          if ( this.makeBool( w.sessionStorage.getItem(this.userScript.slug + "_SS_useroptions_saved") ) === true ) {
+          if ( w.sessionStorage.getItem(this.userScript.slug + "_SS_useroptions_saved") === "true" ) {
             // scroll up bacause user just saved options and window is def. scrolled down a bit
             this.selectors.$bodyANDhtml.animate({ scrollTop : 1 }, 0, function () {
               w.sessionStorage.removeItem(tzAio.userScript.slug + "_SS_useroptions_saved");
@@ -2004,7 +1984,7 @@
             $.getJSON("http://elundmark.se/_files/js/tz-aio/log/update-check.php", {
                 version : tzAio.userScript.version
               }, function (data) {
-                if ( data && underScore.isObject(data) && data.version ) {
+                if ( data && __.isObject(data) && data.version ) {
                   updateObject = data;
                   updateObject.checked = String(now);
                   updateObject.vStatus = tzAio.compareVersions(tzAio.userScript.version, updateObject.version);

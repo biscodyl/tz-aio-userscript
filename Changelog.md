@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.2.3* (2013-07-12)
+* Code cleanup and slight speed improvements, now in 'use strict' mode.
+
 **2.2.2** (2013-07-09)
 * Important bug-fixes for the built-in updater.
 
