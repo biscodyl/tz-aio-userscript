@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.2.5* (2013-07-13)
+* Fixed missing newlines when using the new copy button (`setClipboard`).
+
 **2.2.4* (2013-07-12)
 * Bugfix for the updater that alerted when it wasn't supposed to.
 
