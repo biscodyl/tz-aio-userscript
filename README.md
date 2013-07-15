@@ -2,7 +2,7 @@ Torrentz All-in-one Userscript
 ==============================
 
 [Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
-This userscript enhances Torrentz (on all SSL domains) to include a bunch of new features. Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey. _(Will __not__ work using Chrome's built in userscript installation.)_
+This userscript enhances Torrentz (on all SSL domains) to include a bunch of new features. Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey. _(Will **not** work using Chrome's built in userscript installation.)_
 This userscript enhances Torrentz.eu (and all other mirror domains) to include a bunch of new features. Among them are customizable magnet-links, ajaxed sorting, intelligent stats, and much much more...
 
 Please [rate and/or leave a review](https://userscripts.org/scripts/reviews/125001) if you like it, and please feel free to ask for more features!

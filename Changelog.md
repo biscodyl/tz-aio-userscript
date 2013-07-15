@@ -1,8 +1,11 @@
 Changelog
 ---------
 
+**2.2.6** (2013-07-15)
+* Checks for OS first before adding carriage returns (`GM_setClipboard`).
+
 **2.2.5** (2013-07-13)
-* Fixed missing newlines when using the new copy button (`setClipboard`).
+* Fixed missing newlines when using the new copy button (`GM_setClipboard`).
 
 **2.2.4** (2013-07-12)
 * Bugfix for the updater that alerted when it wasn't supposed to.
