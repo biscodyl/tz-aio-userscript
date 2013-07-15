@@ -599,6 +599,7 @@
           ,forceHide    = typeof forceHide !== "undefined" ? forceHide : false
           ,linkHeight   = this.cache.copyTrackersLinkHeight
           ,useClipboard = typeof GM_setClipboard === "function"
+          ,copyThis
           ,isVisible
         ;
         // if it's created
@@ -607,7 +608,16 @@
           if ( forceShow || (!isVisible && !forceHide) ) {
             // Show it
             if ( useClipboard ) {
-              GM_setClipboard(this.selectors.$copyTextArea.find("textarea")[0].innerHTML.replace(/\n/g,"\r\n"));
+              /*
+               * Fix carriage returns before copying, and only for Windows users;
+               * I noticed that certain clients don't like \r\n in the text
+               * when on a Linux platform, so try and check for OS first
+               */
+              copyThis = this.selectors.$copyTextArea.find("textarea")[0].innerHTML;
+              if ( (/win/i).test(w.navigator.platform) || (/windows/i).test(w.navigator.userAgent) ) {
+                copyThis = copyThis.replace(/\n/g,"\r\n");
+              }
+              GM_setClipboard();
               this.selectors.$copyTrackersLink.addClass("active");
               this.selectors.$copyTrackersLink.text(this.selectors.$copyTrackersLink.text().replace("Copy ","Copied "));
             } else {
