@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+**2.2.7** (2013-07-24)
+* Added new ad block to the ad-list (`.dnotblcokmebro`).
+
 **2.2.6** (2013-07-15)
 * Checks for OS first before adding carriage returns (`GM_setClipboard`).
 

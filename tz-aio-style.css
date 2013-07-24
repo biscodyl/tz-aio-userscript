@@ -76,7 +76,7 @@
 .tz_aio_b.tz_aio_v2 input[type='submit']:hover {
   cursor: pointer;
 }
-.tz_aio_b.tz_aio_v2.no_ads .SPECIFICELEMENT, .tz_aio_b.tz_aio_v2.no_ads .dontblockmebro, .tz_aio_b.tz_aio_v2.no_ads .dnotblockmebro, .tz_aio_b.tz_aio_v2.no_ads .removed_ad {
+.tz_aio_b.tz_aio_v2.no_ads .SPECIFICELEMENT, .tz_aio_b.tz_aio_v2.no_ads .dontblockmebro, .tz_aio_b.tz_aio_v2.no_ads .dnotblcokmebro, .tz_aio_b.tz_aio_v2.no_ads .dnotblockmebro, .tz_aio_b.tz_aio_v2.no_ads .removed_ad {
   display: none !important;
 }
 .tz_aio_b.tz_aio_v2 .autocomplete {
