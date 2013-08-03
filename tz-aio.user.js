@@ -20,7 +20,7 @@
 // @include       /^https?://(www\.)?torrentz\.hk/.*/
 // @include       /^https?://(www\.)?torrents\.de/.*/
 // @include       /^https?://(www\.)?tz\.ai/*
-// @exclude       /^https?://[^/]+/feed\?.*/
+// @exclude       /^https?://[^/]+/feed(_[a-zA-Z]+)?\?.*/
 // @exclude       /^https?://[^/]+/announcelist_.*/
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/comment_.*/
@@ -43,21 +43,20 @@
 // ==/UserScript==
 
 /*
- * Compatibility
- * -------------
- *
- * Tested in Chrome 25+ (Tampermonkey v2.12.3124.16+)
- * and Firefox 19+ (and nightly dev) (GreaseMonkey 1.8+, Scriptish 0.1.8+) on Ubuntu 13.04
- *  
- * Legality
- * --------
- * 
- * Released under CC0 1.0 Universal (http://creativecommons.org/publicdomain/zero/1.0/).
- * The author of this script takes no responsibility for any potetial harm
- * done to any hamsters, servers, browsers or wallets. While browsing
- * affected sites with this script is fully legal,
- * downloading illegal copyrighted material still isn’t.
- * 
+    # Compatibility
+    
+    Tested in Firefox 19+ (and nightly dev) (GreaseMonkey 1.8+, Scriptish 0.1.8+)
+    and Chrome 25+ (Tampermonkey v2.12.3124.16+) on Ubuntu Linux
+    using Sublime Text, Sass, Compass.app, Git, and node.js for debugging.
+     
+    # Legality
+    
+    Released under CC0 1.0 Universal (http://creativecommons.org/publicdomain/zero/1.0/).
+    The author of this script takes no responsibility for any potetial harm
+    done to any hamsters, servers, browsers or wallets. While browsing
+    affected sites with this script is fully legal,
+    downloading illegal copyrighted material still isn’t.
+
 */
 
 (function (w, $, __) {
@@ -85,6 +84,10 @@
     ,execStartMS
     ,startLogMsg
     ,d               = w.document
+    // start webkit popstate "fire on load" fix
+    ,hpPopped        = ("state" in w.history && w.history.state !== null)
+    ,hpInitialURL    = d.location.href
+    // end fix
     ,logs            = 0
     ,scriptSource    = isGM ? GM_info.scriptMetaStr : isTM ? GM_info.scriptSource : ""
     ,UserScript      = function () {
@@ -92,6 +95,7 @@
       this.name = isSC ? GM_getMetadata("name")[0] : GM_info.script.name;
       this.slug = "tz_aio";
       this.version = isSC ? GM_getMetadata("version")[0] : GM_info.script.version;
+      this.bodyClass = this.slug + "_b " + this.slug + "_v" + (this.version.replace(/\..*/g,""));
       this.date = isSC ? GM_getMetadata("date")[0]
         : tzAio.getMeta(new RegExp("//\\s*@date\\s+([0-9\\-]+)","i"), 1);
       this.link = isSC ? GM_getMetadata("homepage")[0]
@@ -111,28 +115,34 @@
       ];
       this.defaultTrackers = [
         "udp://tracker.openbittorrent.com:80/"
-        ,"udp://tracker.ccc.de:80/"
-        ,"udp://tracker.publicbt.com:80/"
-        ,"udp://denis.stalker.h3q.com:6969/announce"
-        ,"udp://tracker.istole.it:6969/"
-        ,"udp://tracker.istole.it:80/"
-        ,"http://tracker.istole.it:80/"
         ,"http://tracker.openbittorrent.com:80/"
-        ,"http://tracker.ccc.de:80/"
+        ,"udp://tracker.publicbt.com:80/"
         ,"http://tracker.publicbt.com:80/"
+        ,"udp://tracker.istole.it:6969/"
+        ,"udp://tracker.ccc.de:80/"
+        ,"http://tracker.ccc.de:80/"
+        ,"udp://fr33dom.h33t.com:3310/announce"
         ,"http://inferno.demonoid.com:3407/announce"
         ,"http://tracker.ilibr.org:6969/announce"
-        ,"http://tracker.prq.to/announce"
+        ,"udp://tracker.prq.to/announce"
         ,"http://tracker.torrent.to:2710/announce"
+        ,"udp://11.rarbg.com/announce"
         ,"http://9.rarbg.com:2710/announce"
         ,"http://bt1.the9.com:6969/announce"
         ,"http://exodus.desync.com:6969/announce"
-        ,"http://genesis.1337x.org:1337/announce"
-        ,"http://nemesis.1337x.org:80/announce"
-        ,"http://tracker.hexagon.cc:2710/announce"
-        ,"http://tracker.torrentbox.com:2710/announce"
         ,"http://tracker.xpear.de:6969/announce"
         ,"udp://open.demonii.com:1337/announce"
+        ,"http://tracker.yify-torrents.com/announce"
+      ];
+      this.customCss = [
+        "/* "
+        ," This is added after the default stylesheet."
+        ," All pages have a body class of 'tz_aio_b tz_aio_v2'"
+        ," To hide all tag clouds for example:"
+        ,"   body." + (this.bodyClass.replace(/\s/, ".")) + " > div.cloud {"
+        ,"       display: none;"
+        ,"   }"
+        ,"*/","",""
       ];
       this.noRefUrl = "http://href.li/?";
       this.excludeFilter = "";
@@ -145,7 +155,7 @@
     sendLog         = function (message, callback) {
       logs++;
       if ( typeof w.console == "object" && typeof w.console.log === "function" ) {
-        if ( !(String(message).match(/^(Starting|Load\:|Exec\:|Thanks\sfor|Successfully.checked.for.updates)/)) ) {
+        if ( !(String(message).match(/^(Starting|Load\:|Exec\:|\d+\s+ajaxed\s+|Thanks\sfor|Successfully.checked.for.updates)/)) ) {
           w.console.log("--- TzAio logs[" + (logs-1) + "] ---");
         }
         w.console.log(message);
@@ -167,14 +177,16 @@
 
       getPageParmaters    : function () {
         return {
-          protocol : w.location.protocol
-          ,host    : w.location.hostname
-          ,path    : w.location.pathname
-          ,domain  : d.domain
-          ,thash   : w.location.pathname.replace(/\x2F/g,"")
-          ,search  : w.location.search
+          protocol  : w.location.protocol
+          ,host     : w.location.hostname
+          ,path     : w.location.pathname
+          ,domain   : d.domain
+          ,thash    : w.location.pathname.replace(/\x2F/g,"")
+          ,search   : w.location.search
           // remove hash to enable refreshing the page with location.href
-          ,href    : w.location.href.replace(w.location.hash,"").replace(/\#$/,"")
+          ,href     : w.location.href.replace(w.location.hash,"").replace(/\#$/,"")
+          ,title    : d.title
+          ,titleEnc : encodeURIComponent(d.title.replace(/\'/g,"_"))
         };
       },
 
@@ -223,11 +235,11 @@
         }
       ],
 
-      getDirectTorrentLinks     : function (href, hash, title, titleEnc) {
-        if ( !href || !hash || !title || !titleEnc ) {
-          sendLog("[getDirectTorrentLinks] is missing paramenters!");
+      getDirectTorrentLinks     : function (href, md5, title, titleEnc) {
+        if ( !href || !md5 || !title || !titleEnc ) {
+          sendLog("[getDirectTorrentLinks] is missing paramenters!" + tzAio.cache.bugReportMsg);
         } else {
-          var hash       = hash.toLowerCase()
+          var hash       = md5.toLowerCase()
             ,HASH        = hash.toUpperCase()
             ,torCacheUrl = "http://torcache.net/torrent/" + HASH + ".torrent?title=" + titleEnc
             ,torRageUrl  = "http://torrage.com/torrent/" + HASH + ".torrent"
@@ -257,8 +269,11 @@
             // www.torrentdownloads.me/torrent/1652094016/ubuntu-10+10-desktop-i386+iso
             // www.torrentdownloads.me/download/1652094016/ubuntu-10+10-desktop-i386+iso
             directHref = href.replace(/(\.me\/)torrent(\/)/i,"$1download$2");
-          } else if ( ~href.indexOf("kat.ph/") || ~href.indexOf("kickasstorrents.com/")
-            || ~href.indexOf("katproxy.com") || ~href.indexOf("katmirror.com/") || ~href.indexOf("kickass.to/") ) {
+          } else if ( ~href.indexOf("kat.ph/")
+            || ~href.indexOf("kickasstorrents.com/")
+            || ~href.indexOf("katproxy.com")
+            || ~href.indexOf("katmirror.com/")
+            || ~href.indexOf("kickass.to/") ) {
             // last checked 2013-07-05
             // www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
             // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
@@ -274,14 +289,17 @@
             // www.newtorrents.info/down.php?id=99999
             directHref = slashSplit && slashSplit.length >= 5 ? "http://" + slashSplit[2]
               + "/down.php?id=" + slashSplit[4] : null;
-          } else if ( ~href.indexOf("fenopy.eu/torrent") ) {
-            // last checked 2012-05-13
-            // fenopy.com/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA
-            // fenopy.com/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA==/download.torrent
+          } else if ( ~href.indexOf("fenopy.eu/torrent")
+            || ~href.indexOf("fenopy.se/torrent")
+            || ~href.indexOf("fenopy.com/torrent") ) {
+            // last checked 2013-07-27
+            // fenopy.domain/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA
+            // fenopy.domain/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA==/download.torrent
             // seems to use torcache but this works too
             directHref = href + "==/download.torrent";
-          } else if ( ~href.indexOf("extratorrent.com/torrent") ) {
-            // last checked 2012-05-13
+          } else if ( ~href.indexOf("extratorrent.com/torrent")
+            || ~href.indexOf("extramirror.com/torrent") ) {
+            // last checked 2013-07-27
             // extratorrent.com/torrent/9999999/Ubuntu-10-10-DVD-i386.html
             // extratorrent.com/download/9999999/Ubuntu-10-10-DVD-i386.torrent
             directHref = href.replace(/(\.com\/torrent)/i, ".com/download").replace(/\.html$/i, ".torrent");
@@ -364,8 +382,15 @@
             // take.fm/movies/999/releases/9999/torrent/download?file=Title+of+torrent.torrent
             directHref = slashSplit && slashSplit.length >= 7 ? "http://take.fm/movies/" + slashSplit[4]
               + "/releases/" + slashSplit[6] + "/torrent/download?file=" + titleEnc + ".torrent" : null;
-          } else if ( ~href.indexOf("thepiratebay.sx/torrent/") || ~href.indexOf("pirateproxy.net/torrent/") ) {
-            // last checked 2013-06-02
+          } else if ( ~href.indexOf("thepiratebay.sx/torrent/")
+            || ~href.indexOf("pirateproxy.net/torrent/")
+            || ~href.indexOf("pirateproxy.se/torrent/")
+            || ~href.indexOf("piratebayproxy.se/torrent/")
+            || ~href.indexOf("baymirror.com/torrent/")
+            || ~href.indexOf("piratereverse.info/torrent/")
+            || ~href.indexOf("piratebaymirror.me/torrent/") ) {
+            // last checked 2013-07-27
+            // not at all complete but these should cover it
             // thepiratebay.sx/torrent/9999999
             // torrents.thepiratebay.sx/9999999/Title+of+torrent.9999999.TPB.torrent
             directHref = slashSplit && slashSplit.length >= 5 ? "http://torrents." + slashSplit[2]
@@ -376,6 +401,18 @@
             // dl.torrentcrazy.com/bae62a9932ec69bc6687a6d399ccb9d89d00d455/Title+of+torrent.torrent
             directHref = slashSplit && slashSplit.length >= 6 ? "http://dl.torrentcrazy.com/" + hash
               + "/" + titleEnc + ".torrent" : null;
+          } else if ( ~href.indexOf("rarbg.com/torrent") ) {
+            // last checked 2013-07-27
+            // rarbg.com/torrents/filmi/download/abcde12/torrent.html
+            // rarbg.com/torrent/abcde12
+            // rarbg.com/download.php?id=abcde12&f=Title+of+torrent[rarbg.com].torrent
+            if ( href.match(/rarbg\.com\/torrents\/[^\/]+\/download\/[^\/]+\/torrent\.html$/i) ) {
+              directHref = slashSplit && slashSplit.length === 8 ? "http://rarbg.com/download.php?id="
+                + slashSplit[6] + "&f=" + titleEnc + "%5Brarbg.com%5D.torrent" : null;
+            } else if ( href.match(/rarbg\.com\/torrent\/[^\/]+\/?/i ) ) {
+              directHref = slashSplit && slashSplit.length === 5 ? "http://rarbg.com/download.php?id="
+                + slashSplit[4] + "&f=" + titleEnc + "%5Brarbg.com%5D.torrent" : null;
+            }
           } else if ( ~href.indexOf("nyaa.eu/?") ) {
             // last checked 2013-06-02
             // www.nyaa.eu/?page=view&tid=438802
@@ -440,9 +477,9 @@
           ,inum
           ,onum
         ;
-        if ( i && o && i.match(validMatch) && o.match(validMatch) ) {
-          i = String(i);
-          o = String(o);
+        i = String(i);
+        o = String(o);
+        if ( i.match(validMatch) && o.match(validMatch) ) {
           iarr = i.split("."); // ["2","2","0"]
           oarr = o.split(".");
           if ( i === o ) {
@@ -482,9 +519,15 @@
             + "; expires=" + String(ckExpDate) + "; path=/"
         ;
         // Why remove when it's better to be sure?
-        d.onclick && (d.onclick = null);
-        d.onmouseup && (d.onmouseup = null);
-        d.onmousedown && (d.onmousedown = null);
+        if ( d.onclick ) {
+          d.onclick = null;
+        }
+        if ( d.onmouseup ) {
+          d.onmouseup = null;
+        }
+        if ( d.onmousedown ) {
+          d.onmousedown = null;
+        }
         /* 2013-05-30 _wm event handler ads w/ click/mouseup + cookies
          * 
          *  Seemed simple enough at first, just create a cookie and it stops.
@@ -504,7 +547,6 @@
       setStorageOptions    : function (storeObj, callback) {
         var returnSavedValue
           ,tzCl = this.userScript.slug
-          ,i
         ;
         if ( storeObj ) {
           // pass though new values that are to be saved, ex. version (2.1.0)
@@ -568,18 +610,21 @@
 
       isAnyInputFocused   : function () {
         var returnBool = false
-          ,activeEl    = d.activeElement
+          ,activeEl    = $(d.activeElement)
         ;
-        if ( activeEl && activeEl.nodeName
-          && activeEl.nodeName.toLowerCase().match(/(input|textarea)/)
-          && !(activeEl.id && activeEl.id.toLowerCase().match(/_copy_tr_textarea/)) ) {
+        if ( activeEl.length && activeEl[0].nodeName
+          && activeEl[0].nodeName.toLowerCase().match(/(input|textarea)/)
+          && !(
+            activeEl.parents("div:eq(0)").length && activeEl.parents("div:eq(0)")[0].id
+            && activeEl.parents("div:eq(0)")[0].id.toLowerCase().match(/_copy_tr_textarea/)
+          ) ) {
           returnBool = true;
         }
         return returnBool;
       },
 
-      getNodeNumber       : function (nodeEl, getNumber) {
-        var getNumber  = getNumber !== undefined ? getNumber : true
+      getNodeNumber       : function (nodeEl, getNum) {
+        var getNumber  = getNum !== undefined ? getNum : true
           ,numberMatch = nodeEl && nodeEl.textContent ? nodeEl.textContent
             .replace(/[^\-\+0-9]/gi,"").match(/((?:\-|\+)?\d+)/) : null
           ,numberConv  = numberMatch && numberMatch.length === 2 ? Number(numberMatch[1]) : 0
@@ -594,18 +639,16 @@
         return returnThis;
       },
 
-      toggleCopyBox       : function (forceShow, forceHide) {
-        var forceShow   = typeof forceShow !== "undefined" ? forceShow : false
-          ,forceHide    = typeof forceHide !== "undefined" ? forceHide : false
-          ,linkHeight   = this.cache.copyTrackersLinkHeight
+      toggleCopyBox       : function (cmd) {
+        var linkHeight   = this.cache.copyTrackersLinkHeight
           ,useClipboard = typeof GM_setClipboard === "function"
-          ,copyThis
           ,isVisible
+          ,copyThis
         ;
         // if it's created
         if ( this.selectors.$copyTextArea.length && this.selectors.$copyTrackersLink.length ) {
           isVisible = this.selectors.$copyTextArea.is(":visible");
-          if ( forceShow || (!isVisible && !forceHide) ) {
+          if ( (!isVisible && cmd === 0) || cmd === 1 ) {
             // Show it
             if ( useClipboard ) {
               /*
@@ -614,7 +657,8 @@
                * when on a Linux platform, so try and check for OS first
                */
               copyThis = this.selectors.$copyTextArea.find("textarea")[0].innerHTML;
-              if ( (/win/i).test(w.navigator.platform) || (/windows/i).test(w.navigator.userAgent) ) {
+              if ( (w.navigator && w.navigator.platform && (/win/i).test(w.navigator.platform))
+                || (w.navigator && w.navigator.userAgent && (/windows/i).test(w.navigator.userAgent)) ) {
                 copyThis = copyThis.replace(/\n/g,"\r\n");
               }
               GM_setClipboard(copyThis);
@@ -624,12 +668,12 @@
               this.selectors.$copyTextArea.css({
                 top : (this.selectors.$copyTrackersLink.offset().top + linkHeight) + "px",
                 left : (this.selectors.$copyTrackersLink.offset().left) + "px"
-              }).stop().show(300).find("textarea")[0].select();
+              }).stop().show(250).find("textarea")[0].select();
             }
-          } else if ( forceHide || (isVisible && !forceShow) ) {
+          } else if ( (isVisible && cmd === 0) || cmd === 2 ) {
             // Hide it
             if ( !useClipboard ) {
-              this.selectors.$copyTextArea.stop().hide(200).blur();
+              this.selectors.$copyTextArea.stop().hide(200).find("textarea")[0].blur();
             }
           }
         }
@@ -637,9 +681,9 @@
 
       handleKeyUps        : function (e, unselected) {
         var noMods    = tzAio.noModKeys(e)
-          ,unselected = typeof unselected !== "undefined" ? unselected : false
           ,key        = +e.which
           ,safePlace  = !tzAio.isAnyInputFocused()
+          ,tzCl       = tzAio.userScript.slug
           ,newTabOpt
           ,torrentLinks
           ,nextPrevLink
@@ -661,7 +705,7 @@
               tzAio.selectors.$searchBar.empty();
               tzAio.selectors.$body.removeClass("search_ready");
               if ( tzAio.selectors.$copyTextArea.length ) {
-                tzAio.toggleCopyBox(false, true);
+                tzAio.toggleCopyBox(2);
               }
               // strange range error in Chrome but nothing breaks
               try {
@@ -674,7 +718,7 @@
           } else if ( tzAio.cache.isSingle ) {
             if ( key === 68 &&  __.isEqual(e.shiftKey, true) ) {
               // first direct torrent file
-              torrentLinks = $("." + tzAio.userScript.slug + "_dllink");
+              torrentLinks = $("." + tzCl + "_dllink");
               if ( torrentLinks.length ) {
                 newTabOpt = isTM ? { active : true, insert : true } : isSC ? true : null;
                 GM_openInTab(torrentLinks[0].href, newTabOpt);
@@ -686,15 +730,25 @@
               tzAio.handleMagnetClicks(false);
             } else if ( key === 67 && noMods && tzAio.selectors.$copyTextArea.length ) {
               // 'c'
-              tzAio.toggleCopyBox();
+              tzAio.toggleCopyBox(0);
             }
           } else if ( tzAio.cache.isSearch  ) {
             if ( key === 37 && noMods  ) {
               nextPrevLink = tzAio.selectors.$body.find(".results a[rel='prev']:eq(0)");
             } else if ( key === 39 && noMods ) {
               nextPrevLink = tzAio.selectors.$body.find(".results a[rel='next']:eq(0)");
+            } else if ( key === 37 && __.isEqual(e.shiftKey, true) ) {
+              e.preventDefault();
+              nextPrevLink = tzAio.selectors.$body.find(".results ." + tzCl + "_tv_prev_episode");
+              nextPrevLink = nextPrevLink && nextPrevLink.length
+                ? nextPrevLink : tzAio.selectors.$body.find(".results ." + tzCl + "_tv_prev_season");
+            } else if ( key === 39 && __.isEqual(e.shiftKey, true) ) {
+              e.preventDefault();
+              nextPrevLink = tzAio.selectors.$body.find(".results ." + tzCl + "_tv_next_episode");
+              nextPrevLink = nextPrevLink && nextPrevLink.length
+                ? nextPrevLink : tzAio.selectors.$body.find(".results ." + tzCl + "_tv_next_season");
             }
-            if ( typeof nextPrevLink !== "undefined" && nextPrevLink.length ) {
+            if ( nextPrevLink && nextPrevLink.length ) {
               if ( tzAio.storedSettings.ajaxedSorting ) {
                 nextPrevLink.trigger("click");
               } else {
@@ -734,7 +788,8 @@
         var latestVersionHtml = this.lVer.version
           && this.compareVersions(this.userScript.version, this.lVer.version) === -1
           ? " <a href='" + this.userScript.link + "'>Update available!</a>" : ""
-        ,htmlArr = [ "<p><b>" + this.userScript.name + " UserScript</b></p><ul>"
+        ,htmlArr = [ "<p><b>" + this.userScript.name + " UserScript</b></p>"
+          ,"<ul id='" + this.userScript.slug + "_help'>"
           ,"<li>Installed: v" + this.userScript.version + latestVersionHtml + "</li>"
           ,"<li>Homepage: <a href='" + this.userScript.link + "'>" + this.userScript.link + "</a></li>"
           ,"<li>On Github: <a href='" + this.userScript.gitHub + "'>" + this.userScript.gitHub + "</a></li>"
@@ -744,13 +799,22 @@
           ,this.userScript.gitHubIssues + "</a></li>"
           ,"<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, "
           ,"<a href='http://underscorejs.org/'>underscore.js</a> "
-          ,"&amp; the <a href='http://github.com/cowboy/jquery-replacetext/'>jQuery replaceText Plugin</a>."
-          ,"</li></ul>"
+          ,"&amp; the <a href='http://github.com/cowboy/jquery-replacetext/'>jQuery replaceText Plugin</a>.</li>"
+          ,"<li>Keyboard Shortcuts<ul>"
+          ,"<li><kbd>'C'</kbd> : " + (typeof GM_setClipboard === "function"
+            ? "Copy all the trackers" : "Toggle the tracker box") + ".</li>"
+          ,"<li><kbd>'D'</kbd> : Trigger the Magnet-link.</li>"
+          ,"<li><kbd>'SHIFT + D'</kbd> : Download the fist torrent-file listed.</li>"
+          ,"<li><kbd>'&larr; &rarr;'</kbd> : Navigate search results pages (Left arrow Right arrow).</li>"
+          ,"<li><kbd>'SHIFT + &rarr;'</kbd> : Next episode/season.</li>"
+          ,"<li><kbd>'SHIFT + &larr;'</kbd> : Previous episode/season.</li>"
+          ,"<li><kbd>'ESC'</kbd> : General exit/close.</li>"
+          ,"</ul></li></ul>"
         ];
         return htmlArr.join("");
       },
 
-      removeAds           : function (page, userOpts, element) {
+      removeAds           : function (page, userOpts, element, callback) {
         var adRemovedClass = "removed_ad"
           ,frontPageAd
         ;
@@ -791,7 +855,9 @@
             }
           }
         }
-        return true;
+        if ( callback && typeof callback === "function" ) {
+          callback();
+        }
       },
 
       linkifyCommentLinks : function (opts) {
@@ -839,23 +905,19 @@
             + "<mark class='" + tzCl + "_alt_msg'>" + latest.message  + "</mark></p>" : ""
           ,lastUpdate        = tzAio.lVer.checked && +tzAio.lVer.checked > 3600000
             ? " (Last checked &lt;" + (tzAio.getHoursPast(tzAio.lVer.checked)) + " hours ago)" : ""
-          ,versionHtml       = this.userScript.version + " (" + this.userScript.date + ")"
+          ,versionStr        = this.userScript.version + " (" + this.userScript.date + ")"
           ,versionHtml       = latest && latest.version !== this.userScript.version
-            ? versionHtml : "<mark title='You have the latest version! " + lastUpdate + "' "
-              + "class='" + tzCl + "_current_version_mark'>" + versionHtml + "</mark>"
-          ,copyTrackerDesc   = typeof GM_setClipboard === "function"
-            ? "copy all the trackers" : "toggle the tracker box"
+            ? versionStr : "<mark title='You have the latest version! " + lastUpdate + "' "
+              + "class='" + tzCl + "_current_version_mark'>" + versionStr + "</mark>"
           ,htmlArr           = [ "<p class='generic " + tzCl + "_info_p' style='"
             ,"background-image:url("+ this.userScript.icon + ");'>"
             ,"<a href='" + this.userScript.link + "'>Torrent All-in-One</a> "
-            ,versionHtml + " &mdash; "
-            ,"Use <kbd>'C'</kbd> to " + copyTrackerDesc + ", <kbd>'D'</kbd> "
-            ,"to trigger the magnet-link, and <kbd>'SHIFT+D'</kbd> to download the first "
-            ,"torrent-file listed. &mdash; "
-            ,"Like this userscript? Then please take a minute to rate and/or review this on <a href='"
-            ,this.userScript.link + "'>userscipts.org</a>. <em>Also hosted on "
+            ,versionHtml + " &mdash; Keyboard shortcuts? Learn about them <a href='"
+            ,"/help#" + tzCl + "_help'>here</a>. <br>"
+            ,"Like this userscript? Then please take a minute to rate and/or review this on <br>"
+            ,"<a href='" + this.userScript.link + "'>userscipts.org</a>. Also hosted on "
             ,"<a href='" + this.userScript.gitHub + "'>GitHub</a>, please report all "
-            ,"issues and bugs <a href='" + this.userScript.gitHubIssues + "'>here</a>.</em></p>"
+            ,"issues and bugs <a href='" + this.userScript.gitHubIssues + "'>here</a>.</p>"
             ,"<form id='" + tzCl + "_settings_submit' class='"
             ,tzCl + "_settings_form profile' method='get' action='"
             ,this.page.path + "'><fieldset><legend>TzAio Settings</legend>"
@@ -883,7 +945,7 @@
             ,trackersString + "</textarea><p>Optional. Default trackerlist (these are added to all torrents\' "
             ,"trackers, if absent). Note that these are combined with the torrents own trackers, and "
             ,"after that duplicates are removed, they get sorted by domain, and finally grouped "
-            ,"with any backup udp protocols.</p>"
+            ,"with any backup protocols.</p>"
             ,"<label for='" + tzCl + "_norefurl'>No referer url</label><input type='text' class='i' id='"
             ,tzCl + "_norefurl' name='" + tzCl + "_norefurl' "
             ,"value='" + opts.noRefUrl + "' placeholder='http://' />"
@@ -898,6 +960,10 @@
             ,"use <code>%s</code> to indicate keyword, and <code>_</code> to indicate a space). "
             ,"<em>How do I use it?</em> &mdash; On the torrent page, select some text in the title "
             ,"with the name of the torrent, and the links listed here will appear as links underneith.</p>"
+            ,"<label for='" + tzCl + "_custom_css_textarea'>Custom CSS</label>"
+            ,"<textarea id='" + tzCl + "_custom_css_textarea' wrap='off' rows='6' "
+            ,"name='custom_css' class='i'>" + (opts.customCss.join("\n")) + "</textarea>"
+            ,"<p>Optional. Edit this if you want to change the layout further, applies to all pages.</p>"
             ,"<label for='" + tzCl + "_exclude_filter_input'>Exclude filter</label>"
             ,"<input type='text' class='i' id='" + tzCl + "_exclude_filter_input' "
             ,"name='" + tzCl + "_exclude_filter_input' value='" + opts.excludeFilter + "' "
@@ -926,18 +992,12 @@
         this.selectors.$body.append(textareaHTML);
         this.selectors.$copyTextArea = $("#" + tzCl + "_copy_tr_textarea");
         this.selectors.$copyTrackersLink.on("click", function () {
-          tzAio.toggleCopyBox();
+          tzAio.toggleCopyBox(1);
           return false;
         });
       },
 
       getSelected         : function () {
-        // TODO: 
-        // (w||d).getSelection().anchorNode.nodeValue
-        //  = the targets text node,
-        //    counting the node that was the start of the selection.
-        //    anchordNode is null if no selection, nodeValue null
-        //    if unable to get selection
         var t = "";
         if ( w.getSelection ) {
           t = w.getSelection();
@@ -946,21 +1006,19 @@
         } else if ( d.selection ) {
           t = d.selection.createRange().text;
         }
+        /* OR, (w||d).getSelection().anchorNode.nodeValue = the targets text node,
+           counting the node that was the start of the selection.
+           anchordNode is null if no selection, nodeValue null
+           if unable to get selection */
         return t;
       },
 
       fillSearchBar       : function (event) {
         var selected
           ,delayTimeout
-          ,searchLink = ""
-          ,searchHtml = ""
-          ,_searchEgi = []
+          ,searchHtml   = ""
           ,tempStr
-          ,_temp
           ,searchStr
-          ,leftOffset
-          ,widthCalc
-          ,cssWidth
           ,engineHTMLArr
           ,i
         ;
@@ -1041,22 +1099,19 @@
             negativeElsLen = negativeEls.length;
             while ( (++negI < negativeElsLen) ) {
               negMatch = tzAio.getNodeNumber(negativeEls[negI], true);
+              negativeVotes = negativeVotes + negMatch;
             }
-            // negativeEls = votebox.find(".replist").has("a + a + a").each(function (index, element) {
-            //   var negMatch = tzAio.getNodeNumber(element, true);
-            //   negativeVotes += negMatch;
-            // });
             if ( positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2 ) {
               returnDigit = 1;
             }
           }
         }
         // Debug log
-        // sendLog( "statusDigit = " + statusDigit + "\nreturnDigit = " + returnDigit
-        //   +  ( typeof positiveVotes === "number" ? "\n( positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2 )\n =  "
-        //   + "( " + String(positiveVotes) + " >= 7 && (" + String(positiveVotes)
-        //   + "+" + String(negativeVotes) + ") >= 2 )" + "\n >> "
-          // + String(( positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2 )) : "") );
+        /*sendLog( "statusDigit = " + statusDigit + "\nreturnDigit = " + returnDigit
+          +  ( typeof positiveVotes === "number" ? "\n( positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2 )\n =  "
+          + "( " + String(positiveVotes) + " >= 7 && (" + String(positiveVotes)
+          + "+" + String(negativeVotes) + ") >= 2 )" + "\n >> "
+          + String(( positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2 )) : "") );*/
         return returnDigit;
       },
 
@@ -1072,7 +1127,6 @@
             errMsg = "[extractLeveledArray] couldn't extract that level!";
             sendLog(errMsg);
             throw new Error(errMsg);
-            break;
           }
         }
         return returnArr;
@@ -1081,14 +1135,14 @@
       sortTrByProtocol    : function (_arr) {
         // finalTrackerSorting
         var newArr   = []
-          ,udpPopped = null
+          ,udpPopped = null  // udpPopped is now the http backup
           ,prev      = null
           ,i
         ;
         for ( i = 0; i < _arr.length; i++ ) {
           udpPopped = null;
           prev = i >= 1 ? _arr[(i-1)] : "";
-          if ( prev.replace(/^udp/,"") == _arr[i].replace(/^https?/,"") ) {
+          if ( prev.replace(/^https?/,"") == _arr[i].replace(/^udp/,"") ) {
             udpPopped = newArr.pop();
             newArr.push(_arr[i]);
             newArr.push(udpPopped);
@@ -1116,8 +1170,8 @@
         ;
         for (i = 0; i < arr.length; i++) {
           next = (i+1) < arr.length ? arr[(i+1)] : "";
-          if ( next.replace(/^udp/,"").replace(/\/$/,"").replace(/:80\/?/,"")
-            == arr[i].replace(/^https?/,"").replace(/\/$/,"").replace(/:80\/?/,"") ) {
+          if ( next.replace(/^https?/,"").replace(/\/$/,"").replace(/:80\/?/,"")
+            == arr[i].replace(/^udp/,"").replace(/\/$/,"").replace(/:80\/?/,"") ) {
             newString += arr[i] + "\n";
           } else {
             newString += arr[i] + "\n\n";
@@ -1136,7 +1190,6 @@
           ,sortedString
           ,newArray
           ,i
-          ,x
           ,returnObject
         ;
         for ( i = 0; i < trackersArray.length; i++ ) {
@@ -1186,9 +1239,18 @@
       },
 
       makeStatsBar        : function (options, trackers, callback) {
-        var mg_trackerList  = "", magnetLinkHtml = "", finalHtml = ""
-          ,filesInfoText    = "", seedTleach, seedText, minPeersText, i
-          ,commentText, trackerNumText, copyTrackersHtml, trackerLen, _upLen, _downLen
+        var magnetLinkHtml = ""
+          , finalHtml      = ""
+          ,filesInfoText   = ""
+          ,seedTleach
+          ,seedText
+          ,minPeersText
+          ,i
+          ,commentText
+          ,copyTrackersHtml
+          ,trackerLen
+          ,_upLen
+          ,_downLen
           ,tzCl             = this.userScript.slug
           ,wmvPatt          = new RegExp("\\.wmv$","i")
           ,trackersDiv      = this.selectors.$body.find("div.trackers:eq(0)")
@@ -1228,7 +1290,6 @@
           ,htmlDivider      = " <span class='" + tzCl + "_sep'>&#124;</span> "
           ,currTrackerList = [], _up = [], _down = []
           ,upNum = 0, downNum = 0, topUpNum = 0, topDownNum = 0, seedMeter = 0, minPeers = 0
-          ,magnetHtml
           ,magnetUrl
         ;
         while ( (++trackerLinksI < trackerLinksLen) ) {
@@ -1315,7 +1376,6 @@
               fileLinksLenI = 0;
             }
           }
-          // filesDiv.attr("id","files_" + tzCl);
           filesDiv.before("<a name='files_" + tzCl + "'></a>");
           filesInfoText = "<a class='" + tzCl + "_folder_image' title='Not incl folders' href='#files_" + tzCl + "'> "
             + fileLinksLen + "</a> &frasl; ";
@@ -1379,60 +1439,82 @@
                 tzAio.cache.ajaxTimer = (new Date().getTime());
                 if ( !cachedSearchEl.hasClass(tzAio.userScript.slug + "_colorized") ) {
                   tzAio.initSearchPage(cachedSearchEl, tzAio.storedSettings, function (target) {
-                    /* DEBUG callback
+                    // DEBUG callback
                     sendLog((target.length) + " ajaxed div." + target[0].className + " - Exec: "
-                      + ((new Date().getTime())-tzAio.cache.ajaxTimer) + "ms");*/
+                      + ((new Date().getTime())-tzAio.cache.ajaxTimer) + "ms");
                   });
                 }
               }
-            };
+            }
           }
         });
       },
 
+      handlePopStates       : function (data) {
+        // This solves the issue in <= v2.2.7 where you couldn't use
+        //   the browsers back/forward buttons.
+        // webkit popstate "fire on load" fix
+        if ( !hpPopped && d.location.href == hpInitialURL ) return;
+        if ( data.state && data.state.tz_aio_ajax && data.state.url ) {
+          // If this history state contains an tz_aio_ajax url, go to it
+          d.location.href = data.state.url;
+        } else if ( data && !data.state && data.target ) {
+          // this is sortof useless but it stays none the less
+          d.location.href = data.target.document.location.href;
+        }
+      },
+
       doAjaxedSorting       : function (event) {
-        var relLink, relMatch;
+        var validLink, relMatch, absLink, $html, newTitle;
+        // TODO: try and make back/forward nav use this function instead of doing a hard redirect
         if ( this.href ) {
-          relMatch = this.href.match(new RegExp(tzAio.page.protocol.replace(":","\\:")
-            + "\\/\\/" + tzAio.page.domain.replace(".","\\.") + "(\\/.*)","i"));
+          relMatch = this.href.match(/https?\:\/\/[^\/]+(\/.*)/);
           // prevent leaking of unwanted ajax links, shouldn't happen but it's good to remember
-          relLink = relMatch && relMatch.length === 2 && relMatch[1] && relMatch[1].indexOf("i?") !== 1
-            && relMatch[1].indexOf("feed?") !== 0 ? relMatch[1] : undefined;
-          if ( relLink ) {
-            tzAio.selectors.$ajaxedResult.removeClass(tzAio.userScript.slug + "_colorized")
-              .load(relLink + " div.results > *", function (responseText, textStatus, xhr) {
-                tzAio.cache.ajaxTimer = new Date().getTime();
-                if ( textStatus == "error") {
-                  // sendLog("Sorry, there was an error fetching the page '" + relLink + "'"
-                  //   + xhr.status + " " + xhr.statusText);
-                  w.location.href = relLink;
-                } else {
-                  if ( w.history.pushState ) {
-                    w.history.pushState("", "", relLink);
-                    tzAio.page = tzAio.getPageParmaters();
+          validLink = relMatch && relMatch.length === 2 && relMatch[1] && relMatch[1].indexOf("/i?") !== 0
+            && relMatch[1].indexOf("/feed") !== 0 ? relMatch[1] : undefined;
+          if ( validLink ) {
+            absLink = relMatch[0];
+            tzAio.cache.ajaxTimer = new Date().getTime();
+            tzAio.selectors.$ajaxedResult.removeClass(tzAio.userScript.slug + "_colorized");
+            // changed from $.load() to enable getting the pages title
+            $.ajax({
+                url       : absLink
+                ,dataType : "html"
+              }).fail(function () {
+                sendLog("Sorry, there was an error fetching the page '" + absLink + "'", function () {
+                  w.location.href = absLink;
+                });
+              }).done(function (html) {
+                $html = $(html);
+                newTitle = $html.filter("title").text();
+                if ( w.history.pushState ) {
+                  w.history.pushState( { tz_aio_ajax : true, url : absLink }, newTitle, absLink);
+                }
+                tzAio.page = tzAio.getPageParmaters();
+                tzAio.page.title = newTitle;
+                tzAio.page.titleEnc = encodeURIComponent(newTitle.replace(/\'/g,"_"));
+                $("title").html(newTitle);
+                tzAio.selectors.$body.find("div.results:eq(0)").html($html.filter("div.results:eq(0)").html());
+                tzAio.selectors.$ajaxedResult = $("body").find("div.results:eq(0)");
+                tzAio.initSearchPage(tzAio.selectors.$ajaxedResult, tzAio.storedSettings, function (target) {
+                  // calling unsafeWindow.scrollTop gives us 0
+                  if ( typeof window === "object"
+                    && ($(window).scrollTop() - tzAio.selectors.$ajaxedResult.offset().top) > 0 ) {
+                    tzAio.selectors.$bodyANDhtml.animate({ scrollTop : 0 }, "slow");
                   }
-                  tzAio.selectors.$body = $("body");
-                  tzAio.selectors.$ajaxedResult = tzAio.selectors.$body.find(".results:eq(0)");
-                  tzAio.initSearchPage(tzAio.selectors.$ajaxedResult, tzAio.storedSettings, function (target) {
-                    // calling unsafeWindow.scrollTop gives us 0
-                    if ( typeof window === "object"
-                      && ($(window).scrollTop() - tzAio.selectors.$ajaxedResult.offset().top) > 0 ) {
-                      tzAio.selectors.$bodyANDhtml.animate({ scrollTop : 0 }, "slow");
-                    }
-                    if ( tzAio.selectors.$theSearchBox.length ) {
-                      tzAio.selectors.$theSearchBox.parents("form:first").prop("action", tzAio.page.path);
-                      if ( tzAio.page.search ) {
-                        var filterMatch = tzAio.page.search.replace(/^\?(?:[a-z]+\=)?\+?(.+)/i,"$1").match(/^([^\&]+)/i);
-                        if ( filterMatch && filterMatch.length === 2 && filterMatch[1] ) {
-                          tzAio.selectors.$theSearchBox.val(decodeURIComponent(filterMatch[1].replace(/\+/g," ")));
-                        }
+                  if ( tzAio.selectors.$theSearchBox.length ) {
+                    tzAio.selectors.$theSearchBox.parents("form:first").prop("action", tzAio.page.path);
+                    if ( tzAio.page.search ) {
+                      var filterMatch = tzAio.page.search.replace(/^\?(?:[a-z]+\=)?\+?(.+)/i,"$1").match(/^([^\&]+)/i);
+                      if ( filterMatch && filterMatch.length === 2 && filterMatch[1] ) {
+                        tzAio.selectors.$theSearchBox.val(decodeURIComponent(filterMatch[1].replace(/\+/g," ")));
                       }
                     }
-                    tzAio.bindAjaxLinks(target);
-                    // sendLog((target.length) + " ajaxed div." + target[0].className + " - Exec: "
-                    //   + ((new Date().getTime())-tzAio.cache.ajaxTimer) + "ms");
-                  });
-                }
+                  }
+                  tzAio.bindAjaxLinks(target);
+                  sendLog((target.length) + " ajaxed div." + target[0].className + " - Load+Exec: "
+                    + ((new Date().getTime())-tzAio.cache.ajaxTimer) + "ms");
+                });
               })
             ;
             return false;
@@ -1452,13 +1534,13 @@
         var dlElements       = resultsElement.getElementsByTagName("dl")
           ,dlElsLen          = dlElements.length
           ,trackerLen        = this.cache.userArray.length
-          ,trackerSstr       = this.getPlural(trackerLen)
+          ,trAppend          = this.getPlural(trackerLen)
           ,tzCl              = this.userScript.slug
           ,linkPatt          = this.cache.hashPatt
           ,doColorize        = options.searchHighlight
-          ,magnetTitleAppend = " with magnetlink (" + trackerLen
-            + " default tracker" + trackerSstr + ")"
-          ,searchGenLen      = this.cache.searchGenresLen
+          ,magnetTitleAppend = " with magnetlink (" + trackerLen + " default tracker" + trAppend + ")"
+          ,metaDLpatt        = this.cache.metaDLpatt
+          ,metaCl            = options.searchHighlight ? "meta-info colorizeme" : "meta-info"
           ,currentClName
           ,unverifiedClName  = ""
           ,coloredClName     = ""
@@ -1471,15 +1553,15 @@
           ,i, torrHash, torrLink, torrLinks, torrTitle, vSpan, dtContent
         ;
         for ( i = 0; i < dlElsLen; i++ ) {
+          if ( dlElements[i].textContent.match(metaDLpatt) ) {
+            dlElements[i].className = metaCl;
+            continue;
+          }
           if ( dlElements[i].style.display.toLowerCase() === "none" ) {
             continue;
           }
           unverifiedClName = "";
           currentClName = dlElements[i].className;
-          // [initSearchPage] added this class before this func was called
-          if ( currentClName.indexOf("dmca") !== -1 ) {
-            continue;
-          }
           // continue if not link, replace hyphens
           torrLinks = dlElements[i].getElementsByTagName("a");
           if ( !torrLinks.length ) {
@@ -1498,32 +1580,33 @@
           dlElements[i].appendChild(spanMagnet);
           vSpan = dlElements[i].getElementsByClassName("v");
           vSpan = (vSpan && vSpan.length ? vSpan[0] : null);
-          // stop if we're on a trackers list; too heavy and doesn't match enough
-          if ( !isTrackerList ) {
-            if ( vSpan ) {
-              if ( !/[1-9]/.test(vSpan.textContent) ) {
-                // no votes
-                unverifiedClName = currentClName + " " + tzCl + "_unverified_dl";
-              } else if ( /\-[0-9]/.test(vSpan.textContent) ) {
-                // negative votes
-                unverifiedClName = currentClName + " " + tzCl + "_fake_dl";
-              }
-              // Keyword check
-              if ( doColorize && this.searchGenres && this.searchGenres.length ) {
-                dtContent = dlElements[i].getElementsByTagName("dt");
-                dtContent = dtContent.length ? dtContent[0].textContent : "";
-                coloredClName = this.colorizeMatch(dtContent, this.searchGenres, torrTitle);
-              }
-            }
-            coloredClName = coloredClName.length ? " " + coloredClName : "";
-            if ( doColorize ) {
-              isActive = this.isActiveTorr( dlElements[i] );
-            }
-            if ( !isActive ) {
-              coloredClName = coloredClName + " inactive";
-            }
-            dlElements[i].className = unverifiedClName + coloredClName;
+          // stop if we're on a trackers list; too heavy and doesn't match enough anyways
+          if ( isTrackerList ) {
+            continue;
           }
+          if ( vSpan ) {
+            if ( !/[1-9]/.test(vSpan.textContent) ) {
+              // no votes
+              unverifiedClName = currentClName + " " + tzCl + "_unverified_dl";
+            } else if ( /\-[0-9]/.test(vSpan.textContent) ) {
+              // negative votes
+              unverifiedClName = currentClName + " " + tzCl + "_fake_dl";
+            }
+            // Keyword check
+            if ( doColorize && this.searchGenres && this.searchGenres.length ) {
+              dtContent = dlElements[i].getElementsByTagName("dt");
+              dtContent = dtContent.length ? dtContent[0].textContent : "";
+              coloredClName = this.colorizeMatch(dtContent, this.searchGenres, torrTitle);
+            }
+          }
+          coloredClName = coloredClName.length ? " " + coloredClName : "";
+          if ( doColorize ) {
+            isActive = this.isActiveTorr( dlElements[i] );
+          }
+          if ( !isActive ) {
+            coloredClName = coloredClName + " inactive";
+          }
+          dlElements[i].className = unverifiedClName + coloredClName;
         }
         resultsElement.className += doneResultClName;
         if ( callback && typeof callback === "function" ) {
@@ -1560,7 +1643,7 @@
           convertedPattern = userString.replace(/(^\/|\/$)/g,"");
         } else {
           userString = userString
-            .replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|\<|\>|\||\:|\-|\"|\')/g,"\\$1")
+            .replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|\x3C|\x3E|\||\:|\-|\"|\')/g,"\\$1")
             .replace(/\s/g,".")
           ;
           if ( userString.indexOf(",") !== -1 ) {
@@ -1589,35 +1672,23 @@
         return returnText.replace(/\s+/g," ");
       },
 
-      initialFilterOfList : function (list, opts, $dmcaElement, callback) {
+      initialFilterOfList : function (list, opts, callback) {
         var i
           ,dls                  = list.getElementsByTagName("dl")
           ,dlsLen               = dls.length
           ,deletedByFilterCount = 0
-          ,dmcaClass            = opts.searchHighlight ? "dmca colorizeme" : "dmca"
+          ,metaDLpatt           = tzAio.cache.metaDLpatt
           ,dlText
-          ,$logEl
         ;
         if ( opts.excludeFilter ) {
           for ( i = 0; i < dlsLen; i++ ) {
             dlText = tzAio.getResultTitle(dls[i]);
-            if ( dls[i].className !== "dmca" && dlText.match(tzAio.makeExcludePatt(opts.excludeFilter)) ) {
+            if ( !dlText.match(metaDLpatt) && dlText.match(tzAio.makeExcludePatt(opts.excludeFilter)) ) {
               deletedByFilterCount++;
               dls[i].style.display = "none";
             }
           }
-          if ( !$dmcaElement || !$dmcaElement.length ) {
-
-            $(list).find(" > dl:last").after("<dl class='" + dmcaClass + "'>"
-              + "<dt style='text-align: right'><span class='" + this.userScript.slug
-              + "_exclude_filter_count'></span></dt><dd></dd></dl>");
-          }
-          if ( $dmcaElement && $dmcaElement.length ) {
-              $dmcaElement.addClass(dmcaClass)
-                .find("dt").prepend("<span class='" + this.userScript.slug + "_exclude_filter_count'></span>");
-          }
-          $logEl = $(list).find("span." + this.userScript.slug + "_exclude_filter_count");
-          this.updateExcludeLog($logEl, deletedByFilterCount, list);
+          tzAio.cache.deletedByFilterCount = deletedByFilterCount;
         }
         if ( callback && typeof callback === "function" ) {
           callback(list);
@@ -1626,16 +1697,16 @@
 
       isActiveTorr        : function (el) {
         var activeTorrent = true
-          ,seedsEl        = el.getElementsByClassName("u")
-          ,seedsEl        = seedsEl && seedsEl.length ? seedsEl[0] : null
-          ,leachEl        = el.getElementsByClassName("d")
-          ,leachEl        = leachEl && leachEl.length ? leachEl[0] : null
-          ,torrDateEl     = el.getElementsByClassName("a")
-          ,torrDateEl     = torrDateEl && torrDateEl.length
-            ? torrDateEl[0].getElementsByTagName("span") : null
-          ,torrDateEl     = torrDateEl && torrDateEl.length ? torrDateEl[0] : null
-          ,torrDate       = torrDateEl ? torrDateEl.title : ""
-          ,torrDate       = torrDate ? new Date(torrDate).getTime() : 0
+          ,seedsElems     = el.getElementsByClassName("u")
+          ,seedsEl        = seedsElems && seedsElems.length ? seedsElems[0] : null
+          ,leachElems     = el.getElementsByClassName("d")
+          ,leachEl        = leachElems && leachElems.length ? leachElems[0] : null
+          ,torrDateElems  = el.getElementsByClassName("a")
+          ,torrDateEls    = torrDateElems && torrDateElems.length
+            ? torrDateElems[0].getElementsByTagName("span") : null
+          ,torrDateEl     = torrDateEls && torrDateEls.length ? torrDateEls[0] : null
+          ,torrDateTitle  = torrDateEl ? torrDateEl.title : ""
+          ,torrDate       = torrDateTitle ? new Date(torrDateTitle).getTime() : 0
           // less than one month old
           ,isNew          = (((new Date().getTime() - torrDate) / 1000 / 60 / 60 / 24) <= 31)
           ,seeders
@@ -1690,24 +1761,123 @@
         return coloredClName;
       },
 
+      makeSearchQuery     : function (a, b, c, d, e) {
+        return (this.page.path + "?f=" + encodeURIComponent((
+          ((a||"") + (b||"")).replace(/\s+/g, "+") + e + ((c||"") + (d||"")).replace(/\s+/g, "+")
+        ).replace(/(^\++|\++$)/g,"")).replace(/(\%2B)+/g, "+").replace(/(\%22)+/g, "%22"));
+      },
+
+      getNiceYear         : function (dateObj) {
+        var month = Number(dateObj.getMonth()) + 1;
+        var day = Number(dateObj.getDate());
+        var year = String(dateObj.getFullYear());
+        month = month < 10 ? "0" + String(month) : String(month);
+        day = day < 10 ? "0" + String(day) : String(day);
+        return year + " " + month + " " + day;
+      },
+
+      getValidDate        : function (date, go) {
+        var b          = true
+          ,oneDay      = 86400000
+          ,currDateObj = new Date()
+          ,currDateMS
+          ,newDate
+          ,dir         = go
+          ,i           = 0
+        ;
+        currDateObj.setFullYear(Number(date[0]));
+        currDateObj.setMonth((Number(date[1]) - 1));
+        currDateObj.setDate(Number(date[2]));
+        currDateObj.setHours(6);
+        currDateMS = currDateObj.getTime();
+        while (b && i < 10) {
+          newDate = this.getNiceYear(new Date(currDateMS+(oneDay*dir)));
+          if ( newDate.match(this.cache.validDatePatt) ) {
+            b = false;
+          } else {
+            dir = dir + go;
+          }
+          i++;
+        }
+        return newDate;
+      },
+
+      getTvToolbarHtml    : function (query) {
+        /* Torrentz uses a smart episode filter when searching with the non-default
+        pattern ex. S1E1, to S01E01, so this needs to validate as well,
+        it also applies to the format 1x[0]1 that torrentz also translates. */
+        var queryMatch   = query.match(/\?f=([^&]+)/i)
+          ,datem         = queryMatch && queryMatch.length === 2
+            ? decodeURIComponent(queryMatch[1]).replace(/(\d{4})\D?(\d{2})\D?(\d{2})/i, "$1"+"-"+"$2"+"-"+"$3")
+            .match(this.cache.validDatePatt) : null
+          ,epm           = queryMatch && queryMatch.length === 2
+            ? queryMatch[1].match(this.cache.validEpisodePatt) : null
+          ,legacym       = queryMatch && queryMatch.length === 2
+            ? queryMatch[1].match(this.cache.validLegacyEpPatt) : null
+          ,ymdMatch
+          ,tzCl          = this.userScript.slug
+          ,nEpLinkCl     = "class='" + tzCl + "_tv_next_episode'"
+          ,pEpLinkCl     = "class='" + tzCl + "_tv_prev_episode'"
+          ,nSeLinkCl     = "class='" + tzCl + "_tv_next_season'"
+          ,pSeLinkCl     = "class='" + tzCl + "_tv_prev_season'"
+          ,htmlStr       = ""
+          ,ep            = {}
+          ,dp            = {}
+        ;
+        if (datem && datem.length === 17) {
+          ymdMatch = datem[3].match(/^(\d{4})\D?(\d{2})\D?(\d{2})/);
+          dp.year = ymdMatch[1];
+          dp.month = ymdMatch[2];
+          dp.day = ymdMatch[3];
+          dp.nextDate = this.getValidDate([dp.year, dp.month, dp.day], 1);
+          dp.prevDate = this.getValidDate([dp.year, dp.month, dp.day], -1);
+          htmlStr = "<b><a " + pEpLinkCl + " href='"
+            + this.makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22" + (dp.prevDate.replace(/\s+/g, "+")) + "\x22")
+            + "'>&lt; " + dp.prevDate + "</a></b> | <b><a " + nEpLinkCl + " href='"
+            + this.makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22" + (dp.nextDate.replace(/\s+/g, "+")) + "\x22")
+            + "'>" + dp.nextDate + " &gt;</a></b>";
+        } else if (epm && epm.length === 8) {
+          ep.episode = epm[5] && epm[5] !== "0" ? +epm[5].replace(/^0/,"") : 0;
+          ep.season = epm[3] !== "0" ? +epm[3].replace(/^0/,"") : 0;
+          ep.currSeason = "S" + this.padZeroes(ep.season, 2);
+          ep.nextEpisode = ep.currSeason + "E" + this.padZeroes((ep.episode+1), 2);
+          ep.prevEpisode = ep.episode > 1 ? ep.currSeason + "E" + this.padZeroes((ep.episode-1), 2) : "";
+          ep.nextSeason = "S" + this.padZeroes((ep.season+1), 2);
+          ep.prevSeason = ep.season > 1 ? "S" + this.padZeroes((ep.season-1), 2) : "";
+          if ( ep.prevSeason ) {
+            htmlStr = htmlStr + "<a " + pSeLinkCl + " href='"
+              + this.makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.prevSeason + "E01" : ep.prevSeason))
+              + "'>&laquo; " + ep.prevSeason + "</a> ";
+          }
+          if ( epm[4] && ep.prevEpisode ) {
+            htmlStr = htmlStr + "<a " + pEpLinkCl + " href='" + this.makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.prevEpisode)
+              + "'><b>&lt; " + ep.prevEpisode + "</b></a> ";
+          }
+          if ( (ep.prevSeason) || (epm[4] && ep.prevEpisode) ) {
+            htmlStr = htmlStr + "| ";
+          }
+          if ( epm[4] && ep.nextEpisode ) {
+            htmlStr = htmlStr + "<a " + nEpLinkCl + " href='" + this.makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.nextEpisode)
+              + "'><b>" + ep.nextEpisode + " &gt;</b></a> ";
+          }
+          if ( ep.nextSeason ) {
+            htmlStr = htmlStr + "<a " + nSeLinkCl + " href='"
+              + this.makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.nextSeason + "E01" : ep.nextSeason))
+              + "'>" + ep.nextSeason + " &raquo;</a>";
+          }
+        } else if ( legacym && legacym.length === 7 ) {
+          htmlStr = "Use S<b>XX</b>E<b>XX</b> to search for episodes";
+        }
+        return htmlStr;
+      },
+
       initSearchPage      : function ($resultsEl, options, callback) {
         var searchParameters = this.page.search.match(/^\?f\=(.+)$/i)
-          ,resultsH2, dmcaDl, $lastListItem, $dmcaEl
+          ,resultsH2
+          ,tvToolbarLinks
+          ,$filterBar
         ;
         if ( $resultsEl && $resultsEl.length ) {
-
-          if ( this.cache.isSearch || this.cache.isSingle )  {
-            // Add class to 'X results removed in compliance with EUCD / DMCA' first
-            $lastListItem = $resultsEl.find("dl:last");
-            if ( $lastListItem.length && $lastListItem[0].innerHTML.indexOf("removed in compliance") !== -1 ) {
-              $lastListItem.addClass("dmca");
-              $dmcaEl = $lastListItem;
-            }
-            // now insert a final 'p' for single page search results
-            if ( options.searchHighlight && $lastListItem.length && $resultsEl.find(" > p").length === 0 ) {
-              $("<p/>").html(" ").appendTo($resultsEl);
-            }
-          }
           resultsH2 = $resultsEl.find(" > h2");
           // Add rss link for "approximate match" and no results
           if ( $resultsEl.length === 1 && searchParameters && searchParameters.length >= 2
@@ -1718,13 +1888,40 @@
               + this.cache.RSSIMG + "' title='This RSS feed is empty'></a>")
             ;
           }
+          if ( this.cache.isSearch && this.page.path !== "/i" && !this.cache.isSingle ) {
+            $filterBar = $resultsEl.find(" > h3:eq(0)");
+            tvToolbarLinks = this.getTvToolbarHtml(this.page.search);
+            if ( tvToolbarLinks ) {
+              $filterBar.prepend("<span style='float:left;text-align:left;margin-right:10px;'>" + tvToolbarLinks + "</span>");
+            }
+          }
           // for every .results div
           $resultsEl.each(function (index, element) {
             if ( element.className.indexOf(tzAio.userScript.slug + "_colorized") === -1 ) {
-              tzAio.initialFilterOfList(element, options, $dmcaEl, function (filteredList) {
+              tzAio.initialFilterOfList(element, options, function (filteredList) {
                 tzAio.dlResultsActions(filteredList, options, function (finishedResult) {
+                  var excludeCount
+                    ,$result   = $(finishedResult)
+                    ,tzCl      = tzAio.userScript.slug
+                    ,dmcaClass = options.searchHighlight ? "meta-info colorizeme" : "meta-info"
+                    ,$logEl
+                  ;
+                  // insert empty <p/> as the curved spacer for colored results
+                  if ( (tzAio.cache.isSearch || tzAio.cache.isSingle)
+                    && options.searchHighlight && $resultsEl.find("dl").length && $resultsEl.find(" > p").length === 0 ) {
+                    $("<p/>").html(" ").appendTo($resultsEl);
+                  }
+                  if ( options.excludeFilter ) {
+                    excludeCount = tzAio.cache.deletedByFilterCount || 0;
+                    tzAio.cache.deletedByFilterCount = 0; // reset cache value
+                    $result.find(" > dl:last").after("<dl class='" + dmcaClass + "'>"
+                      + "<dt style='text-align: right'><span class='" + tzCl
+                      + "_exclude_filter_count'></span></dt><dd></dd></dl>");
+                    $logEl = $result.find("span." + tzCl + "_exclude_filter_count");
+                    tzAio.updateExcludeLog($logEl, excludeCount, finishedResult);
+                  }
                   if ( callback && typeof callback === "function" ) {
-                    callback($(finishedResult));
+                    callback($result);
                   }                
                 });
               });
@@ -1772,22 +1969,21 @@
           tzAio.setupCopyTextArea(trackersText);
           tzAio.linkifyCommentLinks(options);
           if ( callback && typeof callback === "function" ) {
-            callback(options, trackers);
+            callback(options);
           }
         });
       },
 
       initSettingsPanel   : function (options, trackers, callback) {
-        var tzCl          = this.userScript.slug,
-          settingsVisible = false,
-          settingsButton  = "<li class='" + tzCl + "_settings'>"
+        var tzCl           = this.userScript.slug
+          ,settingsButton  = "<li class='" + tzCl + "_settings'>"
             + "<a href='#' title='Change TzAio Settings'>TzAio</a>"
         ;
         this.removeAds("common", options);
         this.selectors.$topDiv = this.selectors.$body.find("div.top:eq(0)");
         this.selectors.$settingsEl = this.selectors.$topDiv.after(
-            this.getSettingsHtml(options, trackers.userString)
-          ).find(" > ul").prepend(settingsButton).end();
+          this.getSettingsHtml(options, trackers.userString)
+        ).find(" > ul").prepend(settingsButton).end();
         this.selectors.$settingsLink = this.selectors.$topDiv.find(" > ul > li."
           + tzCl + "_settings a");
         this.selectors.$scriptInfoP = this.selectors.$topDiv.next("p.generic");
@@ -1798,10 +1994,11 @@
               ,disabledInput    = tzAio.selectors.$settingsForm.find("input[type='submit']")
                 .prop("disabled", true)
               ,saveSearchEngines
+              ,saveCustomCss
               ,confirmNewStorageRules
               ,trackersVal
               ,searchEnginesVal
-              ,validateInput
+              ,customCssVal
               ,noRefVal
               ,excludeFilterVal
               ,invalidItemNames = ""
@@ -1815,10 +2012,12 @@
             });
             tzAio.selectors.$defTrackersTextArea = $("#" + tzCl + "_default_trackers_textarea");
             tzAio.selectors.$defSearchEngTextArea = $("#" + tzCl + "_default_searchengines_textarea");
+            tzAio.selectors.$customCssTextArea = $("#" + tzCl + "_custom_css_textarea");
             tzAio.selectors.$noRefInput = $("#" + tzCl + "_norefurl");
             tzAio.selectors.$excludeFilterInput = $("#" + tzCl + "_exclude_filter_input");
             trackersVal = tzAio.selectors.$defTrackersTextArea.val();
             searchEnginesVal = tzAio.selectors.$defSearchEngTextArea.val();
+            customCssVal = tzAio.selectors.$customCssTextArea.val();
             noRefVal = tzAio.selectors.$noRefInput.val();
             excludeFilterVal = tzAio.selectors.$excludeFilterInput.val();
 
@@ -1835,8 +2034,10 @@
               saveTrackers = __.compact(saveTrackers);
               saveSearchEngines = searchEnginesVal.split(/\s+/);
               saveSearchEngines = __.compact(saveSearchEngines);
+              saveCustomCss = customCssVal.split(/\n/);
               submittedOptions.defaultTrackers = saveTrackers;
               submittedOptions.searchEngines = saveSearchEngines;
+              submittedOptions.customCss = saveCustomCss;
               submittedOptions.noRefUrl = noRefVal.replace(/(^\s+|\s+$)/g,"");
               submittedOptions.excludeFilter = excludeFilterVal.replace(/(^\s*\,|\,\s*$)/g,"")
                 .replace(/\,{2,}/g,",").replace(/(^\s+|\s+$)/g,"");
@@ -1885,7 +2086,7 @@
           tzAio.selectors.$settingsLink.parent("li")
             .toggleClass(tzAio.userScript.slug + "_settings_open");
           if ( tzAio.selectors.$copyTextArea && tzAio.selectors.$copyTextArea.length ) {
-            tzAio.toggleCopyBox(false, true);
+            tzAio.toggleCopyBox(2);
           }
           return false;
         });
@@ -1911,11 +2112,14 @@
       },
 
       setupUserSettings   : function (callback) {
-        // Theory: Skip storing anything until user saves manually the first time,
-        //   helps avoid errors that breaks every first [unsaved] visit,
-        //   plus it's evil to store anything and not letting the user know first
-        var newSettings, trackers;
-        if ( !GM_getValue(this.userScript.slug + "_useroptions", false) ) {
+        /* Theory: Skip storing anything until user saves manually the first time,
+           helps avoid errors that breaks every first [unsaved] visit,
+           plus it's evil to store anything and not letting the user know first */
+        var newSettings
+          ,trackers
+          ,opts = GM_getValue(this.userScript.slug + "_useroptions", false)
+        ;
+        if ( !opts ) {
           // first time user
           this.cache.freshUser = true;
           newSettings = this.userScript;
@@ -1937,11 +2141,9 @@
         this.cache.searchEnginesLen = this.storedSettings.searchEngines.length;
         trackers = this.makeTrackersObject(this.storedSettings.defaultTrackers, false);
         // Redirect users with SSL forced
-        if ( this.storedSettings.forceHTTPS ) {
-          if ( this.page.protocol === "http:" ) {
-            location.href = location.href.replace(/^http:/, "https:");
-            return;
-          }
+        if ( this.storedSettings.forceHTTPS && this.page.protocol === "http:" ) {
+          d.location.href = d.location.href.replace(/^http:/, "https:");
+          return;
         }
         if ( callback && typeof callback === "function" ) {
           callback(newSettings, trackers);
@@ -1952,6 +2154,7 @@
         var logHtml = count + " result" + this.getPlural(count) + " removed using TzAio filter";
         logHtml += ($target.parents("dt:eq(0)").text().match(/\S/) ? "&nbsp;&ndash;&nbsp;" : "");
         $target.html(logHtml).one("click", function () {
+          $(this).css("cursor", "default");
           $(resultsList).find("dl:hidden").css("display", "block");
         });
       },
@@ -1986,9 +2189,9 @@
             ,now            = new Date().getTime()
             // force re-check for new/updated installs
             ,lastCheck      = tzAio.lVer.checked || (now-updateInterval-1000)
-            ,lastCheck      = Number(lastCheck)
             ,updateMessage
           ;
+          lastCheck = Number(lastCheck);
           updateMessage = "New version of TzAio available!\n" + tzAio.userScript.link;
           if ( (now - lastCheck) >= updateInterval ) {
             $.getJSON("http://elundmark.se/_files/js/tz-aio/log/update-check.php", {
@@ -2006,9 +2209,9 @@
                     GM_setValue(tzCl + "_json_update_check", "{}");
                   } else {
                     if ( updateObject.vStatus === -1 && updateObject.alerted !== updateObject.version ) {
-                      // new version available and not alerted yet
-                      //   {}.alerted will always be a bigger number
-                      //   and if user skips another version the alert should trigger again
+                      /* new version available and not alerted yet
+                         {}.alerted will always be a bigger number
+                         and if user skips another version the alert should trigger again */
                       alert( updateMessage + "\nInstalled: " + tzAio.userScript.version
                         + " - Latest: " + updateObject.version );
                       updateObject.checked = (now-updateInterval-1000); // forces a re-check after update
@@ -2041,11 +2244,16 @@
     }
 
     tzAio.cache = {
-      RSSIMG            : "/img/rss.png"
+      RSSIMG             : "/img/rss.png"
       ,searchGenresLen   : tzAio.searchGenres.length
       ,freshUser         : false
       ,sKeywordPatt      : /»\s+?(.*)$/i
       ,hashPatt          : /[a-zA-Z0-9]{40}/
+      ,metaDLpatt        : /(explicit\s+results?\s+hidden\s+by\s+family\s+filters?|results?\s+removed\s+in\s+compliance\s+with)/i
+      ,validEpisodePatt  : /(.*?)([^sS=]|\b)S([0-9]{1,2})(E([0-9]{1,2}))?([^0-9]|\b)(.*)/i
+      ,validLegacyEpPatt : /(.*?)([^0-9=]|\b)([0-9]{1,2})x([0-9]{1,2})([^0-9]|\b)(.*)/i
+      ,validDatePatt     : new RegExp("(.*?)([^0-9=]|\\b)(([0-9]{4})\\D?(((0[13578]|(10|12))\\D?(0[1-9]|[1-2]"
+        +"[0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)\\D?(0[1-9]|[1-2][0-9]|30))))([^0-9]|\\b)(.*)","i")
       ,twoPartDomainPatt : new RegExp("(\\.com|\\.co|\\.info|\\.mobi|\\.net|\\.ar|\\.as|\\.at|"
         + "\\.bb|\\.bg|\\.br|\\.ca|\\.ch|\\.cn|\\.cs|\\.dk|\\.ee|\\.es|\\.fi|\\.fr|\\.gr|\\.in|"
         + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}","")
@@ -2081,14 +2289,15 @@
       tzAio.selectors.$bodyANDhtml = tzAio.selectors.$body.add($("html"));
 
       // tell the world
-      tzAio.selectors.$body.addClass(tzAio.userScript.slug + "_b "
-        + tzAio.userScript.slug + "_v" + (tzAio.userScript.version.replace(/\..*/g,"")));
+      tzAio.selectors.$body.addClass(tzAio.userScript.bodyClass);
 
       // init calls
       sendLog(startLogMsg, function () {
         
         tzAio.setupUserSettings(function (userOptions, trackers) {
           
+          GM_addStyle(userOptions.customCss.join("\n"));
+
           tzAio.initSettingsPanel(userOptions, trackers, function (options, trackers){
             
             // look for search results
@@ -2105,10 +2314,10 @@
 
             } else if ( tzAio.page.thash.match(tzAio.cache.hashPatt) ) {
               tzAio.cache.isSingle = true;
-              tzAio.initSingleTorrent(options, trackers, function (options, trackers) {
+              tzAio.initSingleTorrent(options, trackers, function (options) {
                 if ( tzAio.cache.$searchResults.length ) {
                   // Related search results
-                  tzAio.initSearchPage(tzAio.cache.$searchResults, options, function (searchElement) {
+                  tzAio.initSearchPage(tzAio.cache.$searchResults, options, function () {
                     tzAio.lastAction();
                   });
                 } else {
@@ -2123,7 +2332,9 @@
 
             } else if ( tzAio.page.path === "/" ) {
 
-              tzAio.removeAds("splash", options) && tzAio.lastAction();
+              tzAio.removeAds("splash", options, function () {
+                tzAio.lastAction();
+              });
 
             } else if ( tzAio.page.path === "/i"
               || tzAio.page.path.match(/^\/(search|any|verified|advanced|tracker_)/)
@@ -2136,6 +2347,10 @@
                 var observer;
                 if ( tzAio.page.path !== "/i" ) {
                   if ( options.ajaxedSorting ) {
+                    if ( w.history.pushState ) {
+                      // listen for popstate events
+                      w.onpopstate = tzAio.handlePopStates;
+                    }
                     tzAio.bindAjaxLinks(results);
                   }
                 } else if ( tzAio.page.path === "/i" ) {

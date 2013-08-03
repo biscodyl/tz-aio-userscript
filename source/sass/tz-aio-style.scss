@@ -1,45 +1,45 @@
 @import "compass/utilities";
 @import "compass/css3";
 
-$SRTV: #F5C0BF;
-$SRMOVIE: #FCD1C0;
-$SRGAME: #F2C3A1;
-$SRBOOK: #CCDBEB;
-$SRMUSIC: #D3E8C2;
-$SRAPP: #EDEDF0;
-$SRPICTURE: #E0C4DA;
-$SRMISC: #DDBFDD;
-$SRANIME: #F4DE7A;
-$SRPINK: #FFBFE2;
-$DMCA: #FFE8DF;
-$TZBLUE: #369;
-$TZORANGE: #FFB090;
-$LIGHTTZBLUE: #90B2D5;
-$DARKTZBLUE: #0C2C4C;
-$TZPINK: #f5dfd6;
-$LIGHTPINK: #faefeb;
-$WHITE: #fff;
-$BLACK: #000;
-$INACTIVEGRAY: #888;
-$FORMGRAY: #F1F2F3;
-$LOGOHOVER: #b3cce6;
-$DARKGRAY: #333;
-$MILKWHITE: #eee;
-$GREEN: #00b900;
-$BROWN: #805B4D;
-$TEXTBROWN: #6B3F2E;
-$GRAY: #AAA;
-$LIGHTGRAY: #ccc;
-$LIGHTGREEN: #d4ffd4;
-$ORANGE: #F51;
-$WARNRED: #CC0000;
-$SOFTBLUE: #BCC6CF;
-$COPYAREABG: rgba(255,255,255,0.8);
-$WARNSHADOW: rgba(0,0,0,0.2);
-$RGBATRANSP: rgba(255,255,255,0);
-$TRANSPARENTGIF: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-$INFORMATION: "/img/information.png";
-$RSSIMG: "/img/rss.png";
+$SRTV           : #F5C0BF;
+$SRMOVIE        : #FCD1C0;
+$SRGAME         : #F2C3A1;
+$SRBOOK         : #CCDBEB;
+$SRMUSIC        : #D3E8C2;
+$SRAPP          : #EDEDF0;
+$SRPICTURE      : #E0C4DA;
+$SRMISC         : #DDBFDD;
+$SRANIME        : #F4DE7A;
+$SRPINK         : #FFBFE2;
+$DMCA           : #FFE8DF;
+$TZBLUE         : #369;
+$TZORANGE       : #FFB090;
+$LIGHTTZBLUE    : #90B2D5;
+$DARKTZBLUE     : #0C2C4C;
+$TZPINK         : #f5dfd6;
+$LIGHTPINK      : #faefeb;
+$WHITE          : #fff;
+$BLACK          : #000;
+$INACTIVEGRAY   : #888;
+$FORMGRAY       : #F1F2F3;
+$LOGOHOVER      : #b3cce6;
+$DARKGRAY       : #333;
+$MILKWHITE      : #eee;
+$GREEN          : #00b900;
+$BROWN          : #805B4D;
+$TEXTBROWN      : #6B3F2E;
+$GRAY           : #AAA;
+$LIGHTGRAY      : #ccc;
+$LIGHTGREEN     : #d4ffd4;
+$ORANGE         : #F51;
+$WARNRED        : #C00;
+$SOFTBLUE       : #BCC6CF;
+$COPYAREABG     : rgba(255,255,255,0.8);
+$WARNSHADOW     : rgba(0,0,0,0.2);
+$RGBATRANSP     : rgba(255,255,255,0);
+$TRANSPARENTGIF : "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+$INFORMATION    : "/img/information.png";
+$RSSIMG         : "/img/rss.png";
 
 .verified-image {
   background-image : inline-image("download_button_normal.png");
@@ -61,10 +61,10 @@ $RSSIMG: "/img/rss.png";
 }
 
 .tzAioborderBoxForm {
-  width: 98%;
-  min-width: 98%;
-  max-width: 98%;
   @include box-sizing(border-box);
+  min-width: 98% !important;
+  max-width: 98% !important;
+  width: 98% !important;
 }
 
 $blinkfrom: 1.0;
@@ -95,12 +95,19 @@ $blinkto:   0.0;
     cursor: pointer;
   }
 
+  #tz_aio_help li ul {
+    list-style-type: square;
+    list-style-image: inline-image("keyb.png");
+    margin: 0;
+    padding: 4px 0 0 20px;
+  }
+
   &.no_ads .SPECIFICELEMENT, &.no_ads .dontblockmebro, &.no_ads .dnotblcokmebro,
   &.no_ads .dnotblockmebro, &.no_ads .removed_ad {
     display: none !important;
   }
 
-  textarea,
+  .tz_aio_settings_form textarea,
   .tz_aio_settings_form input[type='text'],
   .tz_aio_settings_form p {
     @extend .tzAioborderBoxForm;
@@ -248,38 +255,38 @@ $blinkto:   0.0;
     position: absolute;
     top: 0;
     right: 62px;
-  }
-  .tz_aio_dllink em {
-    color: $BROWN;
-    font-size: 12px;
-    line-height: 20px;
-    height: 20px;
-    font-style: normal;
-    font-weight: normal;
-    display: block;
-    text-align: center;
-    background: $TZPINK;
-    white-space: nowrap;
-    overflow: visible;
-    @include border-radius(6px);
-  }
-  .tz_aio_dllink:hover em {
-    background: $GREEN;
-    color: $WHITE;
-    @include box-shadow(inset 0 0 2px $GREEN);
-  }
-  .tz_aio_dllink:active {
-    top: 2px;
+    em {
+      color: $BROWN;
+      font-size: 12px;
+      line-height: 20px;
+      height: 20px;
+      font-style: normal;
+      font-weight: normal;
+      display: block;
+      text-align: center;
+      background: $TZPINK;
+      white-space: nowrap;
+      overflow: visible;
+      @include border-radius(6px);
+    }
+    &:hover em {
+      background: $GREEN;
+      color: $WHITE;
+      @include box-shadow(inset 0 0 2px $GREEN);
+    }
+    &:active {
+      top: 2px;
+    }
   }
   /* reset default background */
-  .download dl dt a:hover {
-    background-color: transparent;
-  }
-  .download dl dt a.tz_aio_dllink:hover ~ a,
-  .download dl dt a.tz_aio_dllink:hover + a,
-  .download dl dt a:hover {
-    background-image: $LIGHTPINK;
-    @include background-image(linear-gradient(left, $LIGHTPINK 0%, $LIGHTPINK 79%, $WHITE 100%));
+  .download dl dt a {
+    &:hover {
+      background-color: transparent;
+    }
+    &.tz_aio_dllink:hover ~ a, &.tz_aio_dllink:hover + a, &:hover {
+      background-image: $LIGHTPINK;
+      @include background-image(linear-gradient(left, $LIGHTPINK 0%, $LIGHTPINK 79%, $WHITE 100%));
+    }
   }
   h2 span::selection,
   .tz_aio_copy_textarea textarea::selection {
@@ -294,6 +301,9 @@ $blinkto:   0.0;
   .tz_aio_copy_textarea textarea:focus {
     outline: none;
   }
+  .tz_aio_copy_textarea, .tz_aio_copy_textarea textarea {
+    @include box-sizing(border-box);
+  }
   .tz_aio_copy_textarea {
     z-index: 11;
     position: absolute;
@@ -301,26 +311,25 @@ $blinkto:   0.0;
     left: 0;
     display: none;
     padding: 10px;
+    width: 500px;
+    height: 280px;
     @include border-corner-radius(top, right, 3px);
     @include border-corner-radius(bottom, right, 3px);
     @include border-corner-radius(bottom, left, 3px);
     @include box-shadow(0 5px 15px $TZBLUE);
     background: $COPYAREABG;
-  }
-  .tz_aio_copy_textarea textarea {
-    width: 415px;
-    height: 238px;
-  }
-  .tz_aio_copy_textarea textarea {
-    border: 0;
-    white-space: nowrap;
-    overflow: auto;
-    padding: 0;
-    color: $DARKGRAY;
-    background-color: $WHITE;
-    font-size: 13px;
-    line-height: 1.2;
-     /*'Ubuntu Mono', Menlo, Monaco, Consolas, Inconsolata, FreeMono, monospace;*/
+    textarea {
+      border: 0;
+      white-space: nowrap;
+      overflow: auto;
+      padding: 0;
+      color: $DARKGRAY;
+      background-color: $WHITE;
+      font-size: 13px; /*'Ubuntu Mono', Menlo, Monaco, Consolas, Inconsolata, FreeMono, monospace;*/
+      line-height: 1.2;
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .download h2 {
@@ -542,9 +551,9 @@ $blinkto:   0.0;
   .results.tz_aio_colorized > dl:hover {
     border-bottom-color: $WHITE;
   }
-  .results.tz_aio_colorized > dl.dmca.colorizeme:hover {
+  .results.tz_aio_colorized > dl.meta-info.colorizeme:hover {
     position: static;
-    border-bottom-color: transparent;
+    border-bottom-color: $TZPINK;
   }
 
   .results .tz_aio_magnet {
@@ -564,7 +573,6 @@ $blinkto:   0.0;
   .results .tz_aio_magnet {
     opacity: 1;
   }
-
   .results .tz_aio_magnet a {
     display: block;
     position: absolute;
@@ -588,23 +596,14 @@ $blinkto:   0.0;
   .results .tz_aio_magnet a:active {
     @include background-size(14px 14px);
   }
-
   .results .tz_aio_unverified_dl .tz_aio_magnet a,
   .results.tz_aio_trackerlist .tz_aio_magnet a {
     @extend .unverified-image;
   }
-
   .results .tz_aio_fake_dl .tz_aio_magnet a {
     @extend .fake-image;
   }
-
-  .approximate_rss_link img {
-    opacity: 0.5;
-  }
-  .approximate_rss_link:hover img {
-    opacity: 1;
-  }
-  .results .dmca.colorizeme {
+  .results .meta-info.colorizeme {
     background-color: $DMCA;
   }
   /* empty ugly white status vote */
@@ -617,11 +616,15 @@ $blinkto:   0.0;
   .results .tz_aio_exclude_filter_count:hover {
     cursor: pointer;
   }
-
+  .approximate_rss_link img {
+    opacity: 0.5;
+  }
+  .approximate_rss_link:hover img {
+    opacity: 1;
+  }
   > div > .results.tz_aio_colorized > h2 {
     border-bottom: 0 none;
   }
-
   .results.tz_aio_colorized {
 
     dl.inactive * {

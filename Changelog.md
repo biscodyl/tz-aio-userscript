@@ -1,5 +1,18 @@
-Changelog
----------
+# Changelog
+
+**2.3.0** (2013-08-03)
+* New TV toolbar that helps you search for next/prev episode/season, click the links in the filter-bar or use `SHIFT+[arrowkeys]` when available.
+* Custom CSS editor added by demand, edit away!
+* Direct torrent links updated.
+* Copybox handling improved (only applies to GreaseMonkey v1.9 and below).
+* Various CSS fixes.
+* Removed dead trackers from the default list and added some new ones (remember that the best trackerlist is arguably an empty one).
+* Trackers are now grouped with `udp:` first and `http:` as the backup.
+* Better RSS feed exclusion.
+* Ajaxed sorting improved, back/forward navigation now works, and titles are updated.
+* Keyboard shortcuts handling improved, a list of them can now be found on the HELP page `/help`.
+* DMCA / "Family filter" detection improved, which lead to searchresults loading a bit faster.
+* Now using JSLint to debug, found a few bad coding habits I've since avoided.
 
 **2.2.7** (2013-07-24)
 * Added new ad block to the ad-list (`.dnotblcokmebro`).
