@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.2.7
-// @date          2013-07-24
+// @version       2.3.1
+// @date          2013-08-04
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -26,8 +26,8 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-2-7-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-2-7-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-3-1-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-1-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -144,7 +144,6 @@
         ,"   }"
         ,"*/","",""
       ];
-      this.noRefUrl = "http://href.li/?";
       this.excludeFilter = "";
       this.removeAds = true;
       this.searchHighlight = true;
@@ -639,7 +638,14 @@
         return returnThis;
       },
 
-      toggleCopyBox       : function (cmd) {
+      isWindowsOS         : function () {
+        if ( w.navigator && ((w.navigator.platform && (/win/i).test(w.navigator.platform))
+          || (w.navigator.userAgent && (/windows/i).test(w.navigator.userAgent))) ) {
+          return true;
+        }
+      },
+
+      toggleCopyBox       : function (cmd, content) {
         var linkHeight   = this.cache.copyTrackersLinkHeight
           ,useClipboard = typeof GM_setClipboard === "function"
           ,isVisible
@@ -651,14 +657,13 @@
           if ( (!isVisible && cmd === 0) || cmd === 1 ) {
             // Show it
             if ( useClipboard ) {
-              /*
-               * Fix carriage returns before copying, and only for Windows users;
-               * I noticed that certain clients don't like \r\n in the text
-               * when on a Linux platform, so try and check for OS first
-               */
-              copyThis = this.selectors.$copyTextArea.find("textarea")[0].innerHTML;
-              if ( (w.navigator && w.navigator.platform && (/win/i).test(w.navigator.platform))
-                || (w.navigator && w.navigator.userAgent && (/windows/i).test(w.navigator.userAgent)) ) {
+              /* Fix carriage returns before copying, and only for Windows users;
+                 I noticed that certain clients don't like \r\n in the text
+                 when on a Linux platform, so try and check for OS first */
+              copyThis = content || this.selectors.$copyTextArea.find("textarea").val();
+              /* TamperMonkey (on Linux at least) can't handle \n lines
+                 I'm gonna contact them and see why. */
+              if ( this.isWindowsOS() ) {
                 copyThis = copyThis.replace(/\n/g,"\r\n");
               }
               GM_setClipboard(copyThis);
@@ -861,16 +866,21 @@
       },
 
       linkifyCommentLinks : function (opts) {
-        var replaceWith = "<a href='" + opts.noRefUrl + "$1'>$1</a>"
+        var replaceWith = "<a rel='noreferrer' href='"
+          ,linkPatt     = /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)/gi
           ,delayInt
         ;
+        replaceWith += (isTM ? "$1" : "data:text/html,&lt;html&gt;&lt;meta http-equiv=\x22refresh\x22 "
+          + "content=\x220; url=" + "$1" + "\x22&gt;&lt;/html&gt;");
+        replaceWith += "'>$1</a>";
         if ( opts.linkComments ) {
           delayInt = setTimeout(function(){
             // Linkify visible comments
             if ( tzAio.selectors.$comments.length ) {
-              tzAio.selectors.$commentsLinked = tzAio.selectors.$comments.find(".com:visible:contains('http')")
-                .each(function(i, el){
-                  $(el).replaceText(tzAio.cache.linkifyPatt, replaceWith);
+              // somehow this is the fastest way possible
+              tzAio.selectors.$comments.find(".com:visible").each(function (i, el) {
+                  // ( pattern, replaceWithThis, text-only )
+                  $(el).replaceText(linkPatt, replaceWith);
                 }
               );
             }
@@ -894,6 +904,10 @@
           ,checkCommentLinks = opts.linkComments ?    " checked='checked' " : " "
           ,checkAjaxSorting  = opts.ajaxedSorting ?   " checked='checked' " : " "
           ,checkForceHTTPS   = opts.forceHTTPS ?      " checked='checked' " : " "
+          ,copyBuiltInTrLink = typeof GM_setClipboard === "function"
+            ? " <em>If you need the built-in list that is baked into"
+            + " the userscript, <a id='" + tzCl + "_copy_built_in_trackerlist' href='#'>click here</a>"
+            + " to copy that list.</em>" : ""
           ,latest            = tzAio.lVer.checked && tzAio.lVer
           ,latestVersionMsg  = latest && this.compareVersions(this.userScript.version, latest.version) === -1
             ? "<p class='" + tzCl + "_new_version_msg'><mark>New version available! Update or grab "
@@ -945,14 +959,7 @@
             ,trackersString + "</textarea><p>Optional. Default trackerlist (these are added to all torrents\' "
             ,"trackers, if absent). Note that these are combined with the torrents own trackers, and "
             ,"after that duplicates are removed, they get sorted by domain, and finally grouped "
-            ,"with any backup protocols.</p>"
-            ,"<label for='" + tzCl + "_norefurl'>No referer url</label><input type='text' class='i' id='"
-            ,tzCl + "_norefurl' name='" + tzCl + "_norefurl' "
-            ,"value='" + opts.noRefUrl + "' placeholder='http://' />"
-            ,"<p>Optional. This url (if any) is prepended to all comment links, and search-engine links. "
-            ,"<a href='http://href.li?http://href.li/' target='_blank'>No referer</a> means that outgoing "
-            ,"links you click here can`t be traced back to " + this.page.domain + ". "
-            ,"All depending on what url to set it to, of course.</p>"
+            ,"with any http backup protocols." + copyBuiltInTrLink + "</p>"
             ,"<label for='" + tzCl + "_default_searchengines_textarea'>Search engines list</label>"
             ,"<textarea id='" + tzCl + "_default_searchengines_textarea' wrap='off' "
             ,"rows='6' name='searching' class='i'>" + (opts.searchEngines.join("\n"))
@@ -992,7 +999,7 @@
         this.selectors.$body.append(textareaHTML);
         this.selectors.$copyTextArea = $("#" + tzCl + "_copy_tr_textarea");
         this.selectors.$copyTrackersLink.on("click", function () {
-          tzAio.toggleCopyBox(1);
+          tzAio.toggleCopyBox(1, text);
           return false;
         });
       },
@@ -1011,6 +1018,16 @@
            anchordNode is null if no selection, nodeValue null
            if unable to get selection */
         return t;
+      },
+
+      getNoReferrerUrl    : function (url) {
+        /* this is the way you remove the referer; we know all new-ish browsers
+           understand these data uris, and that Firefox doesn't (yet) respect
+           the standardized(?) rel='noreferrer' tag.
+           But removing the referrer is important for the owners of Torrentz,
+           so doing our part is the way to go. */
+        return (isTM ? url : "data:text/html,&lt;html&gt;"
+          + "&lt;meta http-equiv=\x22refresh\x22 content=\x22" + "0; url=" + url + "\x22&gt;&lt;/html&gt;");
       },
 
       fillSearchBar       : function (event) {
@@ -1040,8 +1057,8 @@
             searchStr = tempStr;
             for ( i = 0; i < tzAio.cache.searchEnginesLen; i++ ) {
               engineHTMLArr = tzAio.storedSettings.searchEngines[i].split("|");
-              searchHtml += "<a class='search_link' target='_blank' href='" + tzAio.storedSettings.noRefUrl
-                + (engineHTMLArr[1].replace(/%s/g, searchStr))
+              searchHtml += "<a class='search_link' rel='noreferrer' href='"
+                + tzAio.getNoReferrerUrl(engineHTMLArr[1].replace(/%s/g, searchStr))
                 + "'>" + engineHTMLArr[0].replace(/_/g," ") + "</a>";
             }
             searchHtml += "<a class='search_link' href='"
@@ -1466,7 +1483,6 @@
 
       doAjaxedSorting       : function (event) {
         var validLink, relMatch, absLink, $html, newTitle;
-        // TODO: try and make back/forward nav use this function instead of doing a hard redirect
         if ( this.href ) {
           relMatch = this.href.match(/https?\:\/\/[^\/]+(\/.*)/);
           // prevent leaking of unwanted ajax links, shouldn't happen but it's good to remember
@@ -1762,9 +1778,8 @@
       },
 
       makeSearchQuery     : function (a, b, c, d, e) {
-        return (this.page.path + "?f=" + encodeURIComponent((
-          ((a||"") + (b||"")).replace(/\s+/g, "+") + e + ((c||"") + (d||"")).replace(/\s+/g, "+")
-        ).replace(/(^\++|\++$)/g,"")).replace(/(\%2B)+/g, "+").replace(/(\%22)+/g, "%22"));
+        return (this.page.path + "?f=" + (a||"") + (b||"") + e + (c||"") + (d||"")).replace(/(\s+|(\%20)+|(\%2B)+)/g, "+")
+          .replace(/(^\++|\++$)/g, "").replace(/(\%22|\x22)+/g, "%22");
       },
 
       getNiceYear         : function (dateObj) {
@@ -1780,6 +1795,7 @@
         var b          = true
           ,oneDay      = 86400000
           ,currDateObj = new Date()
+          ,tmpMS
           ,currDateMS
           ,newDate
           ,dir         = go
@@ -1791,7 +1807,8 @@
         currDateObj.setHours(6);
         currDateMS = currDateObj.getTime();
         while (b && i < 10) {
-          newDate = this.getNiceYear(new Date(currDateMS+(oneDay*dir)));
+          tmpMS = currDateMS+(oneDay*dir);
+          newDate = this.getNiceYear(new Date(tmpMS));
           if ( newDate.match(this.cache.validDatePatt) ) {
             b = false;
           } else {
@@ -1799,7 +1816,7 @@
           }
           i++;
         }
-        return newDate;
+        return { nice : newDate, ms : tmpMS };
       },
 
       getTvToolbarHtml    : function (query) {
@@ -1832,10 +1849,13 @@
           dp.nextDate = this.getValidDate([dp.year, dp.month, dp.day], 1);
           dp.prevDate = this.getValidDate([dp.year, dp.month, dp.day], -1);
           htmlStr = "<b><a " + pEpLinkCl + " href='"
-            + this.makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22" + (dp.prevDate.replace(/\s+/g, "+")) + "\x22")
-            + "'>&lt; " + dp.prevDate + "</a></b> | <b><a " + nEpLinkCl + " href='"
-            + this.makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22" + (dp.nextDate.replace(/\s+/g, "+")) + "\x22")
-            + "'>" + dp.nextDate + " &gt;</a></b>";
+            + this.makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22" + dp.prevDate.nice + "\x22")
+            + "'>&lt; " + dp.prevDate.nice + "</a></b>";
+          if ( dp.nextDate.ms && (dp.nextDate.ms - (new Date().getTime())) < 0 ) {
+            htmlStr = htmlStr + " | <b><a " + nEpLinkCl + " href='"
+              + this.makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22" + dp.nextDate.nice + "\x22")
+              + "'>" + dp.nextDate.nice + " &gt;</a></b>";
+          }
         } else if (epm && epm.length === 8) {
           ep.episode = epm[5] && epm[5] !== "0" ? +epm[5].replace(/^0/,"") : 0;
           ep.season = epm[3] !== "0" ? +epm[3].replace(/^0/,"") : 0;
@@ -1999,10 +2019,9 @@
               ,trackersVal
               ,searchEnginesVal
               ,customCssVal
-              ,noRefVal
               ,excludeFilterVal
               ,invalidItemNames = ""
-              ,trValid, seValid, nrValid, exValid, submittedOptions = {}
+              ,trValid, seValid, exValid, submittedOptions = {}
             ;
             tzAio.selectors.$settingsForm.find(":checkbox").each(function (index, element) {
               var settingName = element.name.replace(tzAio.userScript.slug + "_","")
@@ -2013,12 +2032,10 @@
             tzAio.selectors.$defTrackersTextArea = $("#" + tzCl + "_default_trackers_textarea");
             tzAio.selectors.$defSearchEngTextArea = $("#" + tzCl + "_default_searchengines_textarea");
             tzAio.selectors.$customCssTextArea = $("#" + tzCl + "_custom_css_textarea");
-            tzAio.selectors.$noRefInput = $("#" + tzCl + "_norefurl");
             tzAio.selectors.$excludeFilterInput = $("#" + tzCl + "_exclude_filter_input");
             trackersVal = tzAio.selectors.$defTrackersTextArea.val();
             searchEnginesVal = tzAio.selectors.$defSearchEngTextArea.val();
             customCssVal = tzAio.selectors.$customCssTextArea.val();
-            noRefVal = tzAio.selectors.$noRefInput.val();
             excludeFilterVal = tzAio.selectors.$excludeFilterInput.val();
 
             // Validate inputs to help out user
@@ -2026,10 +2043,9 @@
             // shortest match = s|http://i.io/%s
             seValid = (!searchEnginesVal.match(/\S/i) || (tzAio.validUserInput(searchEnginesVal)
               && searchEnginesVal.indexOf("%s") >= 13 && searchEnginesVal.indexOf("|") > 0) );
-            nrValid = tzAio.validUserInput(noRefVal);
             exValid = tzAio.validateRegExp(excludeFilterVal);
             
-            if ( seValid && trValid && nrValid && exValid ) {
+            if ( seValid && trValid && exValid ) {
               saveTrackers = trackersVal.split(/\s+/);
               saveTrackers = __.compact(saveTrackers);
               saveSearchEngines = searchEnginesVal.split(/\s+/);
@@ -2038,7 +2054,6 @@
               submittedOptions.defaultTrackers = saveTrackers;
               submittedOptions.searchEngines = saveSearchEngines;
               submittedOptions.customCss = saveCustomCss;
-              submittedOptions.noRefUrl = noRefVal.replace(/(^\s+|\s+$)/g,"");
               submittedOptions.excludeFilter = excludeFilterVal.replace(/(^\s*\,|\,\s*$)/g,"")
                 .replace(/\,{2,}/g,",").replace(/(^\s+|\s+$)/g,"");
               if ( tzAio.cache.freshUser ) {
@@ -2070,7 +2085,6 @@
             } else {
               invalidItemNames = !seValid ? invalidItemNames + " 'Search engines list'," : invalidItemNames;
               invalidItemNames = !trValid ? invalidItemNames + " 'Default trackerlist'," : invalidItemNames;
-              invalidItemNames = !nrValid ? invalidItemNames + " 'No referer url'," : invalidItemNames;
               invalidItemNames = !exValid ? invalidItemNames + " 'Exclude filter (regexp)'," : invalidItemNames;
               alert("Invalid input in the " + invalidItemNames + " check your spelling!"
                 + tzAio.cache.bugReportMsg);
@@ -2105,6 +2119,18 @@
           }
           return false;
         });
+        this.selectors.$copyBuiltInListLink = $("#" + tzCl + "_copy_built_in_trackerlist");
+        if ( this.selectors.$copyBuiltInListLink.length ) {
+          this.selectors.$copyBuiltInListLink.on("click", function () {
+            // we know this exists now
+            var sortedOriginal = tzAio.makeTrackersObject(tzAio.userScript.defaultTrackers, true).allString;
+            if ( tzAio.isWindowsOS() ) {
+              sortedOriginal = sortedOriginal.replace(/\n/g,"\r\n");
+            }
+            GM_setClipboard(sortedOriginal);
+            return false;
+          });
+        }
 
         if ( callback && typeof callback === "function" ) {
           callback(options, trackers);
@@ -2257,7 +2283,6 @@
       ,twoPartDomainPatt : new RegExp("(\\.com|\\.co|\\.info|\\.mobi|\\.net|\\.ar|\\.as|\\.at|"
         + "\\.bb|\\.bg|\\.br|\\.ca|\\.ch|\\.cn|\\.cs|\\.dk|\\.ee|\\.es|\\.fi|\\.fr|\\.gr|\\.in|"
         + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}","")
-      ,linkifyPatt       : /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)?/gi
       ,matchUrlPatt      : /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i
       ,selectTrashPatt   : /(\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i
       // https://en.wikipedia.org/wiki/Magnet_URI_scheme

@@ -69,8 +69,7 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 ## TODO's
 
-1. Add a limit to the `2013 01 01` episode links stopping them from passing todays date.
-2. Write a new method to hide the referer, instead of using a 3rd part service like `href.li`, or just use `rel='noreferrer'` and be done with it.
+Nothing planned at the moment, other than looking out for bugs and optimizing it further.
 
 ## Legality
 

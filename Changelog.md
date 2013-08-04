@@ -1,5 +1,11 @@
 # Changelog
 
+**2.3.1** (2013-08-04)
+* `2013 01 01` episodes now stop at todays date.
+* `No Referer Url` was dumped, and replaced with a more modern `rel='noreferrer' || data:text/html<html>...` solution, and I also made sure they open in the current window.
+* Bug squashed in the comment links function, these links are now also free of any outgoing referrer.
+* Noticed a bug in TamperMonkey where the trackers being copied where stripped of all newlines, have filed a [bugreport here](http://forum.tampermonkey.net/viewtopic.php?f=17&t=668).
+
 **2.3.0** (2013-08-03)
 * New TV toolbar that helps you search for next/prev episode/season, click the links in the filter-bar or use `SHIFT+[arrowkeys]` when available.
 * Custom CSS editor added by demand, edit away!
