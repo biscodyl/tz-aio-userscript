@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.3.1
-// @date          2013-08-04
+// @version       2.3.2
+// @date          2013-08-05
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -26,8 +26,8 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-3-1-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-1-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-3-2-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-2-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -550,8 +550,8 @@
         if ( storeObj ) {
           // pass though new values that are to be saved, ex. version (2.1.0)
           storeObj = __.defaults(storeObj, this.userScript);
-          GM_setValue(tzCl + "_useroptions", JSON.stringify(storeObj));
-          returnSavedValue = GM_getValue(tzCl + "_useroptions", false);
+          GM_setValue(this.storageName, JSON.stringify(storeObj));
+          returnSavedValue = this.getGMstorage(this.storageName);
         // reset values
         } else if ( !storeObj ) {
           GM_deleteValue(tzCl + "_useroptions");
@@ -561,11 +561,14 @@
         }
       },
 
-      getGMstorage        : function () {
-        var stored = GM_getValue(this.userScript.slug + "_useroptions", false);
-        if ( stored ) {
-          return JSON.parse(stored);
+      getGMstorage        : function (key) {
+        var value = GM_getValue(key, false)
+          ,converted = {}
+        ;
+        if ( value && /^\s*\{/.test(value) && /\}\s*$/.test(value) ) {
+          converted = JSON.parse(value);
         }
+        return converted;
       },
 
       unselectSelection   : function () {
@@ -645,39 +648,39 @@
         }
       },
 
-      toggleCopyBox       : function (cmd, content) {
-        var linkHeight   = this.cache.copyTrackersLinkHeight
-          ,useClipboard = typeof GM_setClipboard === "function"
+      toggleCopyBox       : function (cmd) {
+        var linkHeight  = this.cache.copyTrackersLinkHeight
           ,isVisible
           ,copyThis
         ;
-        // if it's created
-        if ( this.selectors.$copyTextArea.length && this.selectors.$copyTrackersLink.length ) {
-          isVisible = this.selectors.$copyTextArea.is(":visible");
-          if ( (!isVisible && cmd === 0) || cmd === 1 ) {
-            // Show it
-            if ( useClipboard ) {
-              /* Fix carriage returns before copying, and only for Windows users;
-                 I noticed that certain clients don't like \r\n in the text
-                 when on a Linux platform, so try and check for OS first */
-              copyThis = content || this.selectors.$copyTextArea.find("textarea").val();
-              /* TamperMonkey (on Linux at least) can't handle \n lines
+        if ( tzAio.selectors.$copyTextArea && tzAio.selectors.$copyTextArea.length ) {
+          if ( typeof GM_setClipboard === "function" ) {
+            /* Fix carriage returns before copying, and only for Windows users;
+               I noticed that certain clients don't like \r\n in the text
+               when on a Linux platform, so try and check for OS first */
+            copyThis = this.selectors.$copyTextArea.find("textarea").val();
+            // note! jQuery strips out all \r in .val()
+            if ( this.isWindowsOS() ) {
+              /* TamperMonkey (on Linux and Windows) seems to remove \r ([CR]) chars,
                  I'm gonna contact them and see why. */
-              if ( this.isWindowsOS() ) {
-                copyThis = copyThis.replace(/\n/g,"\r\n");
-              }
-              GM_setClipboard(copyThis);
+              copyThis = copyThis.replace(/\n/g,"\r\n");
+            }
+            w.console.log(copyThis);
+            GM_setClipboard(copyThis);
+            if ( this.selectors.$copyTrackersLink && this.selectors.$copyTrackersLink.length ) {
               this.selectors.$copyTrackersLink.addClass("active");
               this.selectors.$copyTrackersLink.text(this.selectors.$copyTrackersLink.text().replace("Copy ","Copied "));
-            } else {
+            }
+          } else if ( this.selectors.$copyTrackersLink && this.selectors.$copyTrackersLink.length ) {
+            // single torrent
+            isVisible = this.selectors.$copyTextArea.is(":visible");
+            if ( (!isVisible && cmd === 0) || cmd === 1 ) {
               this.selectors.$copyTextArea.css({
                 top : (this.selectors.$copyTrackersLink.offset().top + linkHeight) + "px",
                 left : (this.selectors.$copyTrackersLink.offset().left) + "px"
               }).stop().show(250).find("textarea")[0].select();
-            }
-          } else if ( (isVisible && cmd === 0) || cmd === 2 ) {
-            // Hide it
-            if ( !useClipboard ) {
+            } else if ( (isVisible && cmd === 0) || cmd === 2 ) {
+              // Hide it
               this.selectors.$copyTextArea.stop().hide(200).find("textarea")[0].blur();
             }
           }
@@ -709,9 +712,7 @@
               tzAio.selectors.$titleEl.trigger("mousedown");
               tzAio.selectors.$searchBar.empty();
               tzAio.selectors.$body.removeClass("search_ready");
-              if ( tzAio.selectors.$copyTextArea.length ) {
-                tzAio.toggleCopyBox(2);
-              }
+              tzAio.toggleCopyBox(2);
               // strange range error in Chrome but nothing breaks
               try {
                 tzAio.unselectSelection();
@@ -733,7 +734,7 @@
             } else if ( key === 68 && noMods ) {
               // 'd'
               tzAio.handleMagnetClicks(false);
-            } else if ( key === 67 && noMods && tzAio.selectors.$copyTextArea.length ) {
+            } else if ( key === 67 && noMods ) {
               // 'c'
               tzAio.toggleCopyBox(0);
             }
@@ -908,7 +909,7 @@
             ? " <em>If you need the built-in list that is baked into"
             + " the userscript, <a id='" + tzCl + "_copy_built_in_trackerlist' href='#'>click here</a>"
             + " to copy that list.</em>" : ""
-          ,latest            = tzAio.lVer.checked && tzAio.lVer
+          ,latest            = this.lVer && this.lVer.checked ? this.lVer : null
           ,latestVersionMsg  = latest && this.compareVersions(this.userScript.version, latest.version) === -1
             ? "<p class='" + tzCl + "_new_version_msg'><mark>New version available! Update or grab "
             + "the latest version <a href='" + this.userScript.link + "'>here</a>.<br>"
@@ -917,8 +918,8 @@
             + "Changelog: " + latest.changes + "</mark></p>" : ""
           ,noticeMsg         = latest && latest.message ? "<p class='" + tzCl + "_update_message'>"
             + "<mark class='" + tzCl + "_alt_msg'>" + latest.message  + "</mark></p>" : ""
-          ,lastUpdate        = tzAio.lVer.checked && +tzAio.lVer.checked > 3600000
-            ? " (Last checked &lt;" + (tzAio.getHoursPast(tzAio.lVer.checked)) + " hours ago)" : ""
+          ,lastUpdate        = latest && latest.checked && +latest.checked > 3600000
+            ? " (Last checked &lt;" + (this.getHoursPast(latest.checked)) + " hours ago)" : ""
           ,versionStr        = this.userScript.version + " (" + this.userScript.date + ")"
           ,versionHtml       = latest && latest.version !== this.userScript.version
             ? versionStr : "<mark title='You have the latest version! " + lastUpdate + "' "
@@ -990,16 +991,15 @@
 
       setupCopyTextArea   : function (text) {
         var tzCl        = this.userScript.slug
-          ,textareaHTML = "<div id='" + tzCl + "_copy_tr_textarea' class='"
-            + tzCl + "_copy_textarea'>"
-            + "<textarea readonly='readonly' cols='40' rows='10' wrap='off'>"
-            + text + "</textarea></div>"
+          ,textareaHTML = "<div id='" + tzCl + "_copy_tr_textarea' class='" + tzCl + "_copy_textarea'>"
+            + "<textarea readonly='readonly' cols='40' rows='10' wrap='off'></textarea></div>"
         ;
         this.cache.copyTrackersLinkHeight = this.selectors.$copyTrackersLink.outerHeight();
         this.selectors.$body.append(textareaHTML);
         this.selectors.$copyTextArea = $("#" + tzCl + "_copy_tr_textarea");
+        this.selectors.$copyTextArea.find("textarea").val(text);
         this.selectors.$copyTrackersLink.on("click", function () {
-          tzAio.toggleCopyBox(1, text);
+          tzAio.toggleCopyBox(1);
           return false;
         });
       },
@@ -2072,7 +2072,7 @@
                     disabledInput.prop("disabled", false);
                     alert("You broke something! Try reloading the page..."
                       + tzAio.cache.bugReportMsg);
-                    sendLog("GM_getValue(" + tzAio.userScript.slug + "_useroptions) returned false! "
+                    sendLog("GM_getValue(" + tzAio.storageName + ") returned false! "
                       + "Nothing stored, logging that plus 'submittedOptions'");
                     sendLog("Failed! > submittedOptions");
                     sendLog(submittedOptions);
@@ -2099,9 +2099,7 @@
           tzAio.selectors.$settingsForm.toggleClass("expand");
           tzAio.selectors.$settingsLink.parent("li")
             .toggleClass(tzAio.userScript.slug + "_settings_open");
-          if ( tzAio.selectors.$copyTextArea && tzAio.selectors.$copyTextArea.length ) {
-            tzAio.toggleCopyBox(2);
-          }
+          tzAio.toggleCopyBox(2);
           return false;
         });
         this.selectors.$resetEl = $("#" + tzCl + "_settings_reset");
@@ -2128,6 +2126,7 @@
               sortedOriginal = sortedOriginal.replace(/\n/g,"\r\n");
             }
             GM_setClipboard(sortedOriginal);
+            $(this).css("opacity", "0.5");
             return false;
           });
         }
@@ -2143,7 +2142,7 @@
            plus it's evil to store anything and not letting the user know first */
         var newSettings
           ,trackers
-          ,opts = GM_getValue(this.userScript.slug + "_useroptions", false)
+          ,opts = this.getGMstorage(this.storageName)
         ;
         if ( !opts ) {
           // first time user
@@ -2152,7 +2151,7 @@
           sendLog( "Thanks for using " + this.userScript.name + "!" );
         } else {
           // returning user with storage
-          newSettings = this.getGMstorage();
+          newSettings = this.getGMstorage(this.storageName);
         }
         if ( !newSettings )  {
           sendLog( "[setupUserSettings] failed, newSettings is falsy!" );
@@ -2223,7 +2222,7 @@
             $.getJSON("http://elundmark.se/_files/js/tz-aio/log/update-check.php", {
                 version : tzAio.userScript.version
               }, function (data) {
-                if ( data && __.isObject(data) && data.version ) {
+                if ( data && Object.prototype.toString.call(data) === "[object Object]" && data.version ) {
                   updateObject = data;
                   updateObject.checked = String(now);
                   updateObject.vStatus = tzAio.compareVersions(tzAio.userScript.version, updateObject.version);
@@ -2232,7 +2231,7 @@
                     + ", latest: " + updateObject.version + "   [" + String(updateObject.vStatus) + "]");
                   if ( updateObject.vStatus === -2 ) {
                     // debugging newer version than available by $.getJSON
-                    GM_setValue(tzCl + "_json_update_check", "{}");
+                    GM_setValue(tzAio.updateCheckName, "{}");
                   } else {
                     if ( updateObject.vStatus === -1 && updateObject.alerted !== updateObject.version ) {
                       /* new version available and not alerted yet
@@ -2244,7 +2243,7 @@
                       updateObject.alerted = updateObject.version;      // inhibits more annoying alerts
                     }
                     // now, save this to storage
-                    GM_setValue(tzCl + "_json_update_check", JSON.stringify(updateObject));
+                    GM_setValue(tzAio.updateCheckName, JSON.stringify(updateObject));
                   }
                 } else {
                   sendLog("Tried to check for updates but failed! :(" + tzAio.cache.bugReportMsg);
@@ -2262,11 +2261,13 @@
     // build internal objects
     tzAio.page = tzAio.getPageParmaters();
     tzAio.userScript = new UserScript();
-    tzAio.lVer = JSON.parse(GM_getValue(tzAio.userScript.slug + "_json_update_check", "{}"));
-    if ( tzAio.userScript.version === tzAio.lVer.alerted ) {
+    tzAio.storageName = tzAio.userScript.slug + "_useroptions";
+    tzAio.updateCheckName = tzAio.userScript.slug + "_json_update_check";
+    tzAio.lVer = tzAio.getGMstorage(tzAio.updateCheckName);
+    if ( tzAio.lVer && tzAio.userScript.version === tzAio.lVer.alerted ) {
       // newly updated script, so reset stored value
       tzAio.lVer = {};
-      GM_setValue(tzAio.userScript.slug + "_json_update_check", "{}");
+      GM_setValue(tzAio.updateCheckName, "{}");
     }
 
     tzAio.cache = {
@@ -2357,7 +2358,7 @@
 
             } else if ( tzAio.page.path === "/" ) {
 
-              tzAio.removeAds("splash", options, function () {
+              tzAio.removeAds("splash", options, null, function () {
                 tzAio.lastAction();
               });
 

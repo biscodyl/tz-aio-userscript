@@ -1,5 +1,9 @@
 # Changelog
 
+**2.3.2** (2013-08-05)
+* Important bug fixes for the update checker, and for new installs (with empty settings) which until now breaked the whole script.
+* Still no solution for Chrome and the new-lines problem when copying trackers, if this persists, I'll have to change it to use the old copybox instead.
+
 **2.3.1** (2013-08-04)
 * `2013 01 01` episodes now stop at todays date.
 * `No Referer Url` was dumped, and replaced with a more modern `rel='noreferrer' || data:text/html<html>...` solution, and I also made sure they open in the current window.
