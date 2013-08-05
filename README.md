@@ -69,7 +69,7 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 ## TODO's
 
-Nothing planned at the moment, other than looking out for bugs and optimizing it further.
+Fixing 2 bugs in Chrome; Chrome in Windows when installing fresh keeps hitting my server for json update checks, not sure why. Also Chrome keeps messing up lines in the trackerlist, solution on the way.
 
 ## Legality
 
