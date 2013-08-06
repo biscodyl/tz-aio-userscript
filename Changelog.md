@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.3** (2013-08-06)
+* Minor optimizations for detecting links in comments, and safer no-referrer urls.
+
 **2.3.2** (2013-08-05)
 * Important bug fixes for the update checker, and for new installs (with empty settings) which until now breaked the whole script.
 * Still no solution for Chrome and the new-lines problem when copying trackers, if this persists, I'll have to change it to use the old copybox instead.

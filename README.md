@@ -69,7 +69,7 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 ## TODO's
 
-Tampermoney keeps messing up lines in the trackerlist through `GM_setClipboard`, in both Windows and Linux, I have filed a [bugreport here](http://forum.tampermonkey.net/viewtopic.php?f=17&t=668).
+The newline problem with Chrome/TamperMonkey and `GM_setClipboard` has [been solved](http://forum.tampermonkey.net/viewtopic.php?f=17&t=668) in it's newest [Beta release](http://tampermonkey.net/changelog.php?version=3.4.3525&ext=gcal), I'll let everyone know through the settings panel.
 
 ## Legality
 

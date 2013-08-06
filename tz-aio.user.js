@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.3.2
-// @date          2013-08-05
+// @version       2.3.3
+// @date          2013-08-06
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -26,8 +26,8 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-3-2-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-2-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-3-3-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-3-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -661,11 +661,11 @@
             copyThis = this.selectors.$copyTextArea.find("textarea").val();
             // note! jQuery strips out all \r in .val()
             if ( this.isWindowsOS() ) {
-              /* TamperMonkey (on Linux and Windows) seems to remove \r ([CR]) chars,
-                 I'm gonna contact them and see why. */
+              /* TamperMonkey (on Linux and Windows) < v3.4.3525 seems to remove \r ([CR]) chars,
+                 a fix for this has been released in their latest Beta
+                 http://tampermonkey.net/changelog.php?version=3.4.3525&ext=gcal */
               copyThis = copyThis.replace(/\n/g,"\r\n");
             }
-            w.console.log(copyThis);
             GM_setClipboard(copyThis);
             if ( this.selectors.$copyTrackersLink && this.selectors.$copyTrackersLink.length ) {
               this.selectors.$copyTrackersLink.addClass("active");
@@ -866,24 +866,20 @@
         }
       },
 
+      comLinksReplaceFunc : function ($1) {
+        return "<a rel='noreferrer' href='" + tzAio.getNoReferrerUrl($1) + "'>" + $1 + "</a>";
+
+      },
+
       linkifyCommentLinks : function (opts) {
-        var replaceWith = "<a rel='noreferrer' href='"
-          ,linkPatt     = /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)/gi
-          ,delayInt
-        ;
-        replaceWith += (isTM ? "$1" : "data:text/html,&lt;html&gt;&lt;meta http-equiv=\x22refresh\x22 "
-          + "content=\x220; url=" + "$1" + "\x22&gt;&lt;/html&gt;");
-        replaceWith += "'>$1</a>";
+        var delayInt;
         if ( opts.linkComments ) {
           delayInt = setTimeout(function(){
             // Linkify visible comments
             if ( tzAio.selectors.$comments.length ) {
-              // somehow this is the fastest way possible
               tzAio.selectors.$comments.find(".com:visible").each(function (i, el) {
-                  // ( pattern, replaceWithThis, text-only )
-                  $(el).replaceText(linkPatt, replaceWith);
-                }
-              );
+                $(el).replaceText(tzAio.cache.comLinksPatt, tzAio.comLinksReplaceFunc);
+              });
             }
           }, 750);
         }
@@ -1026,8 +1022,8 @@
            the standardized(?) rel='noreferrer' tag.
            But removing the referrer is important for the owners of Torrentz,
            so doing our part is the way to go. */
-        return (isTM ? url : "data:text/html,&lt;html&gt;"
-          + "&lt;meta http-equiv=\x22refresh\x22 content=\x22" + "0; url=" + url + "\x22&gt;&lt;/html&gt;");
+        return (isTM ? url : "data:text/html,&lt;html&gt;&lt;meta http-equiv=\x22refresh\x22 "
+          + "content=\x220; url=" + encodeURIComponent(url) + "\x22&gt;&lt;/html&gt;");
       },
 
       fillSearchBar       : function (event) {
@@ -1644,6 +1640,8 @@
             sendLog(error);
             returnBool = false;
           }
+        } else if ( pattStr.match(/(^\s*\/|\/\s*$)/) ) {
+          returnBool = false;
         } else {
           returnBool = true;
         }
@@ -2285,6 +2283,7 @@
         + "\\.bb|\\.bg|\\.br|\\.ca|\\.ch|\\.cn|\\.cs|\\.dk|\\.ee|\\.es|\\.fi|\\.fr|\\.gr|\\.in|"
         + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}","")
       ,matchUrlPatt      : /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i
+      ,comLinksPatt      : /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)/gi
       ,selectTrashPatt   : /(\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i
       // https://en.wikipedia.org/wiki/Magnet_URI_scheme
       ,magnetURI         : "magnet:?xt=urn:btih:"
@@ -2306,17 +2305,14 @@
 
       // Start exec timer
       execStartMS = (new Date().getTime());
+      
+      tzAio.selectors.$body = $("body").addClass(tzAio.userScript.bodyClass);
+      tzAio.selectors.$bodyANDhtml = tzAio.selectors.$body.add($("html"));
 
       startLogMsg = "Starting " + tzAio.userScript.name + " v" + tzAio.userScript.version + " "
         + tzAio.userScript.date + "\n" + tzAio.userScript.link + "\nEnv.: "
         + environment + "\nLoad: " + ((new Date().getTime())-loadStartMS) + "ms";
       
-      tzAio.selectors.$body = $("body");
-      tzAio.selectors.$bodyANDhtml = tzAio.selectors.$body.add($("html"));
-
-      // tell the world
-      tzAio.selectors.$body.addClass(tzAio.userScript.bodyClass);
-
       // init calls
       sendLog(startLogMsg, function () {
         
