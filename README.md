@@ -6,7 +6,7 @@ This script uses a non secure `http` connection to check for updates, which trig
 
     [Webdeveloper error] [17:58:52.736] Blocked loading mixed active content "http://elundmark.se/_files/js/tz-aio/log/update-check.php?version=2.3.3" @ file:///run/shm/elundmark-firefox-yrmdaoyp.default/gm_scripts/Torrentz_All-in-One/jquery.min.js:6
 
-
+## Description
 
 [Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
 This userscript enhances Torrentz (on all its domains) to include a bunch of new features. Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey. _(Will **not** work using Chrome's built in userscript installation.)_
