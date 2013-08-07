@@ -2217,6 +2217,8 @@
           lastCheck = Number(lastCheck);
           updateMessage = "New version of TzAio available!\n" + tzAio.userScript.link;
           if ( (now - lastCheck) >= updateInterval ) {
+            /* Firefox 23+ will not allow unsecure connections from SSL pages anymore unless user allows it
+               https://support.mozilla.org/en-US/kb/how-does-content-isnt-secure-affect-my-safety?as=u */
             $.getJSON("http://elundmark.se/_files/js/tz-aio/log/update-check.php", {
                 version : tzAio.userScript.version
               }, function (data) {
