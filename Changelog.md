@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.4** (2013-08-16)
+* Removed update checker due to bad code and changes in Firefox.
+
 **2.3.3** (2013-08-06)
 * Minor optimizations for detecting links in comments, and safer no-referrer urls.
 

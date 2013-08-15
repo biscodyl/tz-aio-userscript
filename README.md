@@ -1,11 +1,5 @@
 # Torrentz All-in-one Userscript
 
-### **Important! Mixed content warning in Firefox 23+**
-
-This script uses a non secure `http` connection to check for updates, which triggers Firefoxs' new [mixed active content warning](https://support.mozilla.org/en-US/kb/how-does-content-isnt-secure-affect-my-safety?as=u). This is a good thing for security, but also bad for you in that **you won't recieve any notifications about updates anymore**. To re-enable notifications, please click the shield icon to the let of the locationbar when visible, and choose "Disable protection on this page". I know, I should purchase a `SSL` certificate for my site, but it's not exactly cheap. And all that's sent is a request that says `?version=1.2.3`. Below is the error you might see in the console:
-
-    [Webdeveloper error] [17:58:52.736] Blocked loading mixed active content "http://elundmark.se/_files/js/tz-aio/log/update-check.php?version=2.3.3" @ file:///run/shm/elundmark-firefox-yrmdaoyp.default/gm_scripts/Torrentz_All-in-One/jquery.min.js:6
-
 ## Description
 
 [Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
@@ -48,7 +42,6 @@ This project is mainly maintained and hosted on [github](https://github.com/elun
 * **No referer url**  _Customizable_ - An optional url that is prepended to all outgoing non-torrent-ish sites.
 * **Fix comment links**  _Customizable_ - Changes all valid un-anchored links inside comments to links.
 * **Smart keyboard shortcuts**  `'C'` to copy all the trackers or toggle the tracker box, `'D'` to trigger the magnet-link, `'SHIFT + D'` to download the fist torrent-file listed, `'← →'` to navigate search results pages (Left arrow Right arrow), `'SHIFT + →'` to go to the next episode/season, `'SHIFT + ←'` to go to the previous episode/season, `'ESC'` for general exit/close.
-* **Update checker**  Checks for updates automatically and notifies you about them.
 
 _All these settings are accessed by clicking 'TzAio' at the top of each page, and can be flushed and reset if you want to start over, or take advantage of (any) new default trackers that might have been added._
 
