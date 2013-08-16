@@ -11,13 +11,7 @@
 // @updateURL     https://userscripts.org/scripts/source/125001.meta.js
 // @downloadURL   https://userscripts.org/scripts/source/125001.user.js
 // @supportURL    https://github.com/elundmark/tz-aio-userscript/issues
-// @include       /^https?://(www\.)?torrentz\.ph/.*/
-// @include       /^https?://(www\.)?torrentz\.eu/.*/
-// @include       /^https?://(www\.)?torrentz\.li/.*/
-// @include       /^https?://(www\.)?torrentz\.com/.*/
-// @include       /^https?://(www\.)?torrentz\.me/.*/
-// @include       /^https?://(www\.)?torrentz\.in/.*/
-// @include       /^https?://(www\.)?torrentz\.hk/.*/
+// @include       /^https?://(www\.)?torrentz\.(ph|eu|li|com|me|in|hk)/.*/
 // @include       /^https?://(www\.)?torrents\.de/.*/
 // @include       /^https?://(www\.)?tz\.ai/*
 // @exclude       /^https?://[^/]+/feed(_[a-zA-Z]+)?\?.*/
