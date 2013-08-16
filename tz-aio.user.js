@@ -13,7 +13,7 @@
 // @supportURL    https://github.com/elundmark/tz-aio-userscript/issues
 // @include       /^https?://(www\.)?torrentz\.(ph|eu|li|com|me|in|hk)/.*/
 // @include       /^https?://(www\.)?torrents\.de/.*/
-// @include       /^https?://(www\.)?tz\.ai/*
+// @include       /^https?://(www\.)?tz\.ai/.*/
 // @exclude       /^https?://[^/]+/feed(_[a-zA-Z]+)?\?.*/
 // @exclude       /^https?://[^/]+/announcelist_.*/
 // @exclude       /^https?://[^/]+/report_.*/
