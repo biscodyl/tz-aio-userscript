@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.3.4
+// @version       2.3.5
 // @date          2013-08-16
 // @author        elundmark
 // @contact       mail@elundmark.se
@@ -26,8 +26,8 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-3-4-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-4-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-3-5-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-5-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -277,11 +277,11 @@
             // www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
             // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
             directHref = torCacheUrl;
-          } else if ( ~href.indexOf("h33t.com/tor") ) {
-            // last checked 2012-05-13
-            // h33t.com/tor/999999/ubuntu-10.10-dvd-i386.iso-h33t
-            // h33t.com/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=Ubuntu%2010.10%20-%20DVD%20-%20i386.iso.torrent
-            directHref = "http://h33t.com/download.php?id=" + hash + "&f=" + titleEnc + "%5D%5Bh33t%5D.torrent";
+          } else if ( ~href.indexOf("h33t.com/torrent") ) {
+            // last checked 2013-08-16
+            // h33t.com/torrent/999999/ubuntu-10.10-dvd-i386.iso-h33t
+            // h33t.com/get/999999
+            directHref = "http://h33t.com/get/" + slashSplit[4];
           } else if ( ~href.indexOf("newtorrents.info/torrent") ) {
             // last checked 2012-05-13
             // www.newtorrents.info/torrent/99999/Ubuntu-10-10-DVD-i386.html?nopop=1
@@ -329,12 +329,6 @@
             // www.torrentstate.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
             // www.torrentstate.com/download/BAE62A9932EC69BC6687A6D399CCB9D89D00D455
             directHref = "http://www.torrentstate.com/download/" + HASH;
-          } else if ( ~href.indexOf("torlock.com/torrent/") ) {
-            // last checked 2012-05-13
-            // www.torlock.com/torrent/1702956/21-jump-street-2012-r5-new-line-inspiral.html
-            // dl.torlock.com/1702956.torrent
-            directHref = slashSplit && slashSplit.length >= 5 ? "http://dl.torlock.com/"
-              + slashSplit[4] + ".torrent" : null;
           } else if ( ~href.indexOf("torrenthound.com/hash") ) {
             // last checked 2012-05-13
             // www.torrenthound.com/hash/bae62a9932ec69bc6687a6d399ccb9d89d00d455/torrent-info/ubuntu-10.10-dvd-i386.iso

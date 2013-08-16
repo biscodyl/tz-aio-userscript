@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.5** (2013-08-16)
+* Torrent direct links updated.
+
 **2.3.4** (2013-08-16)
 * Removed update checker due to bad code and changes in Firefox.
 
