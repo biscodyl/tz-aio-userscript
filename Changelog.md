@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.6** (2013-08-19)
+* New ad class added to `removeAds`.
+
 **2.3.5** (2013-08-16)
 * Torrent direct links updated.
 
