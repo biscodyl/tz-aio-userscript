@@ -25,7 +25,7 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 * **Search engines list**  _Customizable_ - Select some text in the title and search these sites.
 * **Custom CSS Editor** _Customizable_ - Added by demand, edit away!
 * **Force HTTPS**  _Customizable_ - Off by default, but forces SSL (`https://`) if enabled.
-* **TV Episode Links**  Helps you search for next/prev episode/season, click the links in the filter-bar or use `SHIFT+[arrowkeys]` when available by searching for the common patters _SXXEXX_ or _2013 01 01_.
+* **TV Episode Links**  Helps you search for next/prev episode/season, click the links in the filter-bar or use `SHIFT+[arrowkeys]` when available by searching for the common patters _sNNeNN_ or _2013 01 01_.
 * **Ad removal**  _Customizable_ - Wouldn't be a UserScript without this. As new ads are added, this script will be updated.
 * **Direct .torrent links**  Applies to all avaliable sites listed on each 'single page'.
 * **Stats-bar**  Get all the important info right away, like seed-ratio, a Copy trackerlist button, a Magnet-link, links to the comments and the files, and the total amout of peers.
@@ -57,7 +57,7 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 * jQuery JavaScript Library v2.0.2 [jquery.com](http://jquery.com/). Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
 * [jQuery replaceText](http://github.com/cowboy/jquery-replacetext/), Copyright (c) 2009 "Cowboy" Ben Alman. Version: 1.1, Last updated: 11/21/2009* [Dual licensed](http://benalman.com/about/license/) under the MIT and GPL licenses. [Project Home](http://benalman.com/projects/jquery-replacetext-plugin/).
-* [Underscore.js](http://underscorejs.org/) 1.4.4, (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc. Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
+* [Underscore.js](http://underscorejs.org/) 1.5.0, (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc. Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
 
 # **How to use**
 

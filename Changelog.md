@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.7** (2013-08-27)
+* Updated UnderScore.js to `v1.5.0` and made the no-referrer links include a clickable link for targets that take time loading.
+
 **2.3.6** (2013-08-19)
 * New ad class added to `removeAds`.
 
