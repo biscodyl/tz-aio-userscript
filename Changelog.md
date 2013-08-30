@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.9** (2013-08-31)
+* Using `shift + d` now downloads a random torrent instead of the first one listed.
+
 **2.3.8** (2013-08-30)
 * Added torlock.com as a direct torrent link.
 
