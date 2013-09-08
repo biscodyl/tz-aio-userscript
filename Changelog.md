@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.10** (2013-09-08)
+* Fixed bug that copied trackers whenever ESC was pressed or settings-panel was opened.
+
 **2.3.9** (2013-08-31)
 * Using `shift + d` now downloads a random torrent instead of the first one listed.
 
