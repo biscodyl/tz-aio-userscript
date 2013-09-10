@@ -1,5 +1,11 @@
 # Changelog
 
+**2.3.12** (2013-09-11)
+* More speed improvements and optimizations.
+* Updated UnderScore.js to `v1.5.1`, now fetched from [cdnjs](https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js).
+* Updated jQuery to `v2.0.3`.
+* No more external plugins file fetched from my own server.
+
 **2.3.11** (2013-09-10)
 * Small speed improvments in `@include` pattern and all javascript regular expressions.
 

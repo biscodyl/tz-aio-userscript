@@ -7,18 +7,6 @@ Please [rate and/or leave a review](https://userscripts.org/scripts/reviews/1250
 
 _This project is mainly maintained on [github](https://github.com/elundmark/tz-aio-userscript/), so please report any issues or requests @ [github.com/elundmark/tz-aio-userscript/issues](https://github.com/elundmark/tz-aio-userscript/issues)._
 
-# **Applies to these sites**
-
-* [http(s)://torrentz.eu/*](https://torrentz.eu/)
-* [http(s)://torrentz.ph/*](https://torrentz.ph/)
-* [http(s)://torrentz.li/*](https://torrentz.li/)
-* [http(s)://torrentz.com/*](https://torrentz.com/)
-* [http(s)://torrentz.me/*](https://torrentz.me/)
-* [http(s)://torrentz.in/*](https://torrentz.in/)
-* [http(s)://torrentz.hk/*](https://torrentz.hk/)
-* [http(s)://torrents.de/*](https://torrents.de/)
-* [http(s)://tz.ai/*](https://tz.ai/)
-
 # **Features**
 
 * **Default trackerlist**  _Customizable_ - Magically sorted trackers, that apply to all magnet-links.
@@ -47,6 +35,18 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 * Passes AdBlocker default blacklist.
 * All the data you save is stored permanently and applies across all domains, without the use of cookies or `localStorage`.
 
+# **Applies to these sites**
+
+* [http(s)://torrentz.eu/*](https://torrentz.eu/)
+* [http(s)://torrentz.ph/*](https://torrentz.ph/)
+* [http(s)://torrentz.li/*](https://torrentz.li/)
+* [http(s)://torrentz.com/*](https://torrentz.com/)
+* [http(s)://torrentz.me/*](https://torrentz.me/)
+* [http(s)://torrentz.in/*](https://torrentz.in/)
+* [http(s)://torrentz.hk/*](https://torrentz.hk/)
+* [http(s)://torrents.de/*](https://torrents.de/)
+* [http(s)://tz.ai/*](https://tz.ai/)
+
 # **Help me, to help us**
 
 See something wrong in the code, or maybe you wanna collaborate in keeping this script even more up to date? If so, I'm super stoked! Throw me an email, or contribute to the repo right away!
@@ -55,9 +55,9 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 # **Included plugins**
 
-* jQuery JavaScript Library v2.0.2 [jquery.com](http://jquery.com/). Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
+* jQuery JavaScript Library v2.0.3 [jquery.com](http://jquery.com/). Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
 * [jQuery replaceText](http://github.com/cowboy/jquery-replacetext/), Copyright (c) 2009 "Cowboy" Ben Alman. Version: 1.1, Last updated: 11/21/2009* [Dual licensed](http://benalman.com/about/license/) under the MIT and GPL licenses. [Project Home](http://benalman.com/projects/jquery-replacetext-plugin/).
-* [Underscore.js](http://underscorejs.org/) 1.5.0, (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc. Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
+* [Underscore.js](http://underscorejs.org/) 1.5.1, (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc. Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
 
 # **How to use**
 
