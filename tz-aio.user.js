@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.3.10
-// @date          2013-09-08
+// @version       2.3.11
+// @date          2013-09-10
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -11,17 +11,15 @@
 // @updateURL     https://userscripts.org/scripts/source/125001.meta.js
 // @downloadURL   https://userscripts.org/scripts/source/125001.user.js
 // @supportURL    https://github.com/elundmark/tz-aio-userscript/issues
-// @include       /^https?://(www\.)?torrentz\.(ph|eu|li|com|me|in|hk)/.*/
-// @include       /^https?://(www\.)?torrents\.de/.*/
-// @include       /^https?://(www\.)?tz\.ai/.*/
-// @exclude       /^https?://[^/]+/feed(_[a-zA-Z]+)?\?.*/
+// @include       /^https?://(?:www\.)?(?:tz\.ai|torrents\.de|(?:torrentz\.(?:eu|ph|li|com|me|in|hk)))/.*/
+// @exclude       /^https?://[^/]+/feed(?:_[a-zA-Z]+)?\?.*/
 // @exclude       /^https?://[^/]+/announcelist_.*/
 // @exclude       /^https?://[^/]+/report_.*/
 // @exclude       /^https?://[^/]+/comment_.*/
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js
-// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-3-10-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-10-0
+// @require       http://elundmark.se/_files/js/tz-aio/tz-aio-plugins.js?v=2-3-11-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-11-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -148,7 +146,7 @@
     sendLog         = function (message, callback) {
       logs++;
       if ( typeof w.console == "object" && typeof w.console.log === "function" ) {
-        if ( !(String(message).match(/^(Starting|Load\:|Exec\:|\d+\s+ajaxed\s+|Thanks\sfor|Successfully.checked.for.updates)/)) ) {
+        if ( !(String(message).match(/^(?:Starting|Load\:|Exec\:|\d+\s+ajaxed\s+|Thanks\sfor|Successfully.checked.for.updates)/)) ) {
           w.console.log("--- TzAio logs[" + (logs-1) + "] ---");
         }
         w.console.log(message);
@@ -187,44 +185,43 @@
         // remember to catch the obvious first, then re-check further down
         {
           name     : "pink"
-          ,pattern : new RegExp(unescape("%28%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30"
-            + "%6E%7C%78%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%2B%3F%5C%62%29"), "i")
+          ,pattern : new RegExp(unescape("%28%3F%3A%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30%6E%7C%78%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%2B%3F%5C%62%29"), "i")
         }, {
           name     : "tv"
-          ,pattern : new RegExp("((\\W|_)(sd|ez|et)?tv(\\W|_)|\\blol\\b|(\\W|_)s[0-9]{2}e[0-9]{2}(\\W|_)|"
+          ,pattern : new RegExp("(?:(?:\\W|_)(?:sd|ez|et)?tv(?:\\W|_)|\\blol\\b|(?:\\W|_)s[0-9]{2}e[0-9]{2}(?:\\W|_)|"
             + "tvteam|discovery|hdtv|television|series|\\bshows?\\b|episodes?|\\bseasons?\\b)","i")
         }, {
           name     : "movie"
-          ,pattern : new RegExp("(movie|film|maxspeed|axxo|feature|video|dvdscr|screener|(\\W|_)cam(rip)?"
+          ,pattern : new RegExp("(?:movie|film|maxspeed|axxo|feature|video|dvdscr|screener|(?:\\W|_)cam(rip)?"
             + "\\b|\\br[3-6]\\b|\\bts\\b|telesync|\\bvod(rip)?)","i")
         }, {
           name     : "book"
-          ,pattern : new RegExp("(\\be?book|epub|pdf|document|m4b|audiobook|audible|\\bcbr\\b|comics)","i")
+          ,pattern : new RegExp("(?:\\be?book|epub|pdf|document|m4b|audiobook|audible|\\bcbr\\b|comics)","i")
         }, {
           name     : "game"
-          ,pattern : new RegExp("(games?\\b|xbox|ps[x234]|wii|\\broms?(et)?\\b|playstation|nintendo)","i")
+          ,pattern : new RegExp("(?:games?\\b|xbox|ps[x234]|wii|\\broms?(et)?\\b|playstation|nintendo)","i")
         }, {
           name     : "music"
-          ,pattern : new RegExp("(music|audio|\\bpop\\b|\\brock\\b|flac|lossless|album\\b|consert|"
+          ,pattern : new RegExp("(?:music|audio|\\bpop\\b|\\brock\\b|flac|lossless|album\\b|consert|"
             + "bootleg|mp3|\\bogg\\b|wav|m4a|podcast|\\bost\\b)","i")
         }, {
           name     : "app"
-          ,pattern : new RegExp("(software|apps?(lications)?\\b|\\bos[a-z]?\\b|\\bos\\b|\\bunix\\b"
+          ,pattern : new RegExp("(?:software|apps?(lications)?\\b|\\bos[a-z]?\\b|\\bos\\b|\\bunix\\b"
             + "|\\blinux\\b|\\bsolaris\\b|\\bwin(dows|([7-9]|xp))?\\b|\\bmac\\b|\\bx64\\b|\\bx86\\b"
             + "|\\bandroid\\b|\\bpsp\\b|\\bios\\b|\\bpc\\b)","i")
         }, {
           name     : "picture"
-          ,pattern : new RegExp("(picture|images|gallery)","i")
+          ,pattern : new RegExp("(?:picture|images|gallery)","i")
         }, {
           name     : "anime"
           ,pattern : new RegExp("anime\\b","i")
         }, {
           name     : "movie"
-          ,pattern : new RegExp("(1080p|720p|bluray|blueray|480p|wmv|avi|matroska|mkv"
+          ,pattern : new RegExp("(?:1080p|720p|bluray|blueray|480p|wmv|avi|matroska|mkv"
             + "|highres|264|xvid|divx|bdrip|brrip|hdrip)","i")
         }, {
           name     : "misc"
-          ,pattern : new RegExp("(other|\\bmisc|un(sorted|known|defined)|siterip)","i")
+          ,pattern : new RegExp("(?:other|\\bmisc|un(?:sorted|known|defined)|siterip)","i")
         }
       ],
 
@@ -563,7 +560,7 @@
           ,activeEl    = $(d.activeElement)
         ;
         if ( activeEl.length && activeEl[0].nodeName
-          && activeEl[0].nodeName.toLowerCase().match(/(input|textarea)/)
+          && activeEl[0].nodeName.toLowerCase().match(/(?:input|textarea)/)
           && !(
             activeEl.parents("div:eq(0)").length && activeEl.parents("div:eq(0)")[0].id
             && activeEl.parents("div:eq(0)")[0].id.toLowerCase().match(/_copy_tr_textarea/)
@@ -660,7 +657,6 @@
               tzAio.selectors.$titleEl.trigger("mousedown");
               tzAio.selectors.$searchBar.empty();
               tzAio.selectors.$body.removeClass("search_ready");
-              console.log("663 tzAio.toggleCopyBox(2);");
               tzAio.toggleCopyBox(2);
               // strange range error in Chrome but nothing breaks
               try {
@@ -788,7 +784,7 @@
             if ( this.selectors.$firstInfoDiv.length && this.selectors.$firstInfoDiv.text().match(/btguard/i) ) {
               this.selectors.$firstInfoDiv.addClass(adRemovedClass);
             }
-            if ( this.selectors.$firstDl.text().match(/(direct\s+download|sponsored\s+link)/i) ) {
+            if ( this.selectors.$firstDl.text().match(/(?:direct\s+download|sponsored\s+link)/i) ) {
               this.selectors.$firstDl.addClass(adRemovedClass);
             }
             if ( this.selectors.$pImageAd.length ) {
@@ -975,14 +971,14 @@
             tzAio.selectors.$titleEl.removeAttr("title");
             tempStr = selected + "";
             tempStr = tempStr
-              .replace(/(\W|\_)/ig," ")
+              .replace(/(?:\W|\_)/ig," ")
               .replace(tzAio.cache.selectTrashPatt," ")
               .replace(tzAio.cache.discardThisForSelect," ")
               .replace(/\s*locations?\s*$/," ")
               .replace(/\s*download\s*$/," ")
               .replace(/\s*torrent\s*$/," ")
               .replace(/\s+/g,"+")
-              .replace(/(^\+|\+$)/g,"");
+              .replace(/(?:^\+|\+$)/g,"");
             searchStr = tempStr;
             for ( i = 0; i < tzAio.cache.searchEnginesLen; i++ ) {
               engineHTMLArr = tzAio.storedSettings.searchEngines[i].split("|");
@@ -1004,15 +1000,13 @@
       },
 
       setupSelectToSearch : function () {
-        var discardMatch = this.selectors.$titleEl[0].textContent
-            .match(this.cache.selectTrashPatt)
+        var discardMatch = this.selectors.$titleEl[0].textContent.match(this.cache.selectTrashPatt)
           ,tzCl          = this.userScript.slug
         ;
         this.selectors.$titleEl.after("<div id='" + tzCl + "_search_bar' class='"
           + tzCl + "_searchbar'></div>");
         this.selectors.$searchBar = $("#" + tzCl + "_search_bar");
-        this.cache.discardThisForSelect = discardMatch && discardMatch.length
-          ? discardMatch[0] : "";
+        this.cache.discardThisForSelect = discardMatch ? discardMatch[0] : "";
         this.selectors.$titleEl
           .attr("title","Select the text in this title to start searching...")
           .bind("mouseup", this.fillSearchBar)
@@ -1147,7 +1141,7 @@
           } else {
             cleanHost = trackersArray[i];
           }
-          cleanHost = cleanHost.replace(/(:[0-9]+|\/).*$/i,"");
+          cleanHost = cleanHost.replace(/(?::[0-9]+|\/).*$/i,"");
           domainSplit = cleanHost.split(".");
           domainSplitLen = domainSplit.length;
           // !example.com
@@ -1485,6 +1479,7 @@
           ,doColorize        = options.searchHighlight
           ,magnetTitleAppend = " with magnetlink (" + trackerLen + " default tracker" + trAppend + ")"
           ,metaDLpatt        = this.cache.metaDLpatt
+          ,keyPatterns       = this.searchGenres
           ,metaCl            = options.searchHighlight ? "meta-info colorizeme" : "meta-info"
           ,currentClName
           ,unverifiedClName  = ""
@@ -1538,10 +1533,10 @@
               unverifiedClName = currentClName + " " + tzCl + "_fake_dl";
             }
             // Keyword check
-            if ( doColorize && this.searchGenres && this.searchGenres.length ) {
+            if ( doColorize && keyPatterns && keyPatterns.length ) {
               dtContent = dlElements[i].getElementsByTagName("dt");
               dtContent = dtContent.length ? dtContent[0].textContent : "";
-              coloredClName = this.colorizeMatch(dtContent, this.searchGenres, torrTitle);
+              coloredClName = this.colorizeMatch(dtContent, keyPatterns, torrTitle);
             }
           }
           coloredClName = coloredClName.length ? " " + coloredClName : "";
@@ -1564,7 +1559,7 @@
           ,fooPatt
         ;
         if ( pattStr.match(/^\s*\//) && pattStr.match(/\/\s*$/) ) {
-          pattStr = pattStr.replace(/(^\s*\/|\/\s*$)/g, "");
+          pattStr = pattStr.replace(/(?:^\s*\/|\/\s*$)/g, "");
           try {
             fooPatt = new RegExp(pattStr,"i");
             returnBool = __.isRegExp(fooPatt);
@@ -1573,7 +1568,7 @@
             sendLog(error);
             returnBool = false;
           }
-        } else if ( pattStr.match(/(^\s*\/|\/\s*$)/) ) {
+        } else if ( pattStr.match(/(?:^\s*\/|\/\s*$)/) ) {
           returnBool = false;
         } else {
           returnBool = true;
@@ -1587,7 +1582,7 @@
           ,i
         ;
         if ( userString.match(/^\//) && userString.match(/\/$/) ) {
-          convertedPattern = userString.replace(/(^\/|\/$)/g,"");
+          convertedPattern = userString.replace(/(?:^\/|\/$)/g,"");
         } else {
           userString = userString
             .replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|\x3C|\x3E|\||\:|\-|\"|\')/g,"\\$1")
@@ -1709,8 +1704,8 @@
       },
 
       makeSearchQuery     : function (a, b, c, d, e) {
-        return (this.page.path + "?f=" + (a||"") + (b||"") + e + (c||"") + (d||"")).replace(/(\s+|(\%20)+|(\%2B)+)/g, "+")
-          .replace(/(^\++|\++$)/g, "").replace(/(\%22|\x22)+/g, "%22");
+        return (this.page.path + "?f=" + (a||"") + (b||"") + e + (c||"") + (d||"")).replace(/(?:\s+|(\%20)+|(\%2B)+)/g, "+")
+          .replace(/(?:^\++|\++$)/g, "").replace(/(?:\%22|\x22)+/g, "%22");
       },
 
       getNiceYear         : function (dateObj) {
@@ -1724,18 +1719,14 @@
 
       getValidDate        : function (date, go) {
         var b          = true
+          ,currDateObj = new Date(Number(date[0]), (Number(date[1]) - 1), Number(date[2]), 5)
           ,oneDay      = 86400000
-          ,currDateObj = new Date()
           ,tmpMS
           ,currDateMS
           ,newDate
           ,dir         = go
           ,i           = 0
         ;
-        currDateObj.setFullYear(Number(date[0]));
-        currDateObj.setMonth((Number(date[1]) - 1));
-        currDateObj.setDate(Number(date[2]));
-        currDateObj.setHours(6);
         currDateMS = currDateObj.getTime();
         while (b && i < 10) {
           tmpMS = currDateMS+(oneDay*dir);
@@ -1816,8 +1807,8 @@
               + this.makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.nextSeason + "E01" : ep.nextSeason))
               + "'>" + ep.nextSeason + " &raquo;</a>";
           }
-        } else if ( legacym && legacym.length === 7 ) {
-          htmlStr = "Use S<b>XX</b>E<b>XX</b> to search for episodes";
+        } else if ( legacym ) {
+          htmlStr = "Use s<b>NN</b>e<b>NN</b> to search for episodes";
         }
         return htmlStr;
       },
@@ -1985,8 +1976,8 @@
               submittedOptions.defaultTrackers = saveTrackers;
               submittedOptions.searchEngines = saveSearchEngines;
               submittedOptions.customCss = saveCustomCss;
-              submittedOptions.excludeFilter = excludeFilterVal.replace(/(^\s*\,|\,\s*$)/g,"")
-                .replace(/\,{2,}/g,",").replace(/(^\s+|\s+$)/g,"");
+              submittedOptions.excludeFilter = excludeFilterVal.replace(/(?:^\s*\,|\,\s*$)/g,"")
+                .replace(/\,{2,}/g,",").replace(/(?:^\s+|\s+$)/g,"");
               if ( tzAio.cache.freshUser ) {
                 confirmNewStorageRules = confirm("Settings are now being stored and used "
                   + "across all Torrentz's domains.\nSave and continue?");
@@ -2150,17 +2141,17 @@
       ,freshUser         : false
       ,sKeywordPatt      : /»\s+?(.*)$/i
       ,hashPatt          : /[a-zA-Z0-9]{40}/
-      ,metaDLpatt        : /(explicit\s+results?\s+hidden\s+by\s+family\s+filters?|results?\s+removed\s+in\s+compliance\s+with)/i
+      ,metaDLpatt        : /(?:explicit\s+results?\s+hidden\s+by\s+family\s+filters?|results?\s+removed\s+in\s+compliance\s+with)/i
       ,validEpisodePatt  : /(.*?)([^sS=]|\b)S([0-9]{1,2})(E([0-9]{1,2}))?([^0-9]|\b)(.*)/i
-      ,validLegacyEpPatt : /(.*?)([^0-9=]|\b)([0-9]{1,2})x([0-9]{1,2})([^0-9]|\b)(.*)/i
+      ,validLegacyEpPatt : /(.*?)(?:[^0-9=]|\b)([0-9]{1,2})x([0-9]{1,2})(?:[^0-9]|\b)(.*)/i
       ,validDatePatt     : new RegExp("(.*?)([^0-9=]|\\b)(([0-9]{4})\\D?(((0[13578]|(10|12))\\D?(0[1-9]|[1-2]"
         +"[0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)\\D?(0[1-9]|[1-2][0-9]|30))))([^0-9]|\\b)(.*)","i")
-      ,twoPartDomainPatt : new RegExp("(\\.com|\\.co|\\.info|\\.mobi|\\.net|\\.ar|\\.as|\\.at|"
+      ,twoPartDomainPatt : new RegExp("(?:\\.com|\\.co|\\.info|\\.mobi|\\.net|\\.ar|\\.as|\\.at|"
         + "\\.bb|\\.bg|\\.br|\\.ca|\\.ch|\\.cn|\\.cs|\\.dk|\\.ee|\\.es|\\.fi|\\.fr|\\.gr|\\.in|"
         + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}","")
       ,matchUrlPatt      : /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i
-      ,comLinksPatt      : /((htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!\:.?+=&%@!\-\/]))?)/gi
-      ,selectTrashPatt   : /(\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i
+      ,comLinksPatt      : /(?:(?:htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(?:\/|\/([\w#!\:.?+=&%@!\-\/]))?)/gi
+      ,selectTrashPatt   : /(?:\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i
       // https://en.wikipedia.org/wiki/Magnet_URI_scheme
       ,magnetURI         : "magnet:?xt=urn:btih:"
       ,bugReportMsg      : "\n(If this problem persists, please get in touch and I'll fix it\n"
@@ -2235,7 +2226,7 @@
               });
 
             } else if ( tzAio.page.path === "/i"
-              || tzAio.page.path.match(/^\/(search|any|verified|advanced|tracker_)/)
+              || tzAio.page.path.match(/^\/(?:search|any|verified|advanced|tracker_)/)
               || tzAio.page.path.match(/^\/[a-z]{2,}\//) ) {
 
               tzAio.cache.isSearch = true;

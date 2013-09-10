@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.11** (2013-09-10)
+* Small speed improvments in `@include` pattern and all javascript regular expressions.
+
 **2.3.10** (2013-09-08)
 * Fixed bug that copied trackers whenever ESC was pressed or settings-panel was opened.
 
