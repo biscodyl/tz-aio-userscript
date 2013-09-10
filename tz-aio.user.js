@@ -261,6 +261,7 @@
             directHref = href.replace(/(\.me\/)torrent(\/)/i,"$1download$2");
           } else if ( ~href.indexOf("kat.ph/")
             || ~href.indexOf("kickasstorrents.com/")
+            || ~href.indexOf("kickmirror.com/")
             || ~href.indexOf("katproxy.com")
             || ~href.indexOf("katmirror.com/")
             || ~href.indexOf("kickass.to/") ) {
