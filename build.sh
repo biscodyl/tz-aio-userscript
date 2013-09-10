@@ -18,13 +18,19 @@ if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -f /tmp/.password_manager ]]; then
     cd "$WORKDIR"
   }
   gitCommit () {
+    echo -n "Version release number?: "
+    read gitversionnumber
     echo -n "Enter a description for the commit: "
     read gitcommitmsg
+    if [[ "$gitversionnumber" =~ [0-9] ]] ; then
+      gitcommitmsg="v$gitversionnumber $gitcommitmsg"
+    fi
     read -p "Is '""$gitcommitmsg""' correct? (y/n): " CONT
     if [[ $? -eq 0 ]] && [[ "$CONT" == "y" || ! $CONT || "$CONT" = "" ]] ; then
       echo "\$ git add . ; git commit -am ""$gitcommitmsg""; git push origin master"
       git add .
       git commit -am "$gitcommitmsg"
+      git tag "$gitversionnumber"
       git push origin master
     else
       echo "Exiting..."
