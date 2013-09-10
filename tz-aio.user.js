@@ -144,9 +144,10 @@
       this.forceHTTPS = false;
     },
     sendLog         = function (message, callback) {
+      var excludePatt = /^(?:Starting|Load\:|Exec\:|\d+\s+ajaxed\s+|Thanks\sfor|Successfully.checked.for.updates)/;
       logs++;
       if ( typeof w.console == "object" && typeof w.console.log === "function" ) {
-        if ( !(String(message).match(/^(?:Starting|Load\:|Exec\:|\d+\s+ajaxed\s+|Thanks\sfor|Successfully.checked.for.updates)/)) ) {
+        if ( !(String(message).match(excludePatt)) ) {
           w.console.log("--- TzAio logs[" + (logs-1) + "] ---");
         }
         w.console.log(message);
@@ -185,15 +186,18 @@
         // remember to catch the obvious first, then re-check further down
         {
           name     : "pink"
-          ,pattern : new RegExp(unescape("%28%3F%3A%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70%72%30%6E%7C%78%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%2B%3F%5C%62%29"), "i")
+          ,pattern : new RegExp(w.unescape("%28%3F%3A%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70"
+            + "%72%30%6E%7C%78%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%2B"
+            + "%3F%5C%62%29"), "i")
         }, {
           name     : "tv"
-          ,pattern : new RegExp("(?:(?:\\W|_)(?:sd|ez|et)?tv(?:\\W|_)|\\blol\\b|(?:\\W|_)s[0-9]{2}e[0-9]{2}(?:\\W|_)|"
-            + "tvteam|discovery|hdtv|television|series|\\bshows?\\b|episodes?|\\bseasons?\\b)","i")
+          ,pattern : new RegExp("(?:(?:\\W|_)(?:sd|ez|et)?tv(?:\\W|_)|\\blol\\b|(?:\\W|_)s[0-9]{2}"
+            + "e[0-9]{2}(?:\\W|_)|tvteam|discovery|hdtv|television|series|\\bshows?\\b|episodes?|"
+            + "\\bseasons?\\b)","i")
         }, {
           name     : "movie"
-          ,pattern : new RegExp("(?:movie|film|maxspeed|axxo|feature|video|dvdscr|screener|(?:\\W|_)cam(rip)?"
-            + "\\b|\\br[3-6]\\b|\\bts\\b|telesync|\\bvod(rip)?)","i")
+          ,pattern : new RegExp("(?:movie|film|maxspeed|axxo|feature|video|dvdscr|screener|(?:\\W|_)"
+            + "cam(rip)?\\b|\\br[3-6]\\b|\\bts\\b|telesync|\\bvod(rip)?)","i")
         }, {
           name     : "book"
           ,pattern : new RegExp("(?:\\be?book|epub|pdf|document|m4b|audiobook|audible|\\bcbr\\b|comics)","i")
@@ -225,202 +229,199 @@
         }
       ],
 
-      getDirectTorrentLinks     : function (href, md5, title, titleEnc) {
-        if ( !href || !md5 || !title || !titleEnc ) {
-          sendLog("[getDirectTorrentLinks] is missing paramenters!" + tzAio.cache.bugReportMsg);
-        } else {
-          var hash       = md5.toLowerCase()
-            ,HASH        = hash.toUpperCase()
-            ,torCacheUrl = "http://torcache.net/torrent/" + HASH + ".torrent?title=" + titleEnc
-            ,torRageUrl  = "http://torrage.com/torrent/" + HASH + ".torrent"
-            ,directHref  = null
-            ,directMatch = null
-            ,slashSplit  = href.split("/")
-          ;
-          if ( ~href.indexOf("movietorrents.eu/") ) {
-            // last checked 2012-07-25
-            // movietorrents.eu/torrents-details.php?id=1421
-            // movietorrents.eu/download.php?id=1421&name=Ubuntu%20iso%20file.torrent
-            directMatch = href.match(/(\?|&)id=(\d+)/);
-            directHref = directMatch && directMatch.length === 3 ? "http://movietorrents.eu/download.php?id="
-              + directMatch[2] + "&name=" + titleEnc + ".torrent" : null;
-          } else if ( ~href.indexOf("publichd.se/") ) {
-            // last checked 2013-07-04
-            // publichd.se/index.php?page=torrent-details&id=bae62a9932ec69bc6687a6d399ccb9d89d00d455
-            // publichd.se/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=ubuntu-10.10-dvd-i386.iso.torrent
-            directHref = "http://publichd.se/download.php?id=" + hash + "&f=" + titleEnc + ".torrent";
-          } else if ( ~href.indexOf("btmon.com/") ) {
-            // last checked 2012-05-13
-            // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent.html
-            // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent
-            directHref = href.replace(/\.html$/i, "");
-          } else if ( ~href.indexOf("torrentdownloads.me/") ) {
-            // last checked 2012-06-02
-            // www.torrentdownloads.me/torrent/1652094016/ubuntu-10+10-desktop-i386+iso
-            // www.torrentdownloads.me/download/1652094016/ubuntu-10+10-desktop-i386+iso
-            directHref = href.replace(/(\.me\/)torrent(\/)/i,"$1download$2");
-          } else if ( ~href.indexOf("kat.ph/")
-            || ~href.indexOf("kickasstorrents.com/")
-            || ~href.indexOf("kickmirror.com/")
-            || ~href.indexOf("katproxy.com")
-            || ~href.indexOf("katmirror.com/")
-            || ~href.indexOf("kickass.to/") ) {
-            // last checked 2013-07-05
-            // www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
-            // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
-            directHref = torCacheUrl;
-          } else if ( ~href.indexOf("h33t.com/torrent") ) {
-            // last checked 2013-08-16
-            // h33t.com/torrent/999999/ubuntu-10.10-dvd-i386.iso-h33t
-            // h33t.com/get/999999
-            directHref = "http://h33t.com/get/" + slashSplit[4];
-          } else if ( ~href.indexOf("torlock.com/torrent") ) {
-            // last checked 2013-08-30
-            // www.torlock.com/torrent/9999999/ubuntu-10+10-desktop-i386+iso.html
-            // www.torlock.com/tor/9999999.torrent
-            directHref = "http://www.torlock.com/tor/" + slashSplit[4] + ".torrent";
-          } else if ( ~href.indexOf("newtorrents.info/torrent") ) {
-            // last checked 2012-05-13
-            // www.newtorrents.info/torrent/99999/Ubuntu-10-10-DVD-i386.html?nopop=1
-            // www.newtorrents.info/down.php?id=99999
-            directHref = slashSplit && slashSplit.length >= 5 ? "http://" + slashSplit[2]
-              + "/down.php?id=" + slashSplit[4] : null;
-          } else if ( ~href.indexOf("fenopy.eu/torrent")
-            || ~href.indexOf("fenopy.se/torrent")
-            || ~href.indexOf("fenopy.com/torrent") ) {
-            // last checked 2013-07-27
-            // fenopy.domain/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA
-            // fenopy.domain/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA==/download.torrent
-            // seems to use torcache but this works too
-            directHref = href + "==/download.torrent";
-          } else if ( ~href.indexOf("extratorrent.com/torrent")
-            || ~href.indexOf("extramirror.com/torrent") ) {
-            // last checked 2013-07-27
-            // extratorrent.com/torrent/9999999/Ubuntu-10-10-DVD-i386.html
-            // extratorrent.com/download/9999999/Ubuntu-10-10-DVD-i386.torrent
-            directHref = href.replace(/(\.com\/torrent)/i, ".com/download").replace(/\.html$/i, ".torrent");
-          } else if ( ~href.indexOf("bitsnoop.com/") ) {
-            // last checked 2012-05-13
-            // bitsnoop.com/ubuntu-10-10-dvd-i386-q17900716.html
-            // torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
-            directHref = torRageUrl;
-          } else if ( ~href.indexOf("bt-chat.com/") ) {
-            // last checked 2012-05-13
-            // Site was malware flagged so I don't know if this still works
-            // www.bt-chat.com/details.php?id=999999
-            // www.bt-chat.com/download.php?id=999999
-            directHref = href.replace(/\/details\.php/i, "/download.php");
-          } else if ( ~href.indexOf("1337x.org/") ) {
-            // last checked 2012-05-13
-            // 1337x.org/torrent/999999/ubuntu-10-10-dvd-i386/
-            directHref = torCacheUrl;
-          } else if ( ~href.indexOf("torrentfunk.com/torrent/") ) {
-            // last checked 2012-05-13
-            // www.torrentfunk.com/torrent/9999999/ubuntu-10-10-dvd-i386.html
-            // www.torrentfunk.com/tor/9999999.torrent
-            directHref = slashSplit && slashSplit.length >= 5 ? "http://www.torrentfunk.com/tor/"
-              + slashSplit[4] + ".torrent" : null;
-          } else if ( ~href.indexOf("torrentstate.com/") ) {
-            // last checked 2012-05-13
-            // Site was down so I don't know if this still works
-            // www.torrentstate.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
-            // www.torrentstate.com/download/BAE62A9932EC69BC6687A6D399CCB9D89D00D455
-            directHref = "http://www.torrentstate.com/download/" + HASH;
-          } else if ( ~href.indexOf("torrenthound.com/hash") ) {
-            // last checked 2012-05-13
-            // www.torrenthound.com/hash/bae62a9932ec69bc6687a6d399ccb9d89d00d455/torrent-info/ubuntu-10.10-dvd-i386.iso
-            // www.torrenthound.com/torrent/bae62a9932ec69bc6687a6d399ccb9d89d00d455
-            directHref = "http://www.torrenthound.com/torrent/" + hash;
-          } else if ( ~href.indexOf("vertor.com/torrents") ) {
-            // last checked 2012-05-13
-            // www.vertor.com/torrents/2191958/Ubuntu-10-10-Maverick-Meerkat-%28Desktop-Intel-x86%29
-            // www.vertor.com/index.php?mod=download&id=2191958
-            directHref = slashSplit && slashSplit.length >= 5 ? "http://www.vertor.com/index.php?mod=download&id="
-              + slashSplit[4] : null;
-          } else if ( ~href.indexOf("yourbittorrent.com/torrent/") ) {
-            // last checked 2012-05-13
-            // www.yourbittorrent.com/torrent/212911/ubuntu-10-10-desktop-i386-iso.html
-            // www.yourbittorrent.com/down/212911.torrent
-            directHref = slashSplit && slashSplit.length >= 5 ? "http://yourbittorrent.com/down/"
-              + slashSplit[4] + ".torrent" : null;
-          } else if ( ~href.indexOf("torrents.net/torrent") ) {
-            // last checked 2012-05-13
-            // www.torrents.net/torrent/9999999/Ubuntu-10-10-DVD-i386.html/
-            // www.torrents.net/down/9999999.torrent
-            directHref = slashSplit && slashSplit.length >= 5 ? "http://www.torrents.net/down/"
-              + slashSplit[4] + ".torrent" : null;
-          } else if ( ~href.indexOf("torrentbit.net/torrent") ) {
-            // last checked 2012-05-13
-            // www.torrentbit.net/torrent/1903618/Ubuntu11.04%20Desktop%20i386%20ISO/
-            // www.torrentbit.net/get/1903618
-            directHref = slashSplit && slashSplit.length >= 5 ? "http://www.torrentbit.net/get/"
-              + slashSplit[4] : null;
-          } else if ( ~href.indexOf("coda.fm/albums") ) {
-            // last checked 2012-05-13
-            // coda.fm/albums/9999
-            // coda.fm/albums/9999/torrent/download?file=Title+of+torrent.torrent
-            directHref = slashSplit && slashSplit.length >= 5 ? "http://coda.fm/albums/"
-              + slashSplit[4] + "/torrent/download?file=" + titleEnc + ".torrent" : null;
-          } else if ( ~href.indexOf("swesub.tv/torrents-details.php") ) {
-            // swesub.tv/download.php?id=99999&name=BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
-            // swesub.tv/torrents-details.php?id=99999
-            directHref = href.replace("torrents-details.php?","download.php?") + "&name="
-              + HASH + ".torrent";
-          } else if ( ~href.indexOf("take.fm/movies") ) {
-            // last checked 2012-05-13
-            // take.fm/movies/999/releases/9999
-            // take.fm/movies/999/releases/9999/torrent/download?file=Title+of+torrent.torrent
-            directHref = slashSplit && slashSplit.length >= 7 ? "http://take.fm/movies/" + slashSplit[4]
-              + "/releases/" + slashSplit[6] + "/torrent/download?file=" + titleEnc + ".torrent" : null;
-          } else if ( ~href.indexOf("thepiratebay.sx/torrent/")
-            || ~href.indexOf("pirateproxy.net/torrent/")
-            || ~href.indexOf("pirateproxy.se/torrent/")
-            || ~href.indexOf("piratebayproxy.se/torrent/")
-            || ~href.indexOf("baymirror.com/torrent/")
-            || ~href.indexOf("piratereverse.info/torrent/")
-            || ~href.indexOf("piratebaymirror.me/torrent/") ) {
-            // last checked 2013-07-27
-            // not at all complete but these should cover it
-            // thepiratebay.sx/torrent/9999999
-            // torrents.thepiratebay.sx/9999999/Title+of+torrent.9999999.TPB.torrent
-            directHref = slashSplit && slashSplit.length >= 5 ? "http://torrents." + slashSplit[2]
-              + "/" + slashSplit[4] + "/" + titleEnc + "." + slashSplit[4] + ".TPB.torrent" : null;
-          } else if ( ~href.indexOf("torrentcrazy.com/torrent/") ) {
-            // last checked 2013-06-02
-            // www.torrentcrazy.com/torrent/8487590/title.of.torrent
-            // dl.torrentcrazy.com/bae62a9932ec69bc6687a6d399ccb9d89d00d455/Title+of+torrent.torrent
-            directHref = slashSplit && slashSplit.length >= 6 ? "http://dl.torrentcrazy.com/" + hash
-              + "/" + titleEnc + ".torrent" : null;
-          } else if ( ~href.indexOf("rarbg.com/torrent") ) {
-            // last checked 2013-07-27
-            // rarbg.com/torrents/filmi/download/abcde12/torrent.html
-            // rarbg.com/torrent/abcde12
-            // rarbg.com/download.php?id=abcde12&f=Title+of+torrent[rarbg.com].torrent
-            if ( href.match(/rarbg\.com\/torrents\/[^\/]+\/download\/[^\/]+\/torrent\.html$/i) ) {
-              directHref = slashSplit && slashSplit.length === 8 ? "http://rarbg.com/download.php?id="
-                + slashSplit[6] + "&f=" + titleEnc + "%5Brarbg.com%5D.torrent" : null;
-            } else if ( href.match(/rarbg\.com\/torrent\/[^\/]+\/?/i ) ) {
-              directHref = slashSplit && slashSplit.length === 5 ? "http://rarbg.com/download.php?id="
-                + slashSplit[4] + "&f=" + titleEnc + "%5Brarbg.com%5D.torrent" : null;
-            }
-          } else if ( ~href.indexOf("nyaa.eu/?") ) {
-            // last checked 2013-06-02
-            // www.nyaa.eu/?page=view&tid=438802
-            // www.nyaa.eu/?page=download&tid=438802
-            directHref = slashSplit && slashSplit.length >= 4
-              ? href.replace(/(\?|\&)page=view/,"$1page=download") : null;
-          } else if ( ~href.indexOf("torrage.com/torrent") ) {
-            // torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
-            directHref = href;
-          } else if ( ~href.indexOf("torcache.net/torrent") ) {
-            // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
-            directHref = href;
-          } else if ( ~href.indexOf("zoink.it/torrent") ) {
-            // zoink.it/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
-            directHref = href;
+      getDirectTorrentLinks     : function (href) {
+        var hash       = tzAio.page.thash.toLowerCase()
+          ,HASH        = hash.toUpperCase()
+          ,titleEnc    = tzAio.page.titleEnc
+          ,torCacheUrl = "http://torcache.net/torrent/" + HASH + ".torrent?title=" + titleEnc
+          ,torRageUrl  = "http://torrage.com/torrent/" + HASH + ".torrent"
+          ,slashSplit  = href.split("/")
+          ,directHref
+          ,directMatch
+        ;
+        if ( ~href.indexOf("movietorrents.eu/") ) {
+          // last checked 2012-07-25
+          // movietorrents.eu/torrents-details.php?id=1421
+          // movietorrents.eu/download.php?id=1421&name=Ubuntu%20iso%20file.torrent
+          directMatch = href.match(/(\?|&)id=(\d+)/);
+          directHref = directMatch && directMatch.length === 3 ? "http://movietorrents.eu/download.php?id="
+            + directMatch[2] + "&name=" + titleEnc + ".torrent" : null;
+        } else if ( ~href.indexOf("publichd.se/") ) {
+          // last checked 2013-07-04
+          // publichd.se/index.php?page=torrent-details&id=bae62a9932ec69bc6687a6d399ccb9d89d00d455
+          // publichd.se/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=ubuntu-10.10-dvd-i386.iso.torrent
+          directHref = "http://publichd.se/download.php?id=" + hash + "&f=" + titleEnc + ".torrent";
+        } else if ( ~href.indexOf("btmon.com/") ) {
+          // last checked 2012-05-13
+          // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent.html
+          // www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent
+          directHref = href.replace(/\.html$/i, "");
+        } else if ( ~href.indexOf("torrentdownloads.me/") ) {
+          // last checked 2012-06-02
+          // www.torrentdownloads.me/torrent/1652094016/ubuntu-10+10-desktop-i386+iso
+          // www.torrentdownloads.me/download/1652094016/ubuntu-10+10-desktop-i386+iso
+          directHref = href.replace(/(\.me\/)torrent(\/)/i,"$1download$2");
+        } else if ( ~href.indexOf("kat.ph/")
+          || ~href.indexOf("kickasstorrents.com/")
+          || ~href.indexOf("kickmirror.com/")
+          || ~href.indexOf("katproxy.com/")
+          || ~href.indexOf("katmirror.com/")
+          || ~href.indexOf("kickass.to/") ) {
+          // last checked 2013-07-05
+          // www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
+          // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
+          directHref = torCacheUrl;
+        // } else if ( ~href.indexOf("h33t.eu/torrent") ) {
+          // last checked 2013-09-10 (not reliable enough)
+          // h33t.eu/torrent/999999/ubuntu-10.10-dvd-i386.iso-h33t
+          // h33t.eu/download.php?id=35ec491984dd3cccfe86be82708fdd66cb98ea76&f=Ubuntu%20iso%20file.torrent
+          // directHref = "http://h33t.eu/download.php?id=" + hash + "&f=" + titleEnc + "%20%5Bh33t%5D.torrent";
+        } else if ( ~href.indexOf("torlock.com/torrent") ) {
+          // last checked 2013-08-30
+          // www.torlock.com/torrent/9999999/ubuntu-10+10-desktop-i386+iso.html
+          // www.torlock.com/tor/9999999.torrent
+          directHref = "http://www.torlock.com/tor/" + slashSplit[4] + ".torrent";
+        } else if ( ~href.indexOf("newtorrents.info/torrent") ) {
+          // last checked 2012-05-13
+          // www.newtorrents.info/torrent/99999/Ubuntu-10-10-DVD-i386.html?nopop=1
+          // www.newtorrents.info/down.php?id=99999
+          directHref = slashSplit && slashSplit.length >= 5 ? "http://" + slashSplit[2]
+            + "/down.php?id=" + slashSplit[4] : null;
+        } else if ( ~href.indexOf("fenopy.eu/torrent")
+          || ~href.indexOf("fenopy.se/torrent")
+          || ~href.indexOf("fenopy.com/torrent") ) {
+          // last checked 2013-07-27
+          // fenopy.domain/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA
+          // fenopy.domain/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA==/download.torrent
+          // seems to use torcache but this works too
+          directHref = href + "==/download.torrent";
+        } else if ( ~href.indexOf("extratorrent.com/torrent")
+          || ~href.indexOf("extramirror.com/torrent") ) {
+          // last checked 2013-07-27
+          // extratorrent.com/torrent/9999999/Ubuntu-10-10-DVD-i386.html
+          // extratorrent.com/download/9999999/Ubuntu-10-10-DVD-i386.torrent
+          directHref = href.replace(/(\.com\/torrent)/i, ".com/download").replace(/\.html$/i, ".torrent");
+        } else if ( ~href.indexOf("bitsnoop.com/") ) {
+          // last checked 2012-05-13
+          // bitsnoop.com/ubuntu-10-10-dvd-i386-q17900716.html
+          // torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+          directHref = torRageUrl;
+        } else if ( ~href.indexOf("bt-chat.com/") ) {
+          // last checked 2012-05-13
+          // Site was malware flagged so I don't know if this still works
+          // www.bt-chat.com/details.php?id=999999
+          // www.bt-chat.com/download.php?id=999999
+          directHref = href.replace(/\/details\.php/i, "/download.php");
+        } else if ( ~href.indexOf("1337x.org/") ) {
+          // last checked 2012-05-13
+          // 1337x.org/torrent/999999/ubuntu-10-10-dvd-i386/
+          directHref = torCacheUrl;
+        } else if ( ~href.indexOf("torrentfunk.com/torrent/") ) {
+          // last checked 2012-05-13
+          // www.torrentfunk.com/torrent/9999999/ubuntu-10-10-dvd-i386.html
+          // www.torrentfunk.com/tor/9999999.torrent
+          directHref = slashSplit && slashSplit.length >= 5 ? "http://www.torrentfunk.com/tor/"
+            + slashSplit[4] + ".torrent" : null;
+        } else if ( ~href.indexOf("torrentstate.com/") ) {
+          // last checked 2012-05-13
+          // Site was down so I don't know if this still works
+          // www.torrentstate.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
+          // www.torrentstate.com/download/BAE62A9932EC69BC6687A6D399CCB9D89D00D455
+          directHref = "http://www.torrentstate.com/download/" + HASH;
+        } else if ( ~href.indexOf("torrenthound.com/hash") ) {
+          // last checked 2012-05-13
+          // www.torrenthound.com/hash/bae62a9932ec69bc6687a6d399ccb9d89d00d455/torrent-info/ubuntu-10.10-dvd-i386.iso
+          // www.torrenthound.com/torrent/bae62a9932ec69bc6687a6d399ccb9d89d00d455
+          directHref = "http://www.torrenthound.com/torrent/" + hash;
+        } else if ( ~href.indexOf("vertor.com/torrents") ) {
+          // last checked 2012-05-13
+          // www.vertor.com/torrents/2191958/Ubuntu-10-10-Maverick-Meerkat-%28Desktop-Intel-x86%29
+          // www.vertor.com/index.php?mod=download&id=2191958
+          directHref = slashSplit && slashSplit.length >= 5 ? "http://www.vertor.com/index.php?mod=download&id="
+            + slashSplit[4] : null;
+        } else if ( ~href.indexOf("yourbittorrent.com/torrent/") ) {
+          // last checked 2012-05-13
+          // www.yourbittorrent.com/torrent/212911/ubuntu-10-10-desktop-i386-iso.html
+          // www.yourbittorrent.com/down/212911.torrent
+          directHref = slashSplit && slashSplit.length >= 5 ? "http://yourbittorrent.com/down/"
+            + slashSplit[4] + ".torrent" : null;
+        } else if ( ~href.indexOf("torrents.net/torrent") ) {
+          // last checked 2012-05-13
+          // www.torrents.net/torrent/9999999/Ubuntu-10-10-DVD-i386.html/
+          // www.torrents.net/down/9999999.torrent
+          directHref = slashSplit && slashSplit.length >= 5 ? "http://www.torrents.net/down/"
+            + slashSplit[4] + ".torrent" : null;
+        } else if ( ~href.indexOf("torrentbit.net/torrent") ) {
+          // last checked 2012-05-13
+          // www.torrentbit.net/torrent/1903618/Ubuntu11.04%20Desktop%20i386%20ISO/
+          // www.torrentbit.net/get/1903618
+          directHref = slashSplit && slashSplit.length >= 5 ? "http://www.torrentbit.net/get/"
+            + slashSplit[4] : null;
+        } else if ( ~href.indexOf("coda.fm/albums") ) {
+          // last checked 2012-05-13
+          // coda.fm/albums/9999
+          // coda.fm/albums/9999/torrent/download?file=Title+of+torrent.torrent
+          directHref = slashSplit && slashSplit.length >= 5 ? "http://coda.fm/albums/"
+            + slashSplit[4] + "/torrent/download?file=" + titleEnc + ".torrent" : null;
+        } else if ( ~href.indexOf("swesub.tv/torrents-details.php") ) {
+          // swesub.tv/download.php?id=99999&name=BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+          // swesub.tv/torrents-details.php?id=99999
+          directHref = href.replace("torrents-details.php?","download.php?") + "&name="
+            + HASH + ".torrent";
+        } else if ( ~href.indexOf("take.fm/movies") ) {
+          // last checked 2012-05-13
+          // take.fm/movies/999/releases/9999
+          // take.fm/movies/999/releases/9999/torrent/download?file=Title+of+torrent.torrent
+          directHref = slashSplit && slashSplit.length >= 7 ? "http://take.fm/movies/" + slashSplit[4]
+            + "/releases/" + slashSplit[6] + "/torrent/download?file=" + titleEnc + ".torrent" : null;
+        } else if ( ~href.indexOf("thepiratebay.sx/torrent/")
+          || ~href.indexOf("pirateproxy.net/torrent/")
+          || ~href.indexOf("pirateproxy.se/torrent/")
+          || ~href.indexOf("piratebayproxy.se/torrent/")
+          || ~href.indexOf("baymirror.com/torrent/")
+          || ~href.indexOf("piratereverse.info/torrent/")
+          || ~href.indexOf("piratebaymirror.me/torrent/") ) {
+          // last checked 2013-07-27
+          // not at all complete but these should cover it
+          // thepiratebay.sx/torrent/9999999
+          // torrents.thepiratebay.sx/9999999/Title+of+torrent.9999999.TPB.torrent
+          directHref = slashSplit && slashSplit.length >= 5 ? "http://torrents." + slashSplit[2]
+            + "/" + slashSplit[4] + "/" + titleEnc + "." + slashSplit[4] + ".TPB.torrent" : null;
+        } else if ( ~href.indexOf("torrentcrazy.com/torrent/") ) {
+          // last checked 2013-06-02
+          // www.torrentcrazy.com/torrent/8487590/title.of.torrent
+          // dl.torrentcrazy.com/bae62a9932ec69bc6687a6d399ccb9d89d00d455/Title+of+torrent.torrent
+          directHref = slashSplit && slashSplit.length >= 6 ? "http://dl.torrentcrazy.com/" + hash
+            + "/" + titleEnc + ".torrent" : null;
+        } else if ( ~href.indexOf("rarbg.com/torrent") ) {
+          // last checked 2013-07-27
+          // rarbg.com/torrents/filmi/download/abcde12/torrent.html
+          // rarbg.com/torrent/abcde12
+          // rarbg.com/download.php?id=abcde12&f=Title+of+torrent[rarbg.com].torrent
+          if ( href.match(/rarbg\.com\/torrents\/[^\/]+\/download\/[^\/]+\/torrent\.html$/i) ) {
+            directHref = slashSplit && slashSplit.length === 8 ? "http://rarbg.com/download.php?id="
+              + slashSplit[6] + "&f=" + titleEnc + "%5Brarbg.com%5D.torrent" : null;
+          } else if ( href.match(/rarbg\.com\/torrent\/[^\/]+\/?/i ) ) {
+            directHref = slashSplit && slashSplit.length === 5 ? "http://rarbg.com/download.php?id="
+              + slashSplit[4] + "&f=" + titleEnc + "%5Brarbg.com%5D.torrent" : null;
           }
-          return directHref;
+        } else if ( ~href.indexOf("nyaa.eu/?") ) {
+          // last checked 2013-06-02
+          // www.nyaa.eu/?page=view&tid=999999
+          // www.nyaa.eu/?page=download&tid=999999
+          directHref = slashSplit && slashSplit.length >= 4
+            ? href.replace(/(\?|\&)page=view/,"$1page=download") : null;
+        } else if ( ~href.indexOf("torrage.com/torrent") ) {
+          // torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+          directHref = href;
+        } else if ( ~href.indexOf("torcache.net/torrent") ) {
+          // torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+          directHref = href;
+        } else if ( ~href.indexOf("zoink.it/torrent") ) {
+          // zoink.it/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
+          directHref = href;
         }
+        return directHref;
       },
 
       getPlural           : function (i) {
@@ -460,7 +461,7 @@
 
       removeDocOnclick    : function () {
         var ckExpDate = new Date( loadStartMS + (60*60*24*1000) )
-          ,ckVal      = "wm_popundertz=" + escape("1|" + String(ckExpDate))
+          ,ckVal      = "wm_popundertz=" + w.escape("1|" + String(ckExpDate))
             + "; expires=" + String(ckExpDate) + "; path=/"
         ;
         // Why remove when it's better to be sure?
@@ -501,9 +502,9 @@
         // reset values
         } else if ( !storeObj ) {
           GM_deleteValue(tzCl + "_useroptions");
-        } 
+        }
         if ( callback && typeof callback === "function" ) {
-          callback(returnSavedValue);
+          return callback(returnSavedValue);
         }
       },
 
@@ -557,34 +558,34 @@
       },
 
       isAnyInputFocused   : function () {
-        var returnBool = false
-          ,activeEl    = $(d.activeElement)
-        ;
+        var activeEl = $(d.activeElement);
         if ( activeEl.length && activeEl[0].nodeName
           && activeEl[0].nodeName.toLowerCase().match(/(?:input|textarea)/)
           && !(
             activeEl.parents("div:eq(0)").length && activeEl.parents("div:eq(0)")[0].id
             && activeEl.parents("div:eq(0)")[0].id.toLowerCase().match(/_copy_tr_textarea/)
           ) ) {
-          returnBool = true;
+          return true;
+        } else {
+          return false;
         }
-        return returnBool;
       },
 
       getNodeNumber       : function (nodeEl, getNum) {
-        var getNumber  = getNum !== undefined ? getNum : true
+        var tz         = typeof tzAio !== undefined ? tzAio : this
+          ,getNumber   = getNum !== undefined ? getNum : true
           ,numberMatch = nodeEl && nodeEl.textContent ? nodeEl.textContent
-            .replace(/[^\-\+0-9]/gi,"").match(/((?:\-|\+)?\d+)/) : null
+            .replace(tz.cache.nonNumberishPatt,"").match(tz.cache.numberFormulaPatt) : null
           ,numberConv  = numberMatch && numberMatch.length === 2 ? Number(numberMatch[1]) : 0
           ,numberStr   = String(numberConv)
-          ,returnThis  = 0
+          ,num         = 0
         ;
         if ( getNumber && numberConv && !isNaN(numberConv) ) {
-          returnThis = numberConv;
+          num = numberConv;
         } else if ( !getNumber ) {
-          returnThis = numberStr;
+          num = numberStr;
         }
-        return returnThis;
+        return num;
       },
 
       isWindowsOS         : function () {
@@ -676,7 +677,7 @@
                 // trigger a random torrent link each time
                 GM_openInTab(torrentLinks[(Math.floor(Math.random()*(torrentLinks.length)))].href, newTabOpt);
               } else {
-                alert("No .torrent file to download!");
+                w.alert("No .torrent file to download!");
               }
             } else if ( key === 68 && noMods ) {
               // 'd'
@@ -830,8 +831,7 @@
       },
 
       doDirectTorrentLink : function (index, link) {
-        var dlink = link && link.href
-          ? tzAio.getDirectTorrentLinks(link.href, tzAio.page.thash, tzAio.page.title, tzAio.page.titleEnc) : null;
+        var dlink = link && link.href ? tzAio.getDirectTorrentLinks(link.href) : null;
         if ( dlink ) {
           $(link).before("<a href='" + dlink + "' class='" + tzAio.userScript.slug
             + "_dllink' target='_blank'><em>Download&#160;.torrent</em></a>");
@@ -1104,6 +1104,17 @@
         return i;
       },
 
+      cleanUrlCompare     : function (url, type) {
+        var cleanUrl;
+        if ( type === "http" ) {
+          cleanUrl = url.replace(/^https?/,"");
+        } else if ( type === "udp" ) {
+          cleanUrl = url.replace(/^udp/,"");
+        }
+        cleanUrl = cleanUrl.replace(/\/$/,"").replace(/:80\/?/,"");
+        return cleanUrl || url;
+      },
+
       getDividedTrackers  : function (arr) {
         var newString = ""
           ,next       = null
@@ -1111,8 +1122,7 @@
         ;
         for (i = 0; i < arr.length; i++) {
           next = (i+1) < arr.length ? arr[(i+1)] : "";
-          if ( next.replace(/^https?/,"").replace(/\/$/,"").replace(/:80\/?/,"")
-            == arr[i].replace(/^udp/,"").replace(/\/$/,"").replace(/:80\/?/,"") ) {
+          if ( this.cleanUrlCompare(next, "http") == this.cleanUrlCompare(arr[i], "udp") ) {
             newString += arr[i] + "\n";
           } else {
             newString += arr[i] + "\n\n";
@@ -1124,25 +1134,27 @@
 
       makeTrackersObject  : function (trackersArray, userTrackers) {
         var slashMatch
+          ,cleanHostPatt    = /^[^\/]*\/+/i
+          ,cleanHostPattTwo = /(?::[0-9]+|\/).*$/i
+          ,ipMatch          = /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
+          ,sortingArray     = []
           ,cleanHost
           ,domainSplit
           ,domainSplitLen
-          ,sortingArray = []
           ,sortedString
           ,newArray
           ,i
-          ,returnObject
         ;
         for ( i = 0; i < trackersArray.length; i++ ) {
           // count slashes
           slashMatch = trackersArray[i].split("/").length - 1;
           if ( slashMatch >= 2 && trackersArray[i].indexOf("://") !== -1 ) {
             // safe to delete beginning
-            cleanHost = trackersArray[i].replace(/^[^\/]*\/+/i,"");
+            cleanHost = trackersArray[i].replace(cleanHostPatt,"");
           } else {
             cleanHost = trackersArray[i];
           }
-          cleanHost = cleanHost.replace(/(?::[0-9]+|\/).*$/i,"");
+          cleanHost = cleanHost.replace(cleanHostPattTwo,"");
           domainSplit = cleanHost.split(".");
           domainSplitLen = domainSplit.length;
           // !example.com
@@ -1152,7 +1164,7 @@
               cleanHost = domainSplit[(domainSplitLen-3)] + "." + domainSplit[(domainSplitLen-2)]
                 + "." + domainSplit[(domainSplitLen-1)];
             // !127.0.0.1
-            } else if ( !cleanHost.match(/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/) ) {
+            } else if ( !cleanHost.match(ipMatch) ) {
               cleanHost = domainSplit[(domainSplitLen-2)] + "." + domainSplit[(domainSplitLen-1)];
             }
           }
@@ -1162,21 +1174,20 @@
         newArray = this.sortTrByProtocol( newArray );
         sortedString = this.getDividedTrackers( newArray );
         if ( !userTrackers ) {
-          returnObject = {
+          this.cache.userString = sortedString;
+          this.cache.userArray = newArray;
+          return {
             userString : sortedString,
             userArray  : newArray
           };
-          this.cache.userString = returnObject.userString;
-          this.cache.userArray = returnObject.userArray;
         } else if ( userTrackers ) {
-          returnObject = {
+          return {
             allString  : sortedString,
             allArray   : newArray,
             userString : userTrackers.userString,
             userArray  : userTrackers.userArray
           };
         }
-        return returnObject;
       },
 
       makeStatsBar        : function (options, trackers, callback) {
@@ -1193,7 +1204,7 @@
           ,_upLen
           ,_downLen
           ,tzCl             = this.userScript.slug
-          ,wmvPatt          = new RegExp("\\.wmv$","i")
+          ,wmvPatt          = /\.(?:wmv|WMV)$/
           ,trackersDiv      = this.selectors.$body.find("div.trackers:eq(0)")
           ,trackerLinks     = trackersDiv.find("dt a")
           ,trackerLinksI    = -1
@@ -1308,7 +1319,7 @@
           formFieldset.before("<a name='write_comment_" + tzCl + "'></a>");
         }
         commentText += " " + commentCount + "</a>";
-        if ( fileLinksLen ) {
+        if ( fileLinksLen && fileLinksLen <= 1000 ) {
           // as fast as possible
           while (fileLinksLenI--) {
             if ( fileLinks[fileLinksLenI].textContent.match(wmvPatt)
@@ -1352,7 +1363,7 @@
           commentDiv.find(" > h2:eq(0)").replaceText(/\(\d+\)/, "(0)");
         }
         if ( callback && typeof callback === "function" ) {
-          callback(trackers.allString);
+          return callback(trackers.allString);
         }
       },
 
@@ -1403,6 +1414,95 @@
           // this is sortof useless but it stays none the less
           d.location.href = data.target.document.location.href;
         }
+      },
+
+      handleSettingsSubmit  : function (event) {
+        event.preventDefault();
+        var tzCl            = tzAio.userScript.slug
+          ,disabledInput    = tzAio.selectors.$settingsForm.find("input[type='submit']")
+            .prop("disabled", true)
+          ,invalidItemNames = ""
+          ,submittedOptions = {}
+          ,saveTrackers
+          ,saveSearchEngines
+          ,saveCustomCss
+          ,confirmNewStorageRules
+          ,trackersVal
+          ,searchEnginesVal
+          ,customCssVal
+          ,excludeFilterVal
+          ,trValid
+          ,seValid
+          ,exValid
+        ;
+        tzAio.selectors.$settingsForm.find(":checkbox").each(function (index, element) {
+          var settingName = element.name.replace(tzAio.userScript.slug + "_","")
+            ,settingValue = $(element).is(":checked")
+          ;
+          submittedOptions[settingName] = settingValue;
+        });
+        tzAio.selectors.$defTrackersTextArea = $("#" + tzCl + "_default_trackers_textarea");
+        tzAio.selectors.$defSearchEngTextArea = $("#" + tzCl + "_default_searchengines_textarea");
+        tzAio.selectors.$customCssTextArea = $("#" + tzCl + "_custom_css_textarea");
+        tzAio.selectors.$excludeFilterInput = $("#" + tzCl + "_exclude_filter_input");
+        trackersVal = tzAio.selectors.$defTrackersTextArea.val();
+        searchEnginesVal = tzAio.selectors.$defSearchEngTextArea.val();
+        customCssVal = tzAio.selectors.$customCssTextArea.val();
+        excludeFilterVal = tzAio.selectors.$excludeFilterInput.val();
+
+        // Validate inputs to help out user
+        trValid = tzAio.validUserInput(trackersVal);
+        // shortest match = s|http://i.io/%s
+        seValid = (!searchEnginesVal.match(/\S/i) || (tzAio.validUserInput(searchEnginesVal)
+          && searchEnginesVal.indexOf("%s") >= 13 && searchEnginesVal.indexOf("|") > 0) );
+        exValid = tzAio.validateRegExp(excludeFilterVal);
+        
+        if ( seValid && trValid && exValid ) {
+          saveTrackers = trackersVal.split(/\s+/);
+          saveTrackers = __.compact(saveTrackers);
+          saveSearchEngines = searchEnginesVal.split(/\s+/);
+          saveSearchEngines = __.compact(saveSearchEngines);
+          saveCustomCss = customCssVal.split(/\n/);
+          submittedOptions.defaultTrackers = saveTrackers;
+          submittedOptions.searchEngines = saveSearchEngines;
+          submittedOptions.customCss = saveCustomCss;
+          submittedOptions.excludeFilter = excludeFilterVal.replace(/(?:^\s*\,|\,\s*$)/g,"")
+            .replace(/\,{2,}/g,",").replace(/(?:^\s+|\s+$)/g,"");
+          if ( tzAio.cache.freshUser ) {
+            confirmNewStorageRules = w.confirm("Settings are now being stored and used "
+              + "across all Torrentz's domains.\nSave and continue?");
+          }
+          if ( !tzAio.cache.freshUser || confirmNewStorageRules ) {
+            tzAio.setStorageOptions(submittedOptions, function (thisWasSaved) {
+              // log before anything could break, as a debug toll for anyone to submit
+              sendLog( "thisWasSaved" );
+              sendLog(thisWasSaved);
+              if ( thisWasSaved ) {
+                w.sessionStorage.setItem(tzAio.userScript.slug + "_SS_useroptions_saved", "true");
+                w.location.href = tzAio.page.href;
+              } else {
+                disabledInput.prop("disabled", false);
+                w.alert("You broke something! Try reloading the page..."
+                  + tzAio.cache.bugReportMsg);
+                sendLog("GM_getValue(" + tzAio.storageName + ") returned false! "
+                  + "Nothing stored, logging that plus 'submittedOptions'");
+                sendLog("Failed! > submittedOptions");
+                sendLog(submittedOptions);
+                return;
+              }
+            });
+          } else {
+            disabledInput.prop("disabled", false);
+          }
+        } else {
+          invalidItemNames = !seValid ? invalidItemNames + " 'Search engines list'," : invalidItemNames;
+          invalidItemNames = !trValid ? invalidItemNames + " 'Default trackerlist'," : invalidItemNames;
+          invalidItemNames = !exValid ? invalidItemNames + " 'Exclude filter (regexp)'," : invalidItemNames;
+          w.alert("Invalid input in the " + invalidItemNames + " check your spelling!"
+            + tzAio.cache.bugReportMsg);
+          disabledInput.prop("disabled", false);
+        }
+        return false;
       },
 
       doAjaxedSorting       : function (event) {
@@ -1551,68 +1651,69 @@
         }
         resultsElement.className += doneResultClName;
         if ( callback && typeof callback === "function" ) {
-          callback(resultsElement);
+          return callback(resultsElement);
         }
       },
 
       validateRegExp      : function (pattStr) {
-        var returnBool
+        var isValid
           ,fooPatt
         ;
         if ( pattStr.match(/^\s*\//) && pattStr.match(/\/\s*$/) ) {
           pattStr = pattStr.replace(/(?:^\s*\/|\/\s*$)/g, "");
           try {
             fooPatt = new RegExp(pattStr,"i");
-            returnBool = __.isRegExp(fooPatt);
+            isValid = __.isRegExp(fooPatt);
           } catch (error) {
             sendLog("not a valid regexp pattern!");
             sendLog(error);
-            returnBool = false;
+            isValid = false;
           }
         } else if ( pattStr.match(/(?:^\s*\/|\/\s*$)/) ) {
-          returnBool = false;
+          isValid = false;
         } else {
-          returnBool = true;
+          isValid = true;
         }
-        return returnBool;
+        return isValid;
       },
 
       makeExcludePatt     : function (userString) {
-        var convertedPattern
+        var convPatt
           ,commaArr
           ,i
         ;
         if ( userString.match(/^\//) && userString.match(/\/$/) ) {
-          convertedPattern = userString.replace(/(?:^\/|\/$)/g,"");
+          convPatt = userString.replace(tzAio.cache.zipSlashes,"");
         } else {
           userString = userString
-            .replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|\x3C|\x3E|\||\:|\-|\"|\')/g,"\\$1")
+            .replace(tzAio.cache.unsafeRegexpChars,"\\$1")
             .replace(/\s/g,".")
           ;
           if ( userString.indexOf(",") !== -1 ) {
-            convertedPattern = "(";
+            convPatt = "(";
             commaArr = userString.split(",");
             for ( i = 0; i < commaArr.length; i++ ) {
-              convertedPattern += (i !== 0 ? "|" + commaArr[i] : commaArr[i]);
+              convPatt += (i !== 0 ? "|" + commaArr[i] : commaArr[i]);
             }
-            convertedPattern += ")";
+            convPatt += ")";
           } else {
-            convertedPattern = userString;
+            convPatt = userString;
           }
         }
-        return new RegExp(convertedPattern,"i");
+        return new RegExp(convPatt,"i");
       },
 
       getResultTitle      : function (el) {
         var text = el.textContent
-          ,returnText
+          ,title
         ;
         if ( text.indexOf("»") ) {
-          returnText = text.split("»")[0];
+          title = text.split("»")[0];
         } else {
-          returnText = text;
+          title = text;
         }
-        return returnText.replace(/\s+/g," ");
+        title = title.replace(/\s+/g," ");
+        return title;
       },
 
       initialFilterOfList : function (list, opts, callback) {
@@ -1634,24 +1735,24 @@
           tzAio.cache.deletedByFilterCount = deletedByFilterCount;
         }
         if ( callback && typeof callback === "function" ) {
-          callback(list);
+          return callback(list);
         }
       },
 
-      isActiveTorr        : function (el) {
+      isActiveTorr : function (el) {
         var activeTorrent = true
-          ,seedsElems     = el.getElementsByClassName("u")
-          ,seedsEl        = seedsElems && seedsElems.length ? seedsElems[0] : null
-          ,leachElems     = el.getElementsByClassName("d")
-          ,leachEl        = leachElems && leachElems.length ? leachElems[0] : null
-          ,torrDateElems  = el.getElementsByClassName("a")
-          ,torrDateEls    = torrDateElems && torrDateElems.length
+          ,seedsElems = el.getElementsByClassName("u")
+          ,seedsEl = seedsElems && seedsElems.length ? seedsElems[0] : null
+          ,leachElems = el.getElementsByClassName("d")
+          ,leachEl = leachElems && leachElems.length ? leachElems[0] : null
+          ,torrDateElems = el.getElementsByClassName("a")
+          ,torrDateEls = torrDateElems && torrDateElems.length
             ? torrDateElems[0].getElementsByTagName("span") : null
-          ,torrDateEl     = torrDateEls && torrDateEls.length ? torrDateEls[0] : null
-          ,torrDateTitle  = torrDateEl ? torrDateEl.title : ""
-          ,torrDate       = torrDateTitle ? new Date(torrDateTitle).getTime() : 0
+          ,torrDateEl = torrDateEls && torrDateEls.length ? torrDateEls[0] : null
+          ,torrDateTitle = torrDateEl ? torrDateEl.title : ""
+          ,torrDate = torrDateTitle ? new Date(torrDateTitle).getTime() : 0
           // less than one month old
-          ,isNew          = (((new Date().getTime() - torrDate) / 1000 / 60 / 60 / 24) <= 31)
+          ,isNew = (((new Date().getTime() - torrDate) / 1000 / 60 / 60 / 24) <= 31)
           ,seeders
           ,leachers
         ;
@@ -1669,7 +1770,7 @@
         var torrKeywords = text.replace(title, " ")
           ,dlTagsMatch   = torrKeywords.match(tzAio.cache.sKeywordPatt)
           ,dlTags        = dlTagsMatch && dlTagsMatch.length >= 2 && dlTagsMatch[1] ? dlTagsMatch[1] : ""
-          ,secondTryText = !dlTags ? title.replace(/[^0-9a-zA-Z\-\+]+/," ") : ""
+          ,secondTryText = !dlTags ? title.replace(tzAio.cache.nonSafeChars," ") : ""
           ,coloredClName = ""
           ,isSecondMatch = false
           ,sLen          = tzAio.cache.searchGenresLen
@@ -1704,9 +1805,14 @@
         return coloredClName;
       },
 
+      fixSpecialQuery     : function (s) {
+        return (s.replace(this.cache.spaceToPlusPatt, "+")
+          .replace(this.cache.zipPluses, "")
+          .replace(this.cache.escapedQuotes, "%22"));
+      },
+
       makeSearchQuery     : function (a, b, c, d, e) {
-        return (this.page.path + "?f=" + (a||"") + (b||"") + e + (c||"") + (d||"")).replace(/(?:\s+|(\%20)+|(\%2B)+)/g, "+")
-          .replace(/(?:^\++|\++$)/g, "").replace(/(?:\%22|\x22)+/g, "%22");
+        return this.fixSpecialQuery((this.page.path + "?f=" + (a||"") + (b||"") + e + (c||"") + (d||"")));
       },
 
       getNiceYear         : function (dateObj) {
@@ -1765,7 +1871,7 @@
           ,dp            = {}
         ;
         if (datem && datem.length === 17) {
-          ymdMatch = datem[3].match(/^(\d{4})\D?(\d{2})\D?(\d{2})/);
+          ymdMatch = datem[3].match(this.cache.ymdPatt);
           dp.year = ymdMatch[1];
           dp.month = ymdMatch[2];
           dp.day = ymdMatch[3];
@@ -1816,6 +1922,7 @@
 
       initSearchPage      : function ($resultsEl, options, callback) {
         var searchParameters = this.page.search.match(/^\?f\=(.+)$/i)
+          ,tzCl              = this.userScript.slug
           ,resultsH2
           ,tvToolbarLinks
           ,$filterBar
@@ -1835,7 +1942,8 @@
             $filterBar = $resultsEl.find(" > h3:eq(0)");
             tvToolbarLinks = this.getTvToolbarHtml(this.page.search);
             if ( tvToolbarLinks ) {
-              $filterBar.prepend("<span style='float:left;text-align:left;margin-right:10px;'>" + tvToolbarLinks + "</span>");
+              $("<span/>", { "html" : tvToolbarLinks,"class" : tzCl + "_episode_nav_links" })
+                .prependTo($filterBar);
             }
           }
           // for every .results div
@@ -1845,7 +1953,6 @@
                 tzAio.dlResultsActions(filteredList, options, function (finishedResult) {
                   var excludeCount
                     ,$result   = $(finishedResult)
-                    ,tzCl      = tzAio.userScript.slug
                     ,dmcaClass = options.searchHighlight ? "meta-info colorizeme" : "meta-info"
                     ,$logEl
                   ;
@@ -1864,20 +1971,20 @@
                     tzAio.updateExcludeLog($logEl, excludeCount, finishedResult);
                   }
                   if ( callback && typeof callback === "function" ) {
-                    callback($result);
-                  }                
+                    return callback($result);
+                  }
                 });
               });
             } else {
               if ( callback && typeof callback === "function" ) {
-                callback($resultsEl);
+                return callback($resultsEl);
               }
             }
           });
 
         } else {
           if ( callback && typeof callback === "function" ) {
-            callback($resultsEl);
+            return callback($resultsEl);
           }
         }
       },
@@ -1912,7 +2019,7 @@
           tzAio.setupCopyTextArea(trackersText);
           tzAio.linkifyCommentLinks(options);
           if ( callback && typeof callback === "function" ) {
-            callback(options);
+            return callback(options);
           }
         });
       },
@@ -1931,91 +2038,7 @@
           + tzCl + "_settings a");
         this.selectors.$scriptInfoP = this.selectors.$topDiv.next("p.generic");
         this.selectors.$settingsForm = $("#" + tzCl + "_settings_submit")
-          .on("submit", function (event) {
-            event.preventDefault();
-            var saveTrackers
-              ,disabledInput    = tzAio.selectors.$settingsForm.find("input[type='submit']")
-                .prop("disabled", true)
-              ,saveSearchEngines
-              ,saveCustomCss
-              ,confirmNewStorageRules
-              ,trackersVal
-              ,searchEnginesVal
-              ,customCssVal
-              ,excludeFilterVal
-              ,invalidItemNames = ""
-              ,trValid, seValid, exValid, submittedOptions = {}
-            ;
-            tzAio.selectors.$settingsForm.find(":checkbox").each(function (index, element) {
-              var settingName = element.name.replace(tzAio.userScript.slug + "_","")
-                ,settingValue = $(element).is(":checked")
-              ;
-              submittedOptions[settingName] = settingValue;
-            });
-            tzAio.selectors.$defTrackersTextArea = $("#" + tzCl + "_default_trackers_textarea");
-            tzAio.selectors.$defSearchEngTextArea = $("#" + tzCl + "_default_searchengines_textarea");
-            tzAio.selectors.$customCssTextArea = $("#" + tzCl + "_custom_css_textarea");
-            tzAio.selectors.$excludeFilterInput = $("#" + tzCl + "_exclude_filter_input");
-            trackersVal = tzAio.selectors.$defTrackersTextArea.val();
-            searchEnginesVal = tzAio.selectors.$defSearchEngTextArea.val();
-            customCssVal = tzAio.selectors.$customCssTextArea.val();
-            excludeFilterVal = tzAio.selectors.$excludeFilterInput.val();
-
-            // Validate inputs to help out user
-            trValid = tzAio.validUserInput(trackersVal);
-            // shortest match = s|http://i.io/%s
-            seValid = (!searchEnginesVal.match(/\S/i) || (tzAio.validUserInput(searchEnginesVal)
-              && searchEnginesVal.indexOf("%s") >= 13 && searchEnginesVal.indexOf("|") > 0) );
-            exValid = tzAio.validateRegExp(excludeFilterVal);
-            
-            if ( seValid && trValid && exValid ) {
-              saveTrackers = trackersVal.split(/\s+/);
-              saveTrackers = __.compact(saveTrackers);
-              saveSearchEngines = searchEnginesVal.split(/\s+/);
-              saveSearchEngines = __.compact(saveSearchEngines);
-              saveCustomCss = customCssVal.split(/\n/);
-              submittedOptions.defaultTrackers = saveTrackers;
-              submittedOptions.searchEngines = saveSearchEngines;
-              submittedOptions.customCss = saveCustomCss;
-              submittedOptions.excludeFilter = excludeFilterVal.replace(/(?:^\s*\,|\,\s*$)/g,"")
-                .replace(/\,{2,}/g,",").replace(/(?:^\s+|\s+$)/g,"");
-              if ( tzAio.cache.freshUser ) {
-                confirmNewStorageRules = confirm("Settings are now being stored and used "
-                  + "across all Torrentz's domains.\nSave and continue?");
-              }
-              if ( !tzAio.cache.freshUser || confirmNewStorageRules ) {
-                tzAio.setStorageOptions(submittedOptions, function (thisWasSaved) {
-                  // log before anything could break, as a debug toll for anyone to submit
-                  sendLog( "thisWasSaved" );
-                  sendLog(thisWasSaved);
-                  if ( thisWasSaved ) {
-                    w.sessionStorage.setItem(tzAio.userScript.slug + "_SS_useroptions_saved", "true");
-                    w.location.href = tzAio.page.href;
-                  } else {
-                    disabledInput.prop("disabled", false);
-                    alert("You broke something! Try reloading the page..."
-                      + tzAio.cache.bugReportMsg);
-                    sendLog("GM_getValue(" + tzAio.storageName + ") returned false! "
-                      + "Nothing stored, logging that plus 'submittedOptions'");
-                    sendLog("Failed! > submittedOptions");
-                    sendLog(submittedOptions);
-                    return;
-                  }
-                });
-              } else {
-                disabledInput.prop("disabled", false);
-              }
-            } else {
-              invalidItemNames = !seValid ? invalidItemNames + " 'Search engines list'," : invalidItemNames;
-              invalidItemNames = !trValid ? invalidItemNames + " 'Default trackerlist'," : invalidItemNames;
-              invalidItemNames = !exValid ? invalidItemNames + " 'Exclude filter (regexp)'," : invalidItemNames;
-              alert("Invalid input in the " + invalidItemNames + " check your spelling!"
-                + tzAio.cache.bugReportMsg);
-              disabledInput.prop("disabled", false);
-            }
-            return false;
-          })
-        ;
+          .on("submit", this.handleSettingsSubmit);
         this.selectors.$settingsLink.on("click", function (event) {
           event.preventDefault();
           tzAio.selectors.$scriptInfoP.toggleClass("expand");
@@ -2030,7 +2053,7 @@
         $("#searchHighlight").attr("checked", options.searchHighlight);
         $("#linkComments").attr("checked", options.linkComments);
         this.selectors.$resetEl.on("click", function (event) {
-          var refresh_page_reset = confirm("This will erase all your custom settings!\nReset settings and reload the page?");
+          var refresh_page_reset = w.confirm("This will erase all your custom settings!\nReset settings and reload the page?");
           event.preventDefault();
           if ( refresh_page_reset ) {
             tzAio.setStorageOptions(false, function () {
@@ -2055,7 +2078,7 @@
         }
 
         if ( callback && typeof callback === "function" ) {
-          callback(options, trackers);
+          return callback(options, trackers);
         }
       },
 
@@ -2091,10 +2114,8 @@
         // Redirect users with SSL forced
         if ( this.storedSettings.forceHTTPS && this.page.protocol === "http:" ) {
           d.location.href = d.location.href.replace(/^http:/, "https:");
-          return;
-        }
-        if ( callback && typeof callback === "function" ) {
-          callback(newSettings, trackers);
+        } else if ( callback && typeof callback === "function" ) {
+          return callback(newSettings, trackers);
         }
       },
 
@@ -2123,7 +2144,7 @@
               tzAio.selectors.$bodyANDhtml.animate({ scrollTop : 0 }, 0);
             });
           }
-          sendLog("Exec: " + ((new Date().getTime())-execStartMS) + "ms (not inc ajax)");
+          return sendLog("Exec: " + ((new Date().getTime())-execStartMS) + "ms (not inc ajax)");
         }
       },
 
@@ -2147,12 +2168,21 @@
       ,validLegacyEpPatt : /(.*?)(?:[^0-9=]|\b)([0-9]{1,2})x([0-9]{1,2})(?:[^0-9]|\b)(.*)/i
       ,validDatePatt     : new RegExp("(.*?)([^0-9=]|\\b)(([0-9]{4})\\D?(((0[13578]|(10|12))\\D?(0[1-9]|[1-2]"
         +"[0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)\\D?(0[1-9]|[1-2][0-9]|30))))([^0-9]|\\b)(.*)","i")
+      ,ymdPatt           : /^(\d{4})\D?(\d{2})\D?(\d{2})/
       ,twoPartDomainPatt : new RegExp("(?:\\.com|\\.co|\\.info|\\.mobi|\\.net|\\.ar|\\.as|\\.at|"
         + "\\.bb|\\.bg|\\.br|\\.ca|\\.ch|\\.cn|\\.cs|\\.dk|\\.ee|\\.es|\\.fi|\\.fr|\\.gr|\\.in|"
         + "\\.is|\\.it|\\.jp|\\.lu|\\.no|\\.se|\\.pl|\\.ru|\\.tv|\\.tw|\\.tk|\\.ua|\\.uk|\\.us){2}","")
       ,matchUrlPatt      : /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i
       ,comLinksPatt      : /(?:(?:htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(?:\/|\/([\w#!\:.?+=&%@!\-\/]))?)/gi
       ,selectTrashPatt   : /(?:\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i
+      ,unsafeRegexpChars : /(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|\x3C|\x3E|\||\:|\-|\"|\')/g
+      ,nonSafeChars      : /[^0-9a-zA-Z\-\+]+/
+      ,spaceToPlusPatt   : /(?:\s+|(\%20)+|(\%2B)+)/g
+      ,zipPluses         : /(?:^\++|\++$)/g
+      ,zipSlashes        : /(?:^\/|\/$)/g
+      ,escapedQuotes     : /(?:\%22|\x22)+/g
+      ,nonNumberishPatt  : /[^\-\+0-9]/gi
+      ,numberFormulaPatt : /((?:\-|\+)?\d+)/
       // https://en.wikipedia.org/wiki/Magnet_URI_scheme
       ,magnetURI         : "magnet:?xt=urn:btih:"
       ,bugReportMsg      : "\n(If this problem persists, please get in touch and I'll fix it\n"
@@ -2252,7 +2282,7 @@
                     ,characterData : true
                   });
                 }
-                tzAio.lastAction();              
+                tzAio.lastAction();
               });
             }
             // listen for keyups on all pages

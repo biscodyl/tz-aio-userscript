@@ -532,11 +532,16 @@ $blinkto:   0.0;
     }
 
   }
-
   #tz_aio_settings_reset {
     margin-right: 15px;
     font-size: 13px;
     display: inline-block;
+  }
+
+  .results .tz_aio_episode_nav_links {
+    float: left;
+    text-align: left;
+    margin-right: 10px;
   }
   .results > dl {
     position: relative !important;
