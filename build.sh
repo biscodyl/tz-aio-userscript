@@ -30,7 +30,9 @@ if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -f /tmp/.password_manager ]]; then
       echo "\$ git add . ; git commit -am ""$gitcommitmsg""; git push origin master"
       git add .
       git commit -am "$gitcommitmsg"
-      git tag "$gitversionnumber"
+      if [[ "$gitversionnumber" =~ [0-9] ]] ; then
+        git tag "$gitversionnumber"
+      fi
       git push origin master
     else
       echo "Exiting..."
