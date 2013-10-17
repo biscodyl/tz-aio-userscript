@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.13** (2013-10-17)
+* Updated the browser cookie to block new popup ads. `tz=1`
+
 **2.3.12** (2013-09-11)
 * More speed improvements and optimizations.
 * Updated UnderScore.js to `v1.5.1`, now fetched from [cdnjs](https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js).
