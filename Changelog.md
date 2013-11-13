@@ -1,5 +1,11 @@
 # Changelog
 
+**2.3.14** (2013-11-13)
+* Updated [UnderScore.js](https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js) to `v1.5.2`.
+* Replaced log function with a smarter one that doesn't need a `try {} cacth () {}` block.
+* Swicthed to tabs instead of hard spaces.
+* New CSS function with better cross-engine support.
+
 **2.3.13** (2013-10-17)
 * Updated the browser cookie to block new popup ads. `tz=1`
 
