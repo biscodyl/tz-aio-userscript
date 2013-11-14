@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.15** (2013-11-14)
+* Added 2 direct link sources.
+
 **2.3.14** (2013-11-13)
 * Updated [UnderScore.js](https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js) to `v1.5.2`.
 * Replaced log function with a smarter one that doesn't need a `try {} cacth () {}` block.
