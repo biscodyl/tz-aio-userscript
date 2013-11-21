@@ -66,7 +66,7 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 # **TODO's**
 
-The newline problem with Chrome/TamperMonkey and `GM_setClipboard` has [been solved](http://forum.tampermonkey.net/viewtopic.php?f=17&t=668) in it's newest [Beta release](http://tampermonkey.net/changelog.php?version=3.4.3525&ext=gcal), I'll let everyone know through the settings panel.
+More adaptive and easier-to-maintain code for search-results.
 
 # **Legality**
 

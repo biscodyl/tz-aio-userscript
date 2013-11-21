@@ -97,13 +97,13 @@ $blinkto:   0.0;
 
   #tz_aio_help li ul {
     list-style-type: square;
-    list-style-image: inline-image("keyb.png");
     margin: 0;
-    padding: 4px 0 0 20px;
+    padding: 4px 0 0 16px;
   }
 
   &.no_ads .SPECIFICELEMENT, &.no_ads .dontblockmebro, &.no_ads .dnotblcokmebro,
   &.no_ads .dnotblockmebro, &.no_ads .removed_ad,
+  &.no_ads .SimpleAcceptableTextAds,
   &.no_ads .PleaseDontDisableTheAutoSuggestScriptThePopCodeIsNotThere {
     display: none !important;
   }

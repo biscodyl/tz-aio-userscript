@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.3.15
-// @date          2013-11-14
+// @version       2.3.16
+// @date          2013-11-21
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -19,7 +19,7 @@
 // @exclude       /^https?://[^/]+/i\?.+/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-15-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style.css?v=2-3-16-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         unsafeWindow
 // @grant         GM_info
@@ -48,6 +48,10 @@
 	done to any hamsters, servers, browsers or wallets. While browsing
 	affected sites with this script is fully legal,
 	downloading illegal copyrighted material still isn’t.
+
+	# External code
+
+	UnderscoreJS and jQuery are freely distributed under the MIT license.
 
 */
 
@@ -228,7 +232,7 @@
 					+ "bootleg|mp3|\\bogg\\b|wav|m4a|podcast|\\bost\\b)","i")
 			}, {
 				name     : "app"
-				,pattern : new RegExp("(?:software|apps?(lications)?\\b|\\bos[a-z]?\\b|\\bos\\b|\\bunix\\b"
+				,pattern : new RegExp("(?:software|app[sz]?(?:lication)?s?\\b|\\bos[a-z]?\\b|\\bos\\b|\\bunix\\b"
 					+ "|\\blinux\\b|\\bsolaris\\b|\\bwin(dows|([7-9]|xp))?\\b|\\bmac\\b|\\bx64\\b|\\bx86\\b"
 					+ "|\\bandroid\\b|\\bpsp\\b|\\bios\\b|\\bpc\\b)","i")
 			}, {
@@ -247,6 +251,13 @@
 			}
 		],
 
+		linkMatches               : function () {
+			var o = this;
+			return function (s) {
+				return (o.link.indexOf(s) !== -1);
+			}
+		},
+
 		getDirectTorrentLinks     : function (href) {
 			var hash       = tzAio.page.thash.toLowerCase()
 				,HASH        = hash.toUpperCase()
@@ -254,165 +265,166 @@
 				,torCacheUrl = "http://torcache.net/torrent/" + HASH + ".torrent?title=" + titleEnc
 				,torRageUrl  = "http://torrage.com/torrent/" + HASH + ".torrent"
 				,slashSplit  = href.split("/")
+				,is          = tzAio.linkMatches.apply({ link : href })
 				,directHref
 				,directMatch;
-			if ( ~href.indexOf("movietorrents.eu/") ) {
+			if ( is("movietorrents.eu/") ) {
 				// last checked 2012-07-25
 				// movietorrents.eu/torrents-details.php?id=1421
 				// movietorrents.eu/download.php?id=1421&name=Ubuntu%20iso%20file.torrent
 				directMatch = href.match(/(\?|&)id=(\d+)/);
 				directHref = directMatch && directMatch.length === 3 ? "http://movietorrents.eu/download.php?id="
 					+ directMatch[2] + "&name=" + titleEnc + ".torrent" : null;
-			} else if ( ~href.indexOf("publichd.se/") ) {
+			} else if ( is("publichd.se/") ) {
 				// last checked 2013-07-04
 				// publichd.se/index.php?page=torrent-details&id=bae62a9932ec69bc6687a6d399ccb9d89d00d455
 				// publichd.se/download.php?id=bae62a9932ec69bc6687a6d399ccb9d89d00d455&f=ubuntu-10.10-dvd-i386.iso.torrent
 				directHref = "http://publichd.se/download.php?id=" + hash + "&f=" + titleEnc + ".torrent";
-			} else if ( ~href.indexOf("btmon.com/") ) {
+			} else if ( is("btmon.com/") ) {
 				// last checked 2012-05-13
 				// www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent.html
 				// www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent
 				directHref = href.replace(/\.html$/i, "");
-			} else if ( ~href.indexOf("torrentdownloads.me/") ) {
+			} else if ( is("torrentdownloads.me/") ) {
 				// last checked 2012-06-02
 				// www.torrentdownloads.me/torrent/1652094016/ubuntu-10+10-desktop-i386+iso
 				// www.torrentdownloads.me/download/1652094016/ubuntu-10+10-desktop-i386+iso
 				directHref = href.replace(/(\.me\/)torrent(\/)/i,"$1download$2");
-			} else if ( ~href.indexOf("kat.ph/")
-				|| ~href.indexOf("kickasstorrents.com/")
-				|| ~href.indexOf("kickmirror.com/")
-				|| ~href.indexOf("katproxy.com/")
-				|| ~href.indexOf("katmirror.com/")
-				|| ~href.indexOf("kickass.to/") ) {
+			} else if ( is("kat.ph/")
+				|| is("kickasstorrents.com/")
+				|| is("kickmirror.com/")
+				|| is("katproxy.com/")
+				|| is("katmirror.com/")
+				|| is("kickass.to/") ) {
 				// last checked 2013-07-05
 				// www.kickasstorrents.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
 				// torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent?title=[kat.ph]ubuntu-10-10-dvd-i386
 				directHref = torCacheUrl;
-			// } else if ( ~href.indexOf("h33t.eu/torrent") ) {
+			// } else if ( is("h33t.eu/torrent") ) {
 				// last checked 2013-09-10 (not reliable enough)
 				// h33t.eu/torrent/999999/ubuntu-10.10-dvd-i386.iso-h33t
 				// h33t.eu/download.php?id=35ec491984dd3cccfe86be82708fdd66cb98ea76&f=Ubuntu%20iso%20file.torrent
 				// directHref = "http://h33t.eu/download.php?id=" + hash + "&f=" + titleEnc + "%20%5Bh33t%5D.torrent";
-			} else if ( ~href.indexOf("torlock.com/torrent") ) {
+			} else if ( is("torlock.com/torrent") ) {
 				// last checked 2013-08-30
 				// www.torlock.com/torrent/9999999/ubuntu-10+10-desktop-i386+iso.html
 				// www.torlock.com/tor/9999999.torrent
 				directHref = "http://www.torlock.com/tor/" + slashSplit[4] + ".torrent";
-			} else if ( ~href.indexOf("newtorrents.info/torrent") ) {
+			} else if ( is("newtorrents.info/torrent") ) {
 				// last checked 2012-05-13
 				// www.newtorrents.info/torrent/99999/Ubuntu-10-10-DVD-i386.html?nopop=1
 				// www.newtorrents.info/down.php?id=99999
 				directHref = slashSplit && slashSplit.length >= 5 ? "http://" + slashSplit[2]
 					+ "/down.php?id=" + slashSplit[4] : null;
-			} else if ( ~href.indexOf("fenopy.eu/torrent")
-				|| ~href.indexOf("fenopy.se/torrent")
-				|| ~href.indexOf("fenopy.com/torrent") ) {
+			} else if ( is("fenopy.eu/torrent")
+				|| is("fenopy.se/torrent")
+				|| is("fenopy.com/torrent") ) {
 				// last checked 2013-07-27
 				// fenopy.domain/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA
 				// fenopy.domain/torrent/ubuntu+10+10+dvd+i386+iso/NjMxNjcwMA==/download.torrent
 				// seems to use torcache but this works too
 				directHref = href + "==/download.torrent";
-			} else if ( ~href.indexOf("extratorrent.com/torrent")
-				|| ~href.indexOf("extramirror.com/torrent")
-				|| ~href.indexOf("extratorrent.cc/torrent") ) {
+			} else if ( is("extratorrent.com/torrent")
+				|| is("extramirror.com/torrent")
+				|| is("extratorrent.cc/torrent") ) {
 				// last checked 2013-11-14
 				// extratorrent.com/torrent/9999999/Ubuntu-10-10-DVD-i386.html
 				// extratorrent.com/download/9999999/Ubuntu-10-10-DVD-i386.torrent
 				directHref = href.replace(/\.(com|cc)\/torrent/i, ".$1/download").replace(/\.html$/i, ".torrent");
-			} else if ( ~href.indexOf("bitsnoop.com/") ) {
+			} else if ( is("bitsnoop.com/") ) {
 				// last checked 2012-05-13
 				// bitsnoop.com/ubuntu-10-10-dvd-i386-q17900716.html
 				// torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
 				directHref = torRageUrl;
-			} else if ( ~href.indexOf("bt-chat.com/") ) {
+			} else if ( is("bt-chat.com/") ) {
 				// last checked 2012-05-13
 				// Site was malware flagged so I don't know if this still works
 				// www.bt-chat.com/details.php?id=999999
 				// www.bt-chat.com/download.php?id=999999
 				directHref = href.replace(/\/details\.php/i, "/download.php");
-			} else if ( ~href.indexOf("1337x.org/") ) {
+			} else if ( is("1337x.org/") ) {
 				// last checked 2012-05-13
 				// 1337x.org/torrent/999999/ubuntu-10-10-dvd-i386/
 				directHref = torCacheUrl;
-			} else if ( ~href.indexOf("torrentfunk.com/torrent/") ) {
+			} else if ( is("torrentfunk.com/torrent/") ) {
 				// last checked 2012-05-13
 				// www.torrentfunk.com/torrent/9999999/ubuntu-10-10-dvd-i386.html
 				// www.torrentfunk.com/tor/9999999.torrent
 				directHref = slashSplit && slashSplit.length >= 5 ? "http://www.torrentfunk.com/tor/"
 					+ slashSplit[4] + ".torrent" : null;
-			} else if ( ~href.indexOf("torrentstate.com/") ) {
+			} else if ( is("torrentstate.com/") ) {
 				// last checked 2012-05-13
 				// Site was down so I don't know if this still works
 				// www.torrentstate.com/ubuntu-10-10-dvd-i386-iso-t4657293.html
 				// www.torrentstate.com/download/BAE62A9932EC69BC6687A6D399CCB9D89D00D455
 				directHref = "http://www.torrentstate.com/download/" + HASH;
-			} else if ( ~href.indexOf("torrenthound.com/hash")
-				|| ~href.indexOf("houndmirror.com/hash") ) {
+			} else if ( is("torrenthound.com/hash")
+				|| is("houndmirror.com/hash") ) {
 				// last checked 2013-11-14
 				// www.torrenthound.com/hash/bae62a9932ec69bc6687a6d399ccb9d89d00d455/torrent-info/ubuntu-10.10-dvd-i386.iso
 				// www.torrenthound.com/torrent/bae62a9932ec69bc6687a6d399ccb9d89d00d455
 				directHref = slashSplit[0]+slashSplit[1]+slashSplit[2]+"/torrent/" + hash;
-			} else if ( ~href.indexOf("vertor.com/torrents") ) {
+			} else if ( is("vertor.com/torrents") ) {
 				// last checked 2012-05-13
 				// www.vertor.com/torrents/2191958/Ubuntu-10-10-Maverick-Meerkat-%28Desktop-Intel-x86%29
 				// www.vertor.com/index.php?mod=download&id=2191958
 				directHref = slashSplit && slashSplit.length >= 5 ? "http://www.vertor.com/index.php?mod=download&id="
 					+ slashSplit[4] : null;
-			} else if ( ~href.indexOf("yourbittorrent.com/torrent/") ) {
+			} else if ( is("yourbittorrent.com/torrent/") ) {
 				// last checked 2012-05-13
 				// www.yourbittorrent.com/torrent/212911/ubuntu-10-10-desktop-i386-iso.html
 				// www.yourbittorrent.com/down/212911.torrent
 				directHref = slashSplit && slashSplit.length >= 5 ? "http://yourbittorrent.com/down/"
 					+ slashSplit[4] + ".torrent" : null;
-			} else if ( ~href.indexOf("torrents.net/torrent") ) {
+			} else if ( is("torrents.net/torrent") ) {
 				// last checked 2012-05-13
 				// www.torrents.net/torrent/9999999/Ubuntu-10-10-DVD-i386.html/
 				// www.torrents.net/down/9999999.torrent
 				directHref = slashSplit && slashSplit.length >= 5 ? "http://www.torrents.net/down/"
 					+ slashSplit[4] + ".torrent" : null;
-			} else if ( ~href.indexOf("torrentbit.net/torrent") ) {
+			} else if ( is("torrentbit.net/torrent") ) {
 				// last checked 2012-05-13
 				// www.torrentbit.net/torrent/1903618/Ubuntu11.04%20Desktop%20i386%20ISO/
 				// www.torrentbit.net/get/1903618
 				directHref = slashSplit && slashSplit.length >= 5 ? "http://www.torrentbit.net/get/"
 					+ slashSplit[4] : null;
-			} else if ( ~href.indexOf("coda.fm/albums") ) {
+			} else if ( is("coda.fm/albums") ) {
 				// last checked 2012-05-13
 				// coda.fm/albums/9999
 				// coda.fm/albums/9999/torrent/download?file=Title+of+torrent.torrent
 				directHref = slashSplit && slashSplit.length >= 5 ? "http://coda.fm/albums/"
 					+ slashSplit[4] + "/torrent/download?file=" + titleEnc + ".torrent" : null;
-			} else if ( ~href.indexOf("swesub.tv/torrents-details.php") ) {
+			} else if ( is("swesub.tv/torrents-details.php") ) {
 				// swesub.tv/download.php?id=99999&name=BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
 				// swesub.tv/torrents-details.php?id=99999
 				directHref = href.replace("torrents-details.php?","download.php?") + "&name="
 					+ HASH + ".torrent";
-			} else if ( ~href.indexOf("take.fm/movies") ) {
+			} else if ( is("take.fm/movies") ) {
 				// last checked 2012-05-13
 				// take.fm/movies/999/releases/9999
 				// take.fm/movies/999/releases/9999/torrent/download?file=Title+of+torrent.torrent
 				directHref = slashSplit && slashSplit.length >= 7 ? "http://take.fm/movies/" + slashSplit[4]
 					+ "/releases/" + slashSplit[6] + "/torrent/download?file=" + titleEnc + ".torrent" : null;
-			} else if ( ~href.indexOf("thepiratebay.sx/torrent/")
-				|| ~href.indexOf("pirateproxy.net/torrent/")
-				|| ~href.indexOf("pirateproxy.se/torrent/")
-				|| ~href.indexOf("piratebayproxy.se/torrent/")
-				|| ~href.indexOf("baymirror.com/torrent/")
-				|| ~href.indexOf("piratereverse.info/torrent/")
-				|| ~href.indexOf("piratebaymirror.me/torrent/") ) {
+			} else if ( is("thepiratebay.sx/torrent/")
+				|| is("pirateproxy.net/torrent/")
+				|| is("pirateproxy.se/torrent/")
+				|| is("piratebayproxy.se/torrent/")
+				|| is("baymirror.com/torrent/")
+				|| is("piratereverse.info/torrent/")
+				|| is("piratebaymirror.me/torrent/") ) {
 				// last checked 2013-07-27
 				// not at all complete but these should cover it
 				// thepiratebay.sx/torrent/9999999
 				// torrents.thepiratebay.sx/9999999/Title+of+torrent.9999999.TPB.torrent
 				directHref = slashSplit && slashSplit.length >= 5 ? "http://torrents." + slashSplit[2]
 					+ "/" + slashSplit[4] + "/" + titleEnc + "." + slashSplit[4] + ".TPB.torrent" : null;
-			} else if ( ~href.indexOf("torrentcrazy.com/torrent/") ) {
+			} else if ( is("torrentcrazy.com/torrent/") ) {
 				// last checked 2013-06-02
 				// www.torrentcrazy.com/torrent/8487590/title.of.torrent
 				// dl.torrentcrazy.com/bae62a9932ec69bc6687a6d399ccb9d89d00d455/Title+of+torrent.torrent
 				directHref = slashSplit && slashSplit.length >= 6 ? "http://dl.torrentcrazy.com/" + hash
 					+ "/" + titleEnc + ".torrent" : null;
-			} else if ( ~href.indexOf("rarbg.com/torrent") ) {
+			} else if ( is("rarbg.com/torrent") ) {
 				// last checked 2013-07-27
 				// rarbg.com/torrents/filmi/download/abcde12/torrent.html
 				// rarbg.com/torrent/abcde12
@@ -424,19 +436,19 @@
 					directHref = slashSplit && slashSplit.length === 5 ? "http://rarbg.com/download.php?id="
 						+ slashSplit[4] + "&f=" + titleEnc + "%5Brarbg.com%5D.torrent" : null;
 				}
-			} else if ( ~href.indexOf("nyaa.eu/?") ) {
+			} else if ( is("nyaa.eu/?") ) {
 				// last checked 2013-06-02
 				// www.nyaa.eu/?page=view&tid=999999
 				// www.nyaa.eu/?page=download&tid=999999
 				directHref = slashSplit && slashSplit.length >= 4
 					? href.replace(/(\?|\&)page=view/,"$1page=download") : null;
-			} else if ( ~href.indexOf("torrage.com/torrent") ) {
+			} else if ( is("torrage.com/torrent") ) {
 				// torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
 				directHref = href;
-			} else if ( ~href.indexOf("torcache.net/torrent") ) {
+			} else if ( is("torcache.net/torrent") ) {
 				// torcache.net/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
 				directHref = href;
-			} else if ( ~href.indexOf("zoink.it/torrent") ) {
+			} else if ( is("zoink.it/torrent") ) {
 				// zoink.it/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
 				directHref = href;
 			}
@@ -880,16 +892,26 @@
 					,"That`s why this option is turned off by default.'>Force HTTPS</label>"
 					,"<input type='checkbox' name='" + tzCl + "_removeAds' value='removeAds'"
 					,checkAds + "id='" + tzCl + "_removeAds' />"
-					,"<label for='" + tzCl + "_removeAds'>Hide Ads</label>"
+					,"<label for='" + tzCl + "_removeAds' title='This will hide all ads, including "
+						+ "image ads, flash-based ads, and linked text ads. If you still see an ad, "
+						+ "it is probably brand new and still not known to this script.'>Hide Ads</label>"
 					,"<input type='checkbox' name='" + tzCl + "_searchHighlight' value='searchHighlight' "
 					,"id='" + tzCl + "_searchHighlight'" + checkHighlight + " />"
-					,"<label for='" + tzCl + "_searchHighlight'>Colorful results</label>"
+					,"<label for='" + tzCl + "_searchHighlight' title='This is what highlights all "
+						+ "results and makes the background for each row change color. You might "
+						+ "want to turn this option off if your computer is very old, since this "
+						+ "is the most time consuming part of this script.'>Colorful results</label>"
 					,"<input type='checkbox' name='" + tzCl + "_ajaxedSorting' value='ajaxedSorting'"
 					,checkAjaxSorting + "id='" + tzCl + "_ajaxedSorting'>"
-					,"<label for='" + tzCl + "_ajaxedSorting'>Ajaxed sorting</label>"
+					,"<label for='" + tzCl + "_ajaxedSorting' title='This feature turns on ajax for "
+						+ "paged searchresults, sorting and episode links. The advantage is that it "
+						+ "is some what faster, and puts less stress on the webserver."
+						+ "'>Ajaxed sorting</label>"
 					,"<input type='checkbox' name='" + tzCl + "_linkComments' value='linkComments'"
 					,checkCommentLinks + "id='" + tzCl + "_linkComments'>"
-					,"<label for='" + tzCl + "_linkComments'>Fix comment links</label></p>"
+					,"<label for='" + tzCl + "_linkComments' title='This feature looks for any link-like "
+						+ "text in each user comment and converts it to real, clickable links."
+						+ "'>Fix comment links</label></p>"
 					,"<label for='" + tzCl + "_default_trackers_textarea'>Default trackerlist</label>"
 					,"<textarea rows='6' name='track' class='i' id='" + tzCl + "_default_trackers_textarea' wrap='off'>"
 					,trackersString + "</textarea><p>Optional. Default trackerlist (these are added to all torrents\' "

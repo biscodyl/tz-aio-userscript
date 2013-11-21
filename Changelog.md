@@ -1,5 +1,11 @@
 # Changelog
 
+
+**2.3.16** (2013-11-21)
+* Added new ad block to the ad-list (`.SimpleAcceptableTextAds`).
+* Small typo fixes.
+* New direct torrent link matcher function (`tzAio.linkMatches`).
+
 **2.3.15** (2013-11-14)
 * Added 2 direct link sources.
 
@@ -53,7 +59,7 @@
 * `2013 01 01` episodes now stop at todays date.
 * `No Referer Url` was dumped, and replaced with a more modern `rel='noreferrer' || data:text/html<html>...` solution, and I also made sure they open in the current window.
 * Bug squashed in the comment links function, these links are now also free of any outgoing referrer.
-* Noticed a bug in TamperMonkey where the trackers being copied where stripped of all newlines, have filed a [bugreport here](http://forum.tampermonkey.net/viewtopic.php?f=17&t=668).
+* Noticed a bug in TamperMonkey where the trackers being copied where stripped of all newlines. This bug has since then [been solved](http://forum.tampermonkey.net/viewtopic.php?f=17&t=668) in it's newest [Beta release](http://tampermonkey.net/changelog.php?version=3.4.3525&ext=gcal).
 
 **2.3.0** (2013-08-03)
 * New TV toolbar that helps you search for next/prev episode/season, click the links in the filter-bar or use `SHIFT+[arrowkeys]` when available.
