@@ -7,6 +7,11 @@ Please [rate and/or leave a review](https://userscripts.org/scripts/reviews/1250
 
 _This project is mainly maintained on [github](https://github.com/elundmark/tz-aio-userscript/), so please report any issues or requests @ [github.com/elundmark/tz-aio-userscript/issues](https://github.com/elundmark/tz-aio-userscript/issues)._
 
+
+# Are you behind a proxy?
+
+Read [these instructions](https://userscripts.org/topics/135018) to get an idea how you can make the script work again. If that fails, you can try installing [this special version](https://github.com/elundmark/tz-aio-userscript/raw/master/tz-aio.proxy-fix.user.js), which runs on _every_ page, thus making it work again. But It's not *100%* guarateed, it depends on the proxy provider, and seeing there's like 100.000.000 of them I'm not gonna even try.
+
 # **Features**
 
 * **Default trackerlist**  _Customizable_ - Magically sorted trackers, that apply to all magnet-links.
