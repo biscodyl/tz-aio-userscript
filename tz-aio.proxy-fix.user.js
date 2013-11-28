@@ -10,6 +10,7 @@
 // @homepage      https://github.com/elundmark/tz-aio-userscript
 // @supportURL    https://github.com/elundmark/tz-aio-userscript/issues
 // @include       *
+// @exclude       /^https?://(?:www\.)?(?:tz\.ai|torrents\.de|(?:torrentz\.(?:eu|ph|li|com|me|in|hk)))/.*/
 // @exclude       /^https?://[^/]+/feed(?:_[a-zA-Z]+)?\?.*/
 // @exclude       /^https?://[^/]+/announcelist_.*/
 // @exclude       /^https?://[^/]+/report_.*/
