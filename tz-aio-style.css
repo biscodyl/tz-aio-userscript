@@ -446,11 +446,13 @@
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form input[type='text'] {
   font-family: monospace;
   margin-bottom: 15px;
+  background-color: white;
 }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form textarea {
   height: 195px;
   border: 1px solid #bcc6cf;
   padding: 10px;
+  background-color: white;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;

@@ -491,11 +491,13 @@ $blinkto:   0.0;
     input[type='text'] {
       font-family: monospace;
       margin-bottom: 15px;
+      background-color: $WHITE;
     }
     textarea {
       height: 195px;
       border: 1px solid $SOFTBLUE;
       padding: 10px;
+      background-color: $WHITE;
       @include border-radius(5px);
     }
     textarea + p,
