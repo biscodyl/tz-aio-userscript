@@ -1,5 +1,7 @@
 # Changelog
 
+**2.3.17** (2013-12-10)
+* Updated 1 direct link domain.
 
 **2.3.16** (2013-11-21)
 * Added new ad block to the ad-list (`.SimpleAcceptableTextAds`).
