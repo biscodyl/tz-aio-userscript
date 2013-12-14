@@ -1,5 +1,8 @@
 # Changelog
 
+**2.3.18** (2013-12-14)
+* Updated another direct link domain.
+
 **2.3.17** (2013-12-10)
 * Updated 1 direct link domain.
 
