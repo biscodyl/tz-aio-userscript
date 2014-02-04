@@ -42,636 +42,637 @@ $INFORMATION    : "/img/information.png";
 $RSSIMG         : "/img/rss.png";
 
 .verified-image {
-  background-image : inline-image("download_button_normal.png");
+	background-image : inline-image("download_button_normal.png");
 }
 .unverified-image {
-  background-image : inline-image("download_button_unv.png");
+	background-image : inline-image("download_button_unv.png");
 }
 .fake-image {
-  background-image : inline-image("download_button_fake.png");
+	background-image : inline-image("download_button_fake.png");
 }
 .folder-image {
-  background-image : inline-image("folder.png");
+	background-image : inline-image("folder.png");
 }
 .peers-image {
-  background-image : inline-image("peers.png");
+	background-image : inline-image("peers.png");
 }
 .comment-image {
-  background-image : inline-image("comment.png");
+	background-image : inline-image("comment.png");
 }
 
 .tzAioborderBoxForm {
-  @include box-sizing(border-box);
-  min-width: 98% !important;
-  max-width: 98% !important;
-  width: 98% !important;
+	@include box-sizing(border-box);
+	min-width: 98% !important;
+	max-width: 98% !important;
+	width: 98% !important;
 }
 
 $blinkfrom: 1.0;
 $blinkto:   0.0;
 
 @-moz-keyframes blinker {  
-  from { opacity: $blinkfrom; }
-  to { opacity: $blinkto; }
+	from { opacity: $blinkfrom; }
+	to { opacity: $blinkto; }
 }
 @-webkit-keyframes blinker {  
-  from { opacity: $blinkfrom; }
-  to { opacity: $blinkto; }
+	from { opacity: $blinkfrom; }
+	to { opacity: $blinkto; }
 }
 @-keyframes blinker {  
-  from { opacity: $blinkfrom; }
-  to { opacity: $blinkto; }
+	from { opacity: $blinkfrom; }
+	to { opacity: $blinkto; }
 }
 
 .tz_aio_b.tz_aio_v2 {
 
-  /* General and resets */
+	/* General and resets */
 
-  a {
-    outline: none;
-  }
+	a {
+		outline: none;
+	}
 
-  input[type='submit']:hover {
-    cursor: pointer;
-  }
+	input[type='submit']:hover {
+		cursor: pointer;
+	}
 
-  #tz_aio_help li ul {
-    list-style-type: square;
-    margin: 0;
-    padding: 4px 0 0 16px;
-  }
+	#tz_aio_help li ul {
+		list-style-type: square;
+		margin: 0;
+		padding: 4px 0 0 16px;
+	}
 
-  &.no_ads .SPECIFICELEMENT, &.no_ads .dontblockmebro, &.no_ads .dnotblcokmebro,
-  &.no_ads .dnotblockmebro, &.no_ads .removed_ad,
-  &.no_ads .SimpleAcceptableTextAds,
-  &.no_ads .PleaseDontDisableTheAutoSuggestScriptThePopCodeIsNotThere {
-    display: none !important;
-  }
+	&.no_ads .SPECIFICELEMENT, &.no_ads .dontblockmebro, &.no_ads .dnotblcokmebro,
+	&.no_ads .dnotblockmebro, &.no_ads .removed_ad,
+	&.no_ads .SimpleAcceptableTextAds,
+	&.no_ads .PleaseDontDisableTheAutoSuggestScriptThePopCodeIsNotThere {
+		display: none !important;
+	}
 
-  .tz_aio_settings_form textarea,
-  .tz_aio_settings_form input[type='text'],
-  .tz_aio_settings_form p {
-    @extend .tzAioborderBoxForm;
-  }
+	.tz_aio_settings_form textarea,
+	.tz_aio_settings_form input[type='text'],
+	.tz_aio_settings_form p {
+		@extend .tzAioborderBoxForm;
+	}
 
-  .autocomplete {
-    z-index: 10;
-  }
+	.autocomplete {
+		z-index: 10;
+	}
 
-  .trackers a[href*='announcelist_']::after {
-    content: " (doesn't include your default trackers)";
-    color: $TEXTBROWN;
-  }
+	.trackers a[href*='announcelist_']::after {
+		content: " (doesn't include your default trackers)";
+		color: $TEXTBROWN;
+	}
 
-  .download dl {
-    position: relative;
-  }
+	.download dl {
+		position: relative;
+	}
 
-  .tz_aio_info_bar {
+	.tz_aio_info_bar {
 
-    text-align: center;
-    position: relative;
-    margin: 20px 0;
-    min-height: 24px;
-    line-height: 24px;
+		text-align: center;
+		position: relative;
+		margin: 20px 0;
+		min-height: 24px;
+		line-height: 24px;
 
-    .tz_aio_folder_image,
-    .tz_aio_peers_image,
-    .tz_aio_comment_image {
-      background-color: transparent;
-      background-position: left center;
-      background-repeat: no-repeat;
-      display: inline-block;
-      padding-left: 24px;
-    }
+		.tz_aio_folder_image,
+		.tz_aio_peers_image,
+		.tz_aio_comment_image {
+			background-color: transparent;
+			background-position: left center;
+			background-repeat: no-repeat;
+			display: inline-block;
+			padding-left: 24px;
+		}
 
-    .tz_aio_folder_image {
-      @extend .folder-image;
-    }
+		.tz_aio_folder_image {
+			@extend .folder-image;
+		}
 
-    .tz_aio_peers_image {
-      @extend .peers-image;
-    }
+		.tz_aio_peers_image {
+			@extend .peers-image;
+		}
 
-    .tz_aio_comment_image {
-      @extend .comment-image;
-    }
+		.tz_aio_comment_image {
+			@extend .comment-image;
+		}
 
-    .tz_aio_mlink {
-      border-bottom: 1px dotted $GREEN;
-      overflow: visible;
-      position: relative;
-    }
-    .tz_aio_mlink::before {
-      content: " ";
-      position: absolute;
-      top: 1px;
-      left: -27px;
-      width: 18px;
-      height: 18px;
-      background-color: transparent;
-      background-image: url($TRANSPARENTGIF);
-      background-repeat: no-repeat;
-      background-position: 50% 50%;
-      @include background-size(100% auto);
-    }
+		.tz_aio_mlink {
+			border-bottom: 1px dotted $GREEN;
+			overflow: visible;
+			position: relative;
+		}
+		.tz_aio_mlink::before {
+			content: " ";
+			position: absolute;
+			top: 1px;
+			left: -27px;
+			width: 18px;
+			height: 18px;
+			background-color: transparent;
+			background-image: url($TRANSPARENTGIF);
+			background-repeat: no-repeat;
+			background-position: 50% 50%;
+			@include background-size(100% auto);
+		}
 
-    a.tz_aio_mlink.tz_aio_verified_dl::before {
-      @extend .verified-image;
-    }
+		a.tz_aio_mlink.tz_aio_verified_dl::before {
+			@extend .verified-image;
+		}
 
-    a.tz_aio_mlink.tz_aio_unverified_dl::before {
-      @extend .unverified-image;
-    }
-    a.tz_aio_mlink.tz_aio_bogus_dl::before {
-      @extend .fake-image;
-    }
+		a.tz_aio_mlink.tz_aio_unverified_dl::before {
+			@extend .unverified-image;
+		}
+		a.tz_aio_mlink.tz_aio_bogus_dl::before {
+			@extend .fake-image;
+		}
 
-    .tz_aio_seed_green {
-      color: $GREEN;
-    }
+		.tz_aio_seed_green {
+			color: $GREEN;
+		}
 
-    .tz_aio_seed_black {
-      color: $BLACK;
-    }
+		.tz_aio_seed_black {
+			color: $BLACK;
+		}
 
-    .tz_aio_mlink:active::before,
-    .tz_aio_mlink.active::before {
-      top: 3px;
-    }
-    .tz_aio_copylink {
-      border-bottom: 1px dotted $GREEN;
-      cursor: pointer;
-    }
-    a:active,
-    a.active,
-    .tz_aio_mlink.active {
-      color: $BLACK;
-    }
-    .tz_aio_mlink:hover,
-    .tz_aio_mlink.active,
-    .tz_aio_copylink:hover,
-    .tz_aio_copylink.hover {
-      border-bottom-style: solid;
-    }
-    .divided {
-      padding: 0 2px;
-    }
-    img {
-      vertical-align: text-top;
-      border: 0;
-      margin-right: 4px;
-    }
-    .warn {
-      color: red;
-      text-shadow: 0 1px 1px $WARNSHADOW;
-      padding-left: 4px;
-      -webkit-animation-name: blinker;  
-      -webkit-animation-iteration-count: 7;  
-      -webkit-animation-timing-function: cubic-bezier(1.0,0,0,1.0);
-      -webkit-animation-duration: 1.5s;
-      -moz-animation-name: blinker;  
-      -moz-animation-iteration-count: 7;  
-      -moz-animation-timing-function: cubic-bezier(1.0,0,0,1.0);
-      -moz-animation-duration: 1.5s;
-      animation-name: blinker;  
-      animation-iteration-count: 7;  
-      animation-timing-function: cubic-bezier(1.0,0,0,1.0);
-      animation-duration: 1.5s; 
-    }
-    .tz_aio_sep {
-      color: $DARKGRAY;
-      padding: 0 6px;
-      text-shadow: -1px 1px 0 $MILKWHITE;
-    }
+		.tz_aio_mlink:active::before,
+		.tz_aio_mlink.active::before {
+			top: 3px;
+		}
+		.tz_aio_copylink {
+			border-bottom: 1px dotted $GREEN;
+			cursor: pointer;
+		}
+		a:active,
+		a.active,
+		.tz_aio_mlink.active {
+			color: $BLACK;
+		}
+		.tz_aio_mlink:hover,
+		.tz_aio_mlink.active,
+		.tz_aio_copylink:hover,
+		.tz_aio_copylink.hover {
+			border-bottom-style: solid;
+		}
+		.divided {
+			padding: 0 2px;
+		}
+		img {
+			vertical-align: text-top;
+			border: 0;
+			margin-right: 4px;
+		}
+		.warn {
+			color: red;
+			text-shadow: 0 1px 1px $WARNSHADOW;
+			padding-left: 4px;
+			-webkit-animation-name: blinker;  
+			-webkit-animation-iteration-count: 7;  
+			-webkit-animation-timing-function: cubic-bezier(1.0,0,0,1.0);
+			-webkit-animation-duration: 1.5s;
+			-moz-animation-name: blinker;  
+			-moz-animation-iteration-count: 7;  
+			-moz-animation-timing-function: cubic-bezier(1.0,0,0,1.0);
+			-moz-animation-duration: 1.5s;
+			animation-name: blinker;  
+			animation-iteration-count: 7;  
+			animation-timing-function: cubic-bezier(1.0,0,0,1.0);
+			animation-duration: 1.5s; 
+		}
+		.tz_aio_sep {
+			color: $DARKGRAY;
+			padding: 0 6px;
+			text-shadow: -1px 1px 0 $MILKWHITE;
+		}
 
-  }
+	}
 
-  .tz_aio_dllink {
-    display: block;
-    width: 126px;
-    height: 20px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    position: absolute;
-    top: 0;
-    right: 62px;
-    em {
-      color: $BROWN;
-      font-size: 12px;
-      line-height: 20px;
-      height: 20px;
-      font-style: normal;
-      font-weight: normal;
-      display: block;
-      text-align: center;
-      background: $TZPINK;
-      white-space: nowrap;
-      overflow: visible;
-      @include border-radius(6px);
-    }
-    &:hover em {
-      background: $GREEN;
-      color: $WHITE;
-      @include box-shadow(inset 0 0 2px $GREEN);
-    }
-    &:active {
-      top: 2px;
-    }
-  }
-  /* reset default background */
-  .download dl dt a {
-    &:hover {
-      background-color: transparent;
-    }
-    &.tz_aio_dllink:hover ~ a, &.tz_aio_dllink:hover + a, &:hover {
-      background-image: $LIGHTPINK;
-      @include background-image(linear-gradient(left, $LIGHTPINK 0%, $LIGHTPINK 79%, $WHITE 100%));
-    }
-  }
-  h2 span::selection,
-  .tz_aio_copy_textarea textarea::selection {
-    color: $WHITE;
-    background-color: $TZBLUE;
-  }
-  h2 span::-moz-selection,
-  .tz_aio_copy_textarea textarea::-moz-selection {
-    color: $WHITE;
-    background-color: $TZBLUE;
-  }
-  .tz_aio_copy_textarea textarea:focus {
-    outline: none;
-  }
-  .tz_aio_copy_textarea, .tz_aio_copy_textarea textarea {
-    @include box-sizing(border-box);
-  }
-  .tz_aio_copy_textarea {
-    z-index: 11;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: none;
-    padding: 10px;
-    width: 500px;
-    height: 280px;
-    @include border-corner-radius(top, right, 3px);
-    @include border-corner-radius(bottom, right, 3px);
-    @include border-corner-radius(bottom, left, 3px);
-    @include box-shadow(0 5px 15px $TZBLUE);
-    background: $COPYAREABG;
-    textarea {
-      border: 0;
-      white-space: nowrap;
-      overflow: auto;
-      padding: 0;
-      color: $DARKGRAY;
-      background-color: $WHITE;
-      font-size: 13px; /*'Ubuntu Mono', Menlo, Monaco, Consolas, Inconsolata, FreeMono, monospace;*/
-      line-height: 1.2;
-      width: 100%;
-      height: 100%;
-    }
-  }
+	.tz_aio_dllink {
+		display: block;
+		width: 126px;
+		height: 20px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		position: absolute;
+		top: 0;
+		right: 62px;
+		em {
+			color: $BROWN;
+			font-size: 12px;
+			line-height: 20px;
+			height: 20px;
+			font-style: normal;
+			font-weight: normal;
+			display: block;
+			text-align: center;
+			background: $TZPINK;
+			white-space: nowrap;
+			overflow: visible;
+			@include border-radius(6px);
+		}
+		&:hover em {
+			background: $GREEN;
+			color: $WHITE;
+			@include box-shadow(inset 0 0 2px $GREEN);
+		}
+		&:active {
+			top: 2px;
+		}
+	}
+	/* reset default background */
+	.download dl dt a {
+		&:hover {
+			background-color: transparent;
+		}
+		&.tz_aio_dllink:hover ~ a, &.tz_aio_dllink:hover + a, &:hover {
+			background-image: $LIGHTPINK;
+			@include background-image(linear-gradient(left, $LIGHTPINK 0%, $LIGHTPINK 79%, $WHITE 100%));
+		}
+	}
+	h2 span::selection,
+	.tz_aio_copy_textarea textarea::selection {
+		color: $WHITE;
+		background-color: $TZBLUE;
+	}
+	h2 span::-moz-selection,
+	.tz_aio_copy_textarea textarea::-moz-selection {
+		color: $WHITE;
+		background-color: $TZBLUE;
+	}
+	.tz_aio_copy_textarea textarea:focus {
+		outline: none;
+	}
+	.tz_aio_copy_textarea, .tz_aio_copy_textarea textarea {
+		@include box-sizing(border-box);
+	}
+	.tz_aio_copy_textarea {
+		z-index: 11;
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: none;
+		padding: 10px;
+		width: 500px;
+		height: 280px;
+		@include border-corner-radius(top, right, 3px);
+		@include border-corner-radius(bottom, right, 3px);
+		@include border-corner-radius(bottom, left, 3px);
+		@include box-shadow(0 5px 15px $TZBLUE);
+		background: $COPYAREABG;
+		textarea {
+			border: 0;
+			white-space: nowrap;
+			overflow: auto;
+			padding: 0;
+			color: $DARKGRAY;
+			background-color: $WHITE;
+			font-size: 13px; /*'Ubuntu Mono', Menlo, Monaco, Consolas, Inconsolata, FreeMono, monospace;*/
+			line-height: 1.2;
+			width: 100%;
+			height: 100%;
+		}
+	}
 
-  .download h2 {
-    position: relative;
-  }
-  .tz_aio_searchbar {
-    display: none;
-  }
-  &.search_ready .tz_aio_searchbar {
-    display: block;
-    float: none;
-    min-height: 23px;
-    padding: 0 0 10px 10px;
-    background: $WHITE;
-    margin: 0;
-    text-align: center;
-    border-bottom: 1px solid $TZPINK;
-    position: relative;
-  }
-  &.search_ready .tz_aio_searchbar .search_link,
-  &.search_ready .tz_aio_searchbar {
-    font-size: 15px;
-    line-height: 22px;
-    color: $BROWN;
-    text-align: center;
-  }
-  &.search_ready .tz_aio_searchbar .search_link {
-    display: inline-block;
-    margin-right: 8px;
-    padding: 0 10px 3px;
-    background: $TZPINK;
-    @include border-corner-radius(bottom, right, 6px);
-    @include border-corner-radius(bottom, left, 6px);
-  }
-  &.search_ready .tz_aio_searchbar .search_link:hover {
-    color: $BLACK;
-  }
-  &.search_ready .tz_aio_searchbar .search_link:active {
-    color: $WHITE;
-  }
-  &.search_ready .tz_aio_searchbar a:last-of-type {
-    margin-right: 0;
-  }
-  &.search_ready .tz_aio_searchbar a img {
-    position: relative;
-    top: 2px;
-  }
+	.download h2 {
+		position: relative;
+	}
+	.tz_aio_searchbar {
+		display: none;
+	}
+	&.search_ready .tz_aio_searchbar {
+		display: block;
+		float: none;
+		min-height: 23px;
+		padding: 0 0 10px 10px;
+		background: $WHITE;
+		margin: 0;
+		text-align: center;
+		border-bottom: 1px solid $TZPINK;
+		position: relative;
+	}
+	&.search_ready .tz_aio_searchbar .search_link,
+	&.search_ready .tz_aio_searchbar {
+		font-size: 15px;
+		line-height: 22px;
+		color: $BROWN;
+		text-align: center;
+	}
+	&.search_ready .tz_aio_searchbar .search_link {
+		display: inline-block;
+		margin-right: 8px;
+		padding: 0 10px 3px;
+		background: $TZPINK;
+		@include border-corner-radius(bottom, right, 6px);
+		@include border-corner-radius(bottom, left, 6px);
+	}
+	&.search_ready .tz_aio_searchbar .search_link:hover {
+		color: $BLACK;
+	}
+	&.search_ready .tz_aio_searchbar .search_link:active {
+		color: $WHITE;
+	}
+	&.search_ready .tz_aio_searchbar a:last-of-type {
+		margin-right: 0;
+	}
+	&.search_ready .tz_aio_searchbar a img {
+		position: relative;
+		top: 2px;
+	}
 
-  /* Settings */
-  li.tz_aio_settings {
-    position: relative;
-  }
-  &.tz_aio_settings_saved .tz_aio_settings a::after, 
-  .tz_aio_settings.tz_aio_settings_open a::after {
-    background-color: $WARNRED;
-    @include border-bottom-left-radius(3px);
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 1px 3px;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
+	/* Settings */
+	li.tz_aio_settings {
+		position: relative;
+	}
+	&.tz_aio_settings_saved .tz_aio_settings a::after, 
+	.tz_aio_settings.tz_aio_settings_open a::after {
+		background-color: $WARNRED;
+		@include border-bottom-left-radius(3px);
+		color: white;
+		font-size: 12px;
+		font-weight: bold;
+		padding: 1px 3px;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
 
-  &.tz_aio_settings_saved .tz_aio_settings a::after {
-    content: "Saved";
-  }
-  &.tz_aio_settings_saved .tz_aio_settings.tz_aio_settings_open a::after,
-  .tz_aio_settings.tz_aio_settings_open a::after {
-    content: "X";
-  }
+	&.tz_aio_settings_saved .tz_aio_settings a::after {
+		content: "Saved";
+	}
+	&.tz_aio_settings_saved .tz_aio_settings.tz_aio_settings_open a::after,
+	.tz_aio_settings.tz_aio_settings_open a::after {
+		content: "X";
+	}
 
-  .generic.tz_aio_info_p em,
-  .generic.tz_aio_info_p .warn_old_user {
-    font-style: italic;
-    font-size: small;
-  }
+	.generic.tz_aio_info_p em,
+	.generic.tz_aio_info_p .warn_old_user {
+		font-style: italic;
+		font-size: small;
+	}
 
-  .generic.tz_aio_info_p .warn_old_user {
-    color: $WARNRED;
-  }
+	.generic.tz_aio_info_p .warn_old_user {
+		color: $WARNRED;
+	}
 
-  .generic.tz_aio_info_p,
-  .tz_aio_settings_form {
-    height: 0px;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-  }
+	.generic.tz_aio_info_p,
+	.tz_aio_settings_form {
+		height: 0px;
+		overflow: hidden;
+		padding: 0;
+		margin: 0;
+	}
 
-  .tz_aio_settings_form.expand {
-    margin: 10px 0;
-  }
+	.tz_aio_settings_form.expand {
+		margin: 10px 0;
+	}
 
-  .tz_aio_settings_form fieldset > p:first-of-type {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
+	.tz_aio_settings_form fieldset > p:first-of-type {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
 
-  .generic.tz_aio_info_p.expand {
-    background-color: $WHITE;
-  }
+	.generic.tz_aio_info_p.expand {
+		background-color: $WHITE;
+	}
 
-  .generic.tz_aio_info_p.expand,
-  .tz_aio_settings_form.expand {
-    padding: 10px;
-    height: auto;
-    overflow: auto;
-  }
+	.generic.tz_aio_info_p.expand,
+	.tz_aio_settings_form.expand {
+		padding: 10px;
+		height: auto;
+		overflow: auto;
+	}
 
-  .generic.tz_aio_info_p.expand {
-    @extend .tzAioborderBoxForm;
-    background-position: center right;
-    background-repeat: no-repeat;
-    @include background-size(auto 64px);
-    margin-top: 20px;
-    margin-right: auto;
-    margin-left: auto;
-    padding-left: 10px;
-    padding-right: 85px;
-    text-align: right;
-    font-size: 13px;
-  }
+	.generic.tz_aio_info_p.expand {
+		@extend .tzAioborderBoxForm;
+		background-position: center right;
+		background-repeat: no-repeat;
+		@include background-size(auto 64px);
+		margin-top: 20px;
+		margin-right: auto;
+		margin-left: auto;
+		padding-left: 10px;
+		padding-right: 85px;
+		text-align: right;
+		font-size: 13px;
+	}
 
-  form.expand ~ * {
-    display: none !important;
-  }
+	form.expand ~ * {
+		display: none !important;
+	}
 
-  .tz_aio_current_version_mark {
-    background-color: $LIGHTGREEN;
-    @include border-radius(5px);
-    display: inline-block;
-    padding: 0 2px;
-  }
+	.tz_aio_current_version_mark {
+		background-color: $LIGHTGREEN;
+		@include border-radius(5px);
+		display: inline-block;
+		padding: 0 2px;
+	}
 
-  .tz_aio_settings_form {
+	.tz_aio_settings_form {
 
-    .tz_aio_main_radioselect {
-      margin-top: 10px;
-      margin-bottom: 20px;
-    }
+		.tz_aio_main_radioselect {
+			margin-top: 10px;
+			margin-bottom: 20px;
+		}
 
-    .tz_aio_new_version_msg, .tz_aio_update_message {
-      font-size: 16px;
-      mark {
-        background-color: $SRANIME;
-        @include border-radius(5px);
-        display: inline-block;
-        padding: 8px 10px;
-        @include box-shadow(3px 3px 0 $DARKGRAY);
-      }
-      mark.tz_aio_alt_msg {
-        background-color: $TZORANGE;
-      }
-    }
+		.tz_aio_new_version_msg, .tz_aio_update_message {
+			font-size: 16px;
+			mark {
+				background-color: $SRANIME;
+				@include border-radius(5px);
+				display: inline-block;
+				padding: 8px 10px;
+				@include box-shadow(3px 3px 0 $DARKGRAY);
+			}
+			mark.tz_aio_alt_msg {
+				background-color: $TZORANGE;
+			}
+		}
 
-    input[type='text'] {
-      font-family: monospace;
-      margin-bottom: 15px;
-      background-color: $WHITE;
-    }
-    textarea {
-      height: 195px;
-      border: 1px solid $SOFTBLUE;
-      padding: 10px;
-      background-color: $WHITE;
-      @include border-radius(5px);
-    }
-    textarea + p,
-    input + p,
-    p:last-of-type {
-      margin-bottom: 15px;
-    }
-    p label {
-      margin-right: 15px;
-      display: inline-block;
-    }
-    p label:last-of-type {
-      margin-right: 0;
-    }
-    input[type='checkbox'] {
-      margin-right: 10px;
-      display: inline-block;
-      vertical-align: middle;
-      position: relative;
-      top: -1px;
-      margin-right: 10px;
-    }
-    input[type="checkbox"] + label:hover,
-    input[type='checkbox']:hover {
-      cursor: pointer;
-    }
-    input[type="checkbox"] + label {
-      color: $INACTIVEGRAY;
-      border-bottom: 1px solid $FORMGRAY;
-    }
-    input[type="checkbox"]:checked + label {
-      color: $BLACK;
-      border-bottom: 1px dashed $WHITE;
-    }
+		input[type='text'] {
+			font-family: monospace;
+			margin-bottom: 15px;
+			background-color: $WHITE;
+		}
+		textarea {
+			height: 195px;
+			border: 1px solid $SOFTBLUE;
+			padding: 10px;
+			background-color: $WHITE;
+			@include border-radius(5px);
+		}
+		textarea + p,
+		input + p,
+		p:last-of-type {
+			margin-bottom: 15px;
+		}
+		p label {
+			margin-right: 15px;
+			display: inline-block;
+		}
+		p label:last-of-type {
+			margin-right: 0;
+		}
+		input[type='checkbox'] {
+			margin-right: 10px;
+			display: inline-block;
+			vertical-align: middle;
+			position: relative;
+			top: -1px;
+			margin-right: 10px;
+		}
+		input[type="checkbox"] + label:hover,
+		input[type='checkbox']:hover {
+			cursor: pointer;
+		}
+		input[type="checkbox"] + label {
+			color: $INACTIVEGRAY;
+			border-bottom: 1px solid $FORMGRAY;
+		}
+		input[type="checkbox"]:checked + label {
+			color: $BLACK;
+			border-bottom: 1px dashed $WHITE;
+		}
 
-  }
-  #tz_aio_settings_reset {
-    margin-right: 15px;
-    font-size: 13px;
-    display: inline-block;
-  }
+	}
+	#tz_aio_settings_reset {
+		margin-right: 15px;
+		font-size: 13px;
+		display: inline-block;
+	}
 
-  .results .tz_aio_episode_nav_links {
-    float: left;
-    text-align: left;
-    margin-right: 10px;
-  }
-  .results > dl {
-    position: relative !important;
-    background-color: $WHITE;
-    @include transition-property(background-color);
-    @include transition-duration(0.3s);
-    @include transition-timing-function(ease-in);
-  }
-  .results > dl:hover {
-    position: relative;
-    z-index: 9;
-  }
-  .results.tz_aio_colorized > dl:hover {
-    border-bottom-color: $WHITE;
-  }
-  .results.tz_aio_colorized > dl.meta-info.colorizeme:hover {
-    position: static;
-    border-bottom-color: $TZPINK;
-  }
+	.results .tz_aio_episode_nav_links {
+		float: left;
+		text-align: left;
+		margin-right: 10px;
+		&.no_res_eps {
+			float: none;
+			display: block;
+		}
+	}
+	.results > dl {
+		position: relative !important;
+		background-color: $WHITE;
+		@include transition-property(background-color);
+		@include transition-duration(0.3s);
+		@include transition-timing-function(ease-in);
+	}
+	.results > dl:hover {
+		position: relative;
+		z-index: 9;
+	}
+	.results .tz_aio_magnet {
+		width: 24px;
+		height: 24px;
+		position: absolute;
+		top: 0;
+		left: 697px;
+		overflow: visible;
+		text-align: center;
+		z-index: 5;
+		opacity: 0;
+		@include transition-property(opacity);
+		@include transition-duration(0.3s);
+		@include transition-timing-function(ease-in);
+	}
+	.results .tz_aio_magnet {
+		opacity: 1;
+	}
+	.results .tz_aio_magnet a {
+		display: block;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		color: $WHITE;
+		color: $RGBATRANSP;
+		@include transition-property(all);
+		@include transition-duration(0.15s);
+		@include transition-timing-function(linear);
+		@extend .verified-image;
+		background-position: 50% 50%;
+		background-repeat: no-repeat;
+		@include background-size(18px 18px);
+	}
+	.results .tz_aio_magnet a:hover {
+		@include background-size(24px 24px);
+	}
+	.results .tz_aio_magnet a:active {
+		@include background-size(14px 14px);
+	}
+	.results .tz_aio_unverified_dl .tz_aio_magnet a,
+	.tz_aio_trackerlist .results .tz_aio_magnet a {
+		@extend .unverified-image;
+	}
+	.results .tz_aio_fake_dl .tz_aio_magnet a {
+		@extend .fake-image;
+	}
+	.results .meta-info.colorizeme {
+		background-color: $DMCA;
+	}
+	/* empty ugly white status vote */
+	.tz_aio_unverified_dl .v {
+		visibility: hidden;
+	}
+	.results dl .v:empty {
+		visibility: hidden;
+	}
+	.results .tz_aio_exclude_filter_count:hover {
+		cursor: pointer;
+	}
+	.approximate_rss_link {
+		color: rgba(0,0,0,0);
+		img {
+			opacity: 0.5;
+		}
+		&:hover img {
+			opacity: 1;
+		}
+	}
+}
 
-  .results .tz_aio_magnet {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    top: 0;
-    left: 697px;
-    overflow: visible;
-    text-align: center;
-    z-index: 5;
-    opacity: 0;
-    @include transition-property(opacity);
-    @include transition-duration(0.3s);
-    @include transition-timing-function(ease-in);
-  }
-  .results .tz_aio_magnet {
-    opacity: 1;
-  }
-  .results .tz_aio_magnet a {
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    color: $WHITE;
-    color: $RGBATRANSP;
-    @include transition-property(all);
-    @include transition-duration(0.15s);
-    @include transition-timing-function(linear);
-    @extend .verified-image;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    @include background-size(18px 18px);
-  }
-  .results .tz_aio_magnet a:hover {
-    @include background-size(24px 24px);
-  }
-  .results .tz_aio_magnet a:active {
-    @include background-size(14px 14px);
-  }
-  .results .tz_aio_unverified_dl .tz_aio_magnet a,
-  .results.tz_aio_trackerlist .tz_aio_magnet a {
-    @extend .unverified-image;
-  }
-  .results .tz_aio_fake_dl .tz_aio_magnet a {
-    @extend .fake-image;
-  }
-  .results .meta-info.colorizeme {
-    background-color: $DMCA;
-  }
-  /* empty ugly white status vote */
-  .tz_aio_unverified_dl .v {
-    visibility: hidden;
-  }
-  .results dl .v:empty {
-    visibility: hidden;
-  }
-  .results .tz_aio_exclude_filter_count:hover {
-    cursor: pointer;
-  }
-  .approximate_rss_link img {
-    opacity: 0.5;
-  }
-  .approximate_rss_link:hover img {
-    opacity: 1;
-  }
-  > div > .results.tz_aio_colorized > h2 {
-    border-bottom: 0 none;
-  }
-  .results.tz_aio_colorized {
-
-    dl.inactive * {
-      opacity: 0.6;
-    }
-    dl.inactive:hover * {
-      opacity: 0.75;
-    }
-    dl.pink {
-      background-color: $SRPINK;
-    }
-    dl.tv {
-      background-color: $SRTV;
-    }
-    dl.movie {
-      background-color: $SRMOVIE;
-    }
-    dl.game {
-      background-color: $SRGAME;
-    }
-    dl.book {
-      background-color: $SRBOOK;
-    }
-    dl.music {
-      background-color: $SRMUSIC;
-    }
-    dl.app {
-      background-color: $SRAPP;
-    }
-    dl.picture {
-      background-color: $SRPICTURE;
-    }
-    dl.misc {
-      background-color: $SRMISC;
-    }
-    dl.anime {
-      background-color: $SRANIME;
-    }
-
-  }
-
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results {
+	> dl:hover {
+		border-bottom-color: $WHITE;
+	}
+	> dl.meta-info.colorizeme:hover {
+		position: static;
+		border-bottom-color: $TZPINK;
+	}
+	dl.inactive * {
+		opacity: 0.6;
+	}
+	dl.inactive:hover * {
+		opacity: 0.75;
+	}
+	dl.pink {
+		background-color: $SRPINK;
+	}
+	dl.tv {
+		background-color: $SRTV;
+	}
+	dl.movie {
+		background-color: $SRMOVIE;
+	}
+	dl.game {
+		background-color: $SRGAME;
+	}
+	dl.book {
+		background-color: $SRBOOK;
+	}
+	dl.music {
+		background-color: $SRMUSIC;
+	}
+	dl.app {
+		background-color: $SRAPP;
+	}
+	dl.picture {
+		background-color: $SRPICTURE;
+	}
+	dl.misc {
+		background-color: $SRMISC;
+	}
+	dl.anime {
+		background-color: $SRANIME;
+	}
 }

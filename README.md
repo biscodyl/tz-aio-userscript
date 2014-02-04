@@ -7,11 +7,6 @@ Please [rate and/or leave a review](https://userscripts.org/scripts/reviews/1250
 
 _This project is mainly maintained on [github](https://github.com/elundmark/tz-aio-userscript/), so please report any issues or requests @ [github.com/elundmark/tz-aio-userscript/issues](https://github.com/elundmark/tz-aio-userscript/issues)._
 
-
-# Are you behind a proxy?
-
-Read [these instructions](https://userscripts.org/topics/135018) to get an idea how you can make the script work again. If that fails, you can try installing [this special version](https://github.com/elundmark/tz-aio-userscript/raw/master/tz-aio.proxy-fix.user.js), which runs on _every_ page, thus making it work again. But It's not *100%* guarateed, it depends on the proxy provider, and seeing there's like 100.000.000 of them I'm not gonna even try.
-
 # **Features**
 
 * **Default trackerlist**  _Customizable_ - Magically sorted trackers, that apply to all magnet-links.
@@ -38,6 +33,8 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 
 * `.wmv` file warning.
 * Passes AdBlocker default blacklist.
+* Works with Autopager (thx [roshambo](https://userscripts.org/users/143015) for the fix).
+* As of **v2.4.0** no longer needs `unsafeWindow`.
 * All the data you save is stored permanently and applies across all domains, without the use of cookies or `localStorage`.
 
 # **Applies to these sites**
@@ -51,6 +48,13 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 * [http(s)://torrentz.hk/*](https://torrentz.hk/)
 * [http(s)://torrents.de/*](https://torrents.de/)
 * [http(s)://tz.ai/*](https://tz.ai/)
+* [http://torrentz-proxy.com/*](http://torrentz-proxy.com/)
+
+__Note that not all of these work, some redirect to **torrentz.eu** and some to **torrentz-proxy.com**, but it doesn't hur to have them all apply anyways.__
+
+## Are you behind a proxy?
+
+If you can't use **torrentz-proxy.com**, read [these instructions](https://userscripts.org/topics/135018) to get an idea how you can make the script work again. If that fails, you can try installing [this special version](https://github.com/elundmark/tz-aio-userscript/raw/master/tz-aio.proxy-fix.user.js), which runs on _every_ page, thus making it work again. But It's not *100%* guarateed, it depends on the proxy provider, and seeing there's like 100.000.000 of them I'm not gonna even try.
 
 # **Help me, to help us**
 
@@ -60,9 +64,9 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 # **Included plugins**
 
-* jQuery JavaScript Library v2.0.3 [jquery.com](http://jquery.com/). Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
+* jQuery JavaScript Library v2.1.0 [jquery.com](http://jquery.com/). Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
 * [jQuery replaceText](http://github.com/cowboy/jquery-replacetext/), Copyright (c) 2009 "Cowboy" Ben Alman. Version: 1.1, Last updated: 11/21/2009* [Dual licensed](http://benalman.com/about/license/) under the MIT and GPL licenses. [Project Home](http://benalman.com/projects/jquery-replacetext-plugin/).
-* [Underscore.js](http://underscorejs.org/) 1.5.1, (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc. Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
+* [Underscore.js](http://underscorejs.org/) 1.5.2, (c) 2009-2014 Jeremy Ashkenas, DocumentCloud Inc. Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
 
 # **How to use**
 
@@ -71,7 +75,7 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 # **TODO's**
 
-More adaptive and easier-to-maintain code for search-results.
+None planned. Autopager bug and new ads were fixed.
 
 # **Legality**
 

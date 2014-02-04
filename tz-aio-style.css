@@ -3,7 +3,7 @@
 }
 
 .unverified-image, .tz_aio_b.tz_aio_v2 .tz_aio_info_bar a.tz_aio_mlink.tz_aio_unverified_dl::before, .tz_aio_b.tz_aio_v2 .results .tz_aio_unverified_dl .tz_aio_magnet a,
-.tz_aio_b.tz_aio_v2 .results.tz_aio_trackerlist .tz_aio_magnet a {
+.tz_aio_b.tz_aio_v2 .tz_aio_trackerlist .results .tz_aio_magnet a {
   background-image: url('data:image/png;base64,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');
 }
 
@@ -501,6 +501,10 @@
   text-align: left;
   margin-right: 10px;
 }
+.tz_aio_b.tz_aio_v2 .results .tz_aio_episode_nav_links.no_res_eps {
+  float: none;
+  display: block;
+}
 .tz_aio_b.tz_aio_v2 .results > dl {
   position: relative !important;
   background-color: white;
@@ -520,13 +524,6 @@
 .tz_aio_b.tz_aio_v2 .results > dl:hover {
   position: relative;
   z-index: 9;
-}
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized > dl:hover {
-  border-bottom-color: white;
-}
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized > dl.meta-info.colorizeme:hover {
-  position: static;
-  border-bottom-color: #f5dfd6;
 }
 .tz_aio_b.tz_aio_v2 .results .tz_aio_magnet {
   width: 24px;
@@ -606,48 +603,56 @@
 .tz_aio_b.tz_aio_v2 .results .tz_aio_exclude_filter_count:hover {
   cursor: pointer;
 }
+.tz_aio_b.tz_aio_v2 .approximate_rss_link {
+  color: rgba(0, 0, 0, 0);
+}
 .tz_aio_b.tz_aio_v2 .approximate_rss_link img {
   opacity: 0.5;
 }
 .tz_aio_b.tz_aio_v2 .approximate_rss_link:hover img {
   opacity: 1;
 }
-.tz_aio_b.tz_aio_v2 > div > .results.tz_aio_colorized > h2 {
-  border-bottom: 0 none;
+
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results > dl:hover {
+  border-bottom-color: white;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.inactive * {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results > dl.meta-info.colorizeme:hover {
+  position: static;
+  border-bottom-color: #f5dfd6;
+}
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.inactive * {
   opacity: 0.6;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.inactive:hover * {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.inactive:hover * {
   opacity: 0.75;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.pink {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.pink {
   background-color: #ffbfe2;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.tv {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.tv {
   background-color: #f5c0bf;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.movie {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.movie {
   background-color: #fcd1c0;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.game {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.game {
   background-color: #f2c3a1;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.book {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.book {
   background-color: #ccdbeb;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.music {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.music {
   background-color: #d3e8c2;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.app {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.app {
   background-color: #ededf0;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.picture {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.picture {
   background-color: #e0c4da;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.misc {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.misc {
   background-color: #ddbfdd;
 }
-.tz_aio_b.tz_aio_v2 .results.tz_aio_colorized dl.anime {
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.anime {
   background-color: #f4de7a;
 }

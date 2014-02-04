@@ -1,5 +1,16 @@
 # Changelog
 
+**2.4.0** (2014-02-04)
+* Autopager compatible (thx [roshambo](https://userscripts.org/users/143015) for the fix).
+* Removed the use of `unsafeWindow`.
+* New methods for highlighting which will decrease the chance of breaking with other scripts.
+* Direct links fixed.
+* New Ads removed.
+* Smaller code footprint.
+* Episode links now work on "No Torrents Found" pages.
+* Updated jQuery to `v2.1.0` (fetched the file from **code.jquery.com**).
+* Still supports the old auto-updater but that will be removed on the next release due to low usage (finally).
+
 **2.3.18** (2013-12-14)
 * Updated another direct link domain.
 
