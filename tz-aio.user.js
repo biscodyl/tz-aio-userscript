@@ -200,50 +200,49 @@
 		};
 	}
 	function getSearchGenres () {
-		return([
-			// remember to catch the obvious first (re), then re-check further down
+		return([ // remember to catch the obvious first (re), then re-check further down
 			{
-				name     : "pink"
-				,pattern : new RegExp(unescape("%28%3F%3A%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70"
+				name	: "pink"
+				,pattern: new RegExp(unescape("%28%3F%3A%70%72%6F%6E%7C%70%6F%72%6E%7C%70%30%72%6E%7C%70"
 					+ "%72%30%6E%7C%78%78%78%7C%61%64%75%6C%74%7C%5C%62%73%65%78%5C%62%7C%5C%62%31%38%5C%2B"
 					+ "%3F%5C%62%29"), "i")
-			}, {
-				name     : "tv"
-				,pattern : new RegExp("(?:(?:\\W|_)(?:sd|ez|et)?tv(?:\\W|_)|\\blol\\b|(?:\\W|_)s[0-9]{2}"
+			},{
+				name	: "tv"
+				,pattern: new RegExp("(?:(?:\\W|_)(?:sd|ez|et)?tv(?:\\W|_)|\\blol\\b|(?:\\W|_)s[0-9]{2}"
 					+ "e[0-9]{2}(?:\\W|_)|tvteam|discovery|hdtv|television|series|\\bshows?\\b|episodes?|"
 					+ "\\bseasons?\\b)","i")
-			}, {
-				name     : "movie"
-				,pattern : new RegExp("(?:movie|film|maxspeed|axxo|feature|video|dvdscr|screener|(?:\\W|_)"
+			},{
+				name	: "movie"
+				,pattern: new RegExp("(?:movie|film|maxspeed|axxo|feature|video|dvdscr|screener|(?:\\W|_)"
 					+ "cam(rip)?\\b|\\br[3-6]\\b|\\bts\\b|telesync|\\bvod(rip)?)","i")
-			}, {
-				name     : "book"
-				,pattern : new RegExp("(?:\\be?book|epub|pdf|document|m4b|audiobook|audible|\\bcbr\\b|comics)","i")
-			}, {
-				name     : "game"
-				,pattern : new RegExp("(?:games?\\b|xbox|ps[x234]|wii|\\broms?(et)?\\b|playstation|nintendo)","i")
-			}, {
-				name     : "music"
-				,pattern : new RegExp("(?:music|audio|\\bpop\\b|\\brock\\b|flac|lossless|album\\b|consert|"
+			},{
+				name	: "book"
+				,pattern: new RegExp("(?:\\be?book|epub|pdf|document|m4b|audiobook|audible|\\bcbr\\b|comics)","i")
+			},{
+				name	: "game"
+				,pattern: new RegExp("(?:games?\\b|xbox|ps[x234]|wii|\\broms?(et)?\\b|playstation|nintendo)","i")
+			},{
+				name	: "music"
+				,pattern: new RegExp("(?:music|audio|\\bpop\\b|\\brock\\b|flac|lossless|album\\b|consert|"
 					+ "bootleg|mp3|\\bogg\\b|wav|m4a|podcast|\\bost\\b)","i")
-			}, {
-				name     : "app"
-				,pattern : new RegExp("(?:software|app[sz]?(?:lication)?s?\\b|\\bos[a-z]?\\b|\\bos\\b|\\bunix\\b"
+			},{
+				name	: "app"
+				,pattern: new RegExp("(?:software|app[sz]?(?:lication)?s?\\b|\\bos[a-z]?\\b|\\bos\\b|\\bunix\\b"
 					+ "|\\blinux\\b|\\bsolaris\\b|\\bwin(dows|([7-9]|xp))?\\b|\\bmac\\b|\\bx64\\b|\\bx86\\b"
 					+ "|\\bandroid\\b|\\bpsp\\b|\\bios\\b|\\bpc\\b)","i")
-			}, {
-				name     : "picture"
-				,pattern : new RegExp("(?:picture|images|gallery)","i")
-			}, {
-				name     : "anime"
-				,pattern : new RegExp("anime\\b","i")
-			}, {
-				name     : "movie"
-				,pattern : new RegExp("(?:1080p|720p|bluray|blueray|480p|wmv|avi|matroska|mkv"
+			},{
+				name	: "picture"
+				,pattern: new RegExp("(?:picture|images|gallery)","i")
+			},{
+				name	: "anime"
+				,pattern: new RegExp("anime\\b","i")
+			},{
+				name	: "movie"
+				,pattern: new RegExp("(?:1080p|720p|bluray|blueray|480p|wmv|avi|matroska|mkv"
 					+ "|highres|264|xvid|divx|bdrip|brrip|hdrip)","i")
-			}, {
-				name     : "misc"
-				,pattern : new RegExp("(?:other|\\bmisc|un(?:sorted|known|defined)|siterip)","i")
+			},{
+				name	: "misc"
+				,pattern: new RegExp("(?:other|\\bmisc|un(?:sorted|known|defined)|siterip)","i")
 			}
 		]);
 	}
@@ -2230,10 +2229,10 @@
 							} else if ( tz.page.path === "/i" ) {
 								observer = new MutationObserver(ajaxResultsHandler);
 								observer.observe(els.$body[0], {
-									attributes     : true
-									,subtree       : true
-									,childList     : true
-									,characterData : true
+									attributes		: true
+									,subtree		: true
+									,childList		: true
+									,characterData	: true
 								});
 							}
 							lastAction();
