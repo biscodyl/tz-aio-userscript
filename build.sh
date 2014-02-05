@@ -2,9 +2,9 @@
 
 if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -f /tmp/.password_manager ]]; then
 	rsyncWeb () {
-		SSHHOME=$(/tmp/.password_manager "binero-ssh-path")
-		SSHUSER=$(/tmp/.password_manager "binero-ssh-user")
-		SSHURL=$(/tmp/.password_manager "binero-ssh-url")
+		local SSHHOME=$(/tmp/.password_manager "binero-ssh-path")
+		local SSHUSER=$(/tmp/.password_manager "binero-ssh-user")
+		local SSHURL=$(/tmp/.password_manager "binero-ssh-url")
 		rsync --verbose --progress --stats --times --recursive --copy-links \
 			--exclude ".*" --exclude "build.sh" --exclude "*sublime*" \
 			--exclude "/jshint" --exclude "/jslint" \
@@ -12,7 +12,7 @@ if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -f /tmp/.password_manager ]]; then
 		"$SSHUSER""@""$SSHURL"":""$SSHHOME""/elundmark.se/public_html/_files/js/tz-aio/"
 	}
 	sassCompile () {
-		WORKDIR="$PWD"
+		local WORKDIR="$PWD"
 		echo "\$ compass compile ""$WORKDIR/source"
 		cd "$WORKDIR/source" && compass compile "$PWD"
 		cd "$WORKDIR"
@@ -42,14 +42,14 @@ if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -f /tmp/.password_manager ]]; then
 	}
 	reminder=$'\n'"Did you remember to update all version info?"$'\n'
 	if [[ "$1" ]] && [[ ! "$1" =~ ^all$ ]] ; then
-		for a in $* ; do
-			if [[ "$a" = "sass" ]] ; then
+		for str_arg in $* ; do
+			if [[ "$str_arg" = "sass" ]] ; then
 				sassCompile
 			fi
-			if [[ "$a" = "git" ]] ; then
+			if [[ "$str_arg" = "git" ]] ; then
 				gitCommit
 			fi
-			if [[ "$a" = "sftp" ]] ; then
+			if [[ "$str_arg" = "sftp" ]] ; then
 				rsyncWeb
 			fi
 		done
