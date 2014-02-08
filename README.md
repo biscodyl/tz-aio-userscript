@@ -25,7 +25,7 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
     * Old/dead-ish torrents are dimmed out to indicate a "dead-ish" torrent.
     * If you use the exclude-filter, the number of excluded torrents are noted at the bottom of the list.
 * **Fix comment links**  _Customizable_ - Changes all valid un-anchored links inside comments to links.
-* **Smart keyboard shortcuts**  `'C'` to copy all the trackers or toggle the tracker box, `'D'` to trigger the magnet-link, `'SHIFT + D'` to download the fist torrent-file listed, `'← →'` to navigate search results pages (Left arrow Right arrow), `'SHIFT + →'` to go to the next episode/season, `'SHIFT + ←'` to go to the previous episode/season, `'ESC'` for general exit/close.
+* **Smart keyboard shortcuts**  `'C'` to copy all the trackers or toggle the tracker box, `'D'` to trigger the magnet-link, `'SHIFT + D'` to download a randomly selected direct torrent file listed, `'← →'` to navigate search results pages (Left arrow Right arrow), `'SHIFT + →'` to go to the next episode/season, `'SHIFT + ←'` to go to the previous episode/season, `'ESC'` for general exit/close.
 
 _All these settings are accessed by clicking 'TzAio' at the top of each page, and can be flushed and reset if you want to start over, or take advantage of (any) new default trackers that might have been added._
 
@@ -75,7 +75,7 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 # **TODO's**
 
-None planned. Autopager bug and new ads were fixed.
+Add a [colorpicker](http://bgrins.github.io/spectrum/) for the catergories.
 
 # **Legality**
 
