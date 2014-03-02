@@ -75,7 +75,8 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 # **TODO's**
 
-Add a [colorpicker](http://bgrins.github.io/spectrum/) for the catergories.
+* Add a [colorpicker](http://bgrins.github.io/spectrum/) for the catergories.
+* Add external search links under searchbox on results-pages.
 
 # **Legality**
 
