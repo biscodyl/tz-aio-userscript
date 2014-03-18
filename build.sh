@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -f /tmp/.password_manager ]]; then
+if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -f /dev/shm/.password_manager ]]; then
 	rsyncWeb () {
-		local SSHHOME=$(/tmp/.password_manager "binero-ssh-path")
-		local SSHUSER=$(/tmp/.password_manager "binero-ssh-user")
-		local SSHURL=$(/tmp/.password_manager "binero-ssh-url")
+		local SSHHOME=$(/dev/shm/.password_manager "binero-ssh-path")
+		local SSHUSER=$(/dev/shm/.password_manager "binero-ssh-user")
+		local SSHURL=$(/dev/shm/.password_manager "binero-ssh-url")
 		rsync --verbose --progress --stats --times --recursive --copy-links \
 			--exclude ".*" --exclude "build.sh" --exclude "*sublime*" \
 			--exclude "/jshint" --exclude "/jslint" \

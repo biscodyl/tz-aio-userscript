@@ -1,5 +1,8 @@
 # Changelog
 
+**2.4.1** (2014-03-18)
+* Fixed inline ads having `!important` that overrides this scripts own `!important` CSS rules.
+
 **2.4.0** (2014-02-04)
 * Autopager compatible (thx [roshambo](https://userscripts.org/users/143015) for the fix).
 * Removed the use of `unsafeWindow`.
