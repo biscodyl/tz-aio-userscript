@@ -1,5 +1,8 @@
 # Changelog
 
+**2.4.2** (2014-03-19)
+* Bug fix for previous ad fix in `2.4.1`.
+
 **2.4.1** (2014-03-18)
 * Fixed inline ads having `!important` that overrides this scripts own `!important` CSS rules.
 
