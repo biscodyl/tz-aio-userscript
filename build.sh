@@ -1,21 +1,22 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -f /dev/shm/.password_manager ]]; then
+PASSM="/dev/shm/.password_manager"
+if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -x "$PASSM" ]]; then
 	rsyncWeb () {
-		local SSHHOME=$(/dev/shm/.password_manager "binero-ssh-path")
-		local SSHUSER=$(/dev/shm/.password_manager "binero-ssh-user")
-		local SSHURL=$(/dev/shm/.password_manager "binero-ssh-url")
-		rsync --verbose --progress --stats --times --recursive --copy-links \
-			--exclude ".*" --exclude "build.sh" --exclude "*sublime*" \
-			--exclude "/jshint" --exclude "/jslint" \
-			-e ssh "$PWD/" \
+		local SSHHOME=$($PASSM "binero-ssh-path")
+		local SSHUSER=$($PASSM "binero-ssh-user")
+		local SSHURL=$($PASSM "binero-ssh-url")
+		rsync --verbose --progress --stats --times --recursive --perms --delete --copy-links \
+			--exclude ".*" --exclude "build.sh" --exclude "*sublime*" -e ssh "$PWD/" \
 		"$SSHUSER""@""$SSHURL"":""$SSHHOME""/elundmark.se/public_html/_files/js/tz-aio/"
 	}
 	sassCompile () {
 		local WORKDIR="$PWD"
 		echo "\$ compass compile ""$WORKDIR/source"
-		cd "$WORKDIR/source" && compass compile "$PWD"
+		cd "$WORKDIR/source" && compass compile --force "$PWD"
 		cd "$WORKDIR"
+		cat "$PWD/source/css/spectrum.css" "$PWD/tz-aio-style.css" > "$PWD/tz-aio-style.css.bak"
+		rm "$PWD/tz-aio-style.css"; mv -f "$PWD/tz-aio-style.css.bak" "$PWD/tz-aio-style.css"
 	}
 	gitCommit () {
 		echo -n "Version release number?: "
@@ -43,20 +44,20 @@ if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -f /dev/shm/.password_manager ]]; then
 	reminder=$'\n'"Did you remember to update all version info?"$'\n'
 	if [[ "$1" ]] && [[ ! "$1" =~ ^all$ ]] ; then
 		for str_arg in $* ; do
-			if [[ "$str_arg" = "sass" ]] ; then
+			if [[ "$str_arg" = "sass" ]] || [[ "$str_arg" = "css" ]] ; then
 				sassCompile
 			fi
 			if [[ "$str_arg" = "git" ]] ; then
 				gitCommit
 			fi
-			if [[ "$str_arg" = "sftp" ]] ; then
+			if [[ "$str_arg" = "sftp" ]] || [[ "$str_arg" = "upload" ]] ; then
 				rsyncWeb
 			fi
 		done
 		echo "$reminder"
 		sleep 2
 		exit 0
-	elif [[ "$1" ]] && [[ "$1" =~ ^all$ ]] ; then
+	elif [[ "$1" ]] && [[ "$1" = "all" ]] || [[ "$1" = "publish" ]] ; then
 		sassCompile
 		gitCommit
 		rsyncWeb

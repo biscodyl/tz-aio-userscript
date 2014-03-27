@@ -59,6 +59,12 @@ $RSSIMG         : "/img/rss.png";
 .comment-image {
 	background-image : inline-image("comment.png");
 }
+.clipboard-image {
+	background-image : inline-image("clipboard.png");
+}
+.connections-image {
+	background-image : inline-image("connections.png");
+}
 
 .tzAioborderBoxForm {
 	@include box-sizing(border-box);
@@ -134,7 +140,10 @@ $blinkto:   0.0;
 		margin: 20px 0;
 		min-height: 24px;
 		line-height: 24px;
+		padding-left: 32px;
+		overflow: visible;
 
+		.tz_aio_connections_image,
 		.tz_aio_folder_image,
 		.tz_aio_peers_image,
 		.tz_aio_comment_image {
@@ -142,7 +151,12 @@ $blinkto:   0.0;
 			background-position: left center;
 			background-repeat: no-repeat;
 			display: inline-block;
-			padding-left: 24px;
+			padding-left: 32px;
+			@include background-size(24px 24px);
+		}
+
+		.tz_aio_connections_image {
+			@extend .connections-image;
 		}
 
 		.tz_aio_folder_image {
@@ -157,18 +171,18 @@ $blinkto:   0.0;
 			@extend .comment-image;
 		}
 
-		.tz_aio_mlink {
+		.tz_aio_mlink, .tz_aio_copylink {
 			border-bottom: 1px dotted $GREEN;
 			overflow: visible;
 			position: relative;
 		}
-		.tz_aio_mlink::before {
+		.tz_aio_mlink::before, .tz_aio_copylink::before {
 			content: " ";
 			position: absolute;
-			top: 1px;
-			left: -27px;
-			width: 18px;
-			height: 18px;
+			top: -1px;
+			left: -32px;
+			width: 24px;
+			height: 24px;
 			background-color: transparent;
 			background-image: url($TRANSPARENTGIF);
 			background-repeat: no-repeat;
@@ -186,6 +200,9 @@ $blinkto:   0.0;
 		a.tz_aio_mlink.tz_aio_bogus_dl::before {
 			@extend .fake-image;
 		}
+		a.tz_aio_copylink::before {
+			@extend .clipboard-image;
+		}
 
 		.tz_aio_seed_green {
 			color: $GREEN;
@@ -196,11 +213,13 @@ $blinkto:   0.0;
 		}
 
 		.tz_aio_mlink:active::before,
-		.tz_aio_mlink.active::before {
-			top: 3px;
+		.tz_aio_mlink.active::before,
+		.tz_aio_copylink:active::before,
+		.tz_aio_copylink.active::before {
+			top: 0px;
 		}
 		.tz_aio_copylink {
-			border-bottom: 1px dotted $GREEN;
+			margin-left: 32px;
 			cursor: pointer;
 		}
 		a:active,
@@ -336,47 +355,56 @@ $blinkto:   0.0;
 	.download h2 {
 		position: relative;
 	}
-	.tz_aio_searchbar {
-		display: none;
-	}
-	&.search_ready .tz_aio_searchbar {
+	.tz_aio_searchtabs {
 		display: block;
 		float: none;
-		min-height: 23px;
-		padding: 0 0 10px 10px;
+		min-height: 20px;
 		background: $WHITE;
-		margin: 0;
 		text-align: center;
-		border-bottom: 1px solid $TZPINK;
 		position: relative;
+		padding: 0 6px 0 0;
+		margin: 0 0 -10px;
+		border: 0 none;
 	}
-	&.search_ready .tz_aio_searchbar .search_link,
-	&.search_ready .tz_aio_searchbar {
+	.tz_aio_searchtabs:empty {
+		padding: 0;
+		margin: 0;
+		line-height: 0;
+		height: 0;
+		min-height: 0;
+		max-height: 0;
+	}
+	.tz_aio_searchtabs .search_link,
+	.tz_aio_searchtabs {
 		font-size: 15px;
-		line-height: 22px;
-		color: $BROWN;
+		line-height: 20px;
+		color: $WHITE;
 		text-align: center;
 	}
-	&.search_ready .tz_aio_searchbar .search_link {
+	.tz_aio_searchtabs .search_link {
 		display: inline-block;
-		margin-right: 8px;
-		padding: 0 10px 3px;
-		background: $TZPINK;
+		margin-right: 6px;
+		padding: 0 8px 3px;
+		background: $TZORANGE;
+		background-image: $TZORANGE;
+		border: 1px solid $TZORANGE;
+		@include background-image(linear-gradient(top, $TZORANGE 0%, $TZORANGE 25%, #FFC9B3 100%));
 		@include border-corner-radius(bottom, right, 6px);
 		@include border-corner-radius(bottom, left, 6px);
 	}
-	&.search_ready .tz_aio_searchbar .search_link:hover {
+	.tz_aio_searchtabs .search_link:hover {
 		color: $BLACK;
 	}
-	&.search_ready .tz_aio_searchbar .search_link:active {
+	.tz_aio_searchtabs .search_link:active {
 		color: $WHITE;
 	}
-	&.search_ready .tz_aio_searchbar a:last-of-type {
+	.tz_aio_searchtabs a:last-of-type {
 		margin-right: 0;
 	}
-	&.search_ready .tz_aio_searchbar a img {
+	.tz_aio_searchtabs  a img {
 		position: relative;
-		top: 2px;
+		top: 4px;
+		left: 3px;
 	}
 
 	/* Settings */
@@ -426,11 +454,6 @@ $blinkto:   0.0;
 		margin: 10px 0;
 	}
 
-	.tz_aio_settings_form fieldset > p:first-of-type {
-		margin-top: 10px;
-		margin-bottom: 10px;
-	}
-
 	.generic.tz_aio_info_p.expand {
 		background-color: $WHITE;
 	}
@@ -446,18 +469,27 @@ $blinkto:   0.0;
 		@extend .tzAioborderBoxForm;
 		background-position: center right;
 		background-repeat: no-repeat;
-		@include background-size(auto 64px);
+		@include background-size(auto 100%);
 		margin-top: 20px;
 		margin-right: auto;
 		margin-left: auto;
 		padding-left: 10px;
 		padding-right: 85px;
 		text-align: right;
-		font-size: 13px;
+		font-size: 14px;
+		margin-bottom: -20px;
 	}
 
-	form.expand ~ * {
-		display: none !important;
+	form#tz_aio_settings_submit.expand ~ div.sp-container {
+		display: inline-block;
+	}
+
+	form#tz_aio_settings_submit ~ div.sp-container.sp-hidden {
+		display: none;
+	}
+
+	form#tz_aio_settings_submit.expand ~ * {
+		display: none;
 	}
 
 	.tz_aio_current_version_mark {
@@ -469,9 +501,24 @@ $blinkto:   0.0;
 
 	.tz_aio_settings_form {
 
-		.tz_aio_main_radioselect {
-			margin-top: 10px;
+		fieldset > p, fieldset > div {
 			margin-bottom: 20px;
+		}
+
+		fieldset > div.s {
+			margin-bottom: 0;
+		}
+
+		fieldset > div.s > a {
+			font-size: 13px;
+			display: inline-block;
+		}
+		fieldset > div.s > a:last-of-type {
+			margin-right: 15px;
+		}
+
+		fieldset > label:first-of-type {
+			margin-top: 10px;
 		}
 
 		.tz_aio_new_version_msg, .tz_aio_update_message {
@@ -488,11 +535,31 @@ $blinkto:   0.0;
 			}
 		}
 
+		.tz_aio_user_sr_paragraph {
+			overflow: hidden;
+		}
+
+		.tz_aio_user_sr_color_box {
+			float: left;
+			width: 10%;
+		}
+		.tz_aio_user_sr_color_box:last-of-type {
+			width: 9.999%;
+		}
+
+		 .tz_aio_user_sr_color_title {
+		 	font-size: 14px;
+		 	font-style: normal;
+		 	display: block;
+		 	text-indent: 5px;
+		 }
+
 		input[type='text'] {
 			font-family: monospace;
-			margin-bottom: 15px;
+			margin-bottom: 0;
 			background-color: $WHITE;
 		}
+
 		textarea {
 			height: 195px;
 			border: 1px solid $SOFTBLUE;
@@ -500,18 +567,16 @@ $blinkto:   0.0;
 			background-color: $WHITE;
 			@include border-radius(5px);
 		}
-		textarea + p,
-		input + p,
-		p:last-of-type {
-			margin-bottom: 15px;
-		}
+
 		p label {
 			margin-right: 15px;
 			display: inline-block;
 		}
+
 		p label:last-of-type {
 			margin-right: 0;
 		}
+
 		input[type='checkbox'] {
 			margin-right: 10px;
 			display: inline-block;
@@ -520,26 +585,34 @@ $blinkto:   0.0;
 			top: -1px;
 			margin-right: 10px;
 		}
+
 		input[type="checkbox"] + label:hover,
 		input[type='checkbox']:hover {
 			cursor: pointer;
 		}
+
 		input[type="checkbox"] + label {
 			color: $INACTIVEGRAY;
 			border-bottom: 1px solid $FORMGRAY;
 		}
+
 		input[type="checkbox"]:checked + label {
 			color: $BLACK;
-			border-bottom: 1px dashed $WHITE;
+		}
+
+		.tz_aio_importer_forms button, .tz_aio_exporter_forms button,
+		.tz_aio_importer_forms button:hover, .tz_aio_exporter_forms button:hover {
+			cursor: pointer;
+		}
+		.tz_aio_importer_forms, .tz_aio_exporter_forms {
+			display: block;
+		}
+		.tz_aio_importer_forms.hide, .tz_aio_exporter_forms.hide {
+			display: none !important;
 		}
 
 	}
-	#tz_aio_settings_reset {
-		margin-right: 15px;
-		font-size: 13px;
-		display: inline-block;
-	}
-
+	
 	.results .tz_aio_episode_nav_links {
 		float: left;
 		text-align: left;
@@ -601,14 +674,11 @@ $blinkto:   0.0;
 		@include background-size(14px 14px);
 	}
 	.results .tz_aio_unverified_dl .tz_aio_magnet a,
-	.tz_aio_trackerlist .results .tz_aio_magnet a {
+	&.tz_aio_trackerlist .results .tz_aio_magnet a {
 		@extend .unverified-image;
 	}
 	.results .tz_aio_fake_dl .tz_aio_magnet a {
 		@extend .fake-image;
-	}
-	.results .meta-info.colorizeme {
-		background-color: $DMCA;
 	}
 	/* empty ugly white status vote */
 	.tz_aio_unverified_dl .v {
@@ -632,12 +702,18 @@ $blinkto:   0.0;
 }
 
 .tz_aio_b.tz_aio_v2.tz_aio_colorized .results {
+	> h2, > h3 {
+		border-bottom: 0 none;
+	}
 	> dl:hover {
 		border-bottom-color: $WHITE;
+		@include box-shadow(0 -1px 0 #DCDCDC, inset 1px 0 1px $WHITE, inset -1px 0 0 $WHITE);
 	}
-	> dl.meta-info.colorizeme:hover {
+	.meta-info.colorizeme, .meta-info.colorizeme:hover {
+		background-color: $DMCA;
+		border-bottom-color: $DMCA;
+		@include box-shadow(none);
 		position: static;
-		border-bottom-color: $TZPINK;
 	}
 	dl.inactive * {
 		opacity: 0.6;

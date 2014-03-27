@@ -10,7 +10,7 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 # **Features**
 
 * **Default trackerlist**  _Customizable_ - Magically sorted trackers, that apply to all magnet-links.
-* **Search engines list**  _Customizable_ - Select some text in the title and search these sites.
+* **Custom Search Engines**  _Customizable_ - Appears automatically underneith the search-box, and any selected text in the title of individual torrents. For added security the referrer is removed using `data:text/html...` links.
 * **Custom CSS Editor** _Customizable_ - Added by demand, edit away!
 * **Force HTTPS**  _Customizable_ - Off by default, but forces SSL (`https://`) if enabled.
 * **TV Episode Links**  Helps you search for next/prev episode/season, click the links in the filter-bar or use `SHIFT+[arrowkeys]` when available by searching for the common patters _sNNeNN_ or _2013 01 01_.
@@ -21,13 +21,17 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 * **Ajaxed sorting**  _Customizable_ - Applies to all search results, uses `history.pushState`.
 * **Exclude filter**  _Customizable_ - Remove unwanted torrens by keywords or `RegExp`.
 * **Colorful results**  _Customizable_ - Uses a pretty solid `RegExp` pattern to figure out what is what and adds a background color, making it easier to scan every page.
+    * Colors can be changed w/ the built in Color Picker.
     * All torrents in all search-results have their own magnet-link that includes your custom trackers.
     * Old/dead-ish torrents are dimmed out to indicate a "dead-ish" torrent.
     * If you use the exclude-filter, the number of excluded torrents are noted at the bottom of the list.
-* **Fix comment links**  _Customizable_ - Changes all valid un-anchored links inside comments to links.
+* **Comment links**  _Customizable_ - Changes all valid un-anchored links inside comments to links.
+* **Exporter + Importer** - Saves your settings and so you can restore them more easily.
 * **Smart keyboard shortcuts**  `'C'` to copy all the trackers or toggle the tracker box, `'D'` to trigger the magnet-link, `'SHIFT + D'` to download a randomly selected direct torrent file listed, `'← →'` to navigate search results pages (Left arrow Right arrow), `'SHIFT + →'` to go to the next episode/season, `'SHIFT + ←'` to go to the previous episode/season, `'ESC'` for general exit/close.
 
 _All these settings are accessed by clicking 'TzAio' at the top of each page, and can be flushed and reset if you want to start over, or take advantage of (any) new default trackers that might have been added._
+
+**Remember to hit `Save` when you change your settings!**
 
 ## **More features worth mentioning**
 
@@ -64,9 +68,10 @@ Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 # **Included plugins**
 
-* jQuery JavaScript Library v2.1.0 [jquery.com](http://jquery.com/). Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
+* [jQuery](http://jquery.com/) JavaScript Library v2.1.0. Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
+* [Spectrum Colorpicker](https://github.com/bgrins/spectrum) v1.3.3. Copyright (c) 2014 [Brian Grinstead](http://briangrinstead.com). [License](https://github.com/bgrins/spectrum/blob/master/LICENSE).
 * [jQuery replaceText](http://github.com/cowboy/jquery-replacetext/), Copyright (c) 2009 "Cowboy" Ben Alman. Version: 1.1, Last updated: 11/21/2009* [Dual licensed](http://benalman.com/about/license/) under the MIT and GPL licenses. [Project Home](http://benalman.com/projects/jquery-replacetext-plugin/).
-* [Underscore.js](http://underscorejs.org/) 1.5.2, (c) 2009-2014 Jeremy Ashkenas, DocumentCloud Inc. Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
+* [Underscore.js](http://underscorejs.org/) 1.6.0, (c) 2009-2014 Jeremy Ashkenas, DocumentCloud Inc. Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
 
 # **How to use**
 
