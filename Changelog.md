@@ -1,5 +1,8 @@
 # Changelog
 
+**2.5.3** (2014-03-28)
+* Fixed typo in searchtabs rss link.
+
 **2.5.2** (2014-03-28)
 * Fixed ajax beaviour and search-tabs excluding some terms.
 * Small CSS bugs fixed.
