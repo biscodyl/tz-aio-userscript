@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One Proxy Fix
 // @description   Does everything you wish Torrentz.eu could do! (This script does not auto update!)
-// @version       2.5.1
-// @date          2014-03-27
+// @version       2.5.2
+// @date          2014-03-28
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -16,8 +16,8 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
-// @require       http://elundmark.se/_files/js/tz-aio/source/js/spectrum.min.js?v=2-5-1-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-1-0
+// @require       http://elundmark.se/_files/js/tz-aio/source/js/spectrum.min.js?v=2-5-2-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-2-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -759,9 +759,10 @@
 			,"<li>Report issues and feature requests here: <a href='" + tz.env.gitHubIssues + "'>"
 			,tz.env.gitHubIssues + "</a></li>"
 			,"<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, "
-			,"<a href='http://underscorejs.org/'>underscore.js</a> "
-			,"&amp; the <a href='http://github.com/cowboy/jquery-replacetext/'>"
-			,"jQuery replaceText Plugin</a>.</li>"
+			,"<a href='http://underscorejs.org/'>underscore.js</a>, "
+			,"<a href='http://github.com/cowboy/jquery-replacetext/'>"
+			,"jQuery replaceText</a> </li>"
+			,"&amp; <a href='https://github.com/bgrins/spectrum'>Spectrum Colorpicker</a></li>"
 			,"<li>Keyboard Shortcuts<ul>"
 			,"<li><kbd>'C'</kbd> : " + (typeof GM_setClipboard === "function"
 				? "Copy all the trackers" : "Toggle the tracker box") + ".</li>"
@@ -1112,9 +1113,12 @@
 	function bindAjaxLinks ($element) {
 		els.$ajaxedResult = $element;
 		els.$ajaxLinks = $element.find(" > div:eq(0) a, > h3:eq(0) a, > p:last a").on("click", function () {
-			var validLink
+			var $this = $(this)
+				,validLink
 				,relMatch
 				,absLink
+				,currBGColor
+				,loadingInt
 				,$html
 				,newTitle;
 			if ( this.href ) {
@@ -1125,7 +1129,15 @@
 				if ( validLink ) {
 					absLink = relMatch[0];
 					cache.ajaxTimer = new Date().getTime();
-					els.$body.removeClass(tz.env.slug + "_colorized");
+					currBGColor = $this.css("background-color");
+					$this.css("background-color","#ffff00");
+					loadingInt = setInterval(function() {
+						if ( String($this.css("background-color")).toLowerCase().match(/rgb\(255\,\s*255\,\s*0\)|\#ffff00/) ) {
+							$this.css("background-color", currBGColor||"inherit");
+						} else {
+							$this.css("background-color","#ffff00");
+						}
+					}, 333);
 					// changed from $.load() to enable getting the pages title
 					$.ajax({
 						url       : absLink
@@ -1135,6 +1147,7 @@
 							location.href = absLink;
 						});
 					}).done(function (html) {
+						clearInterval(loadingInt);
 						$html = $(html);
 						newTitle = $html.filter("title").text();
 						if ( history.pushState ) {
@@ -1380,14 +1393,18 @@
 	}
 	function genSearchEnginesLinks (str) {
 		var s = "";
-		if ( !tz.usc.searchEngines.length ) return "";
+		if ( !str || !tz.usc.searchEngines.length ) return s;
+		// Remove search terms like size:12334, added < 3d, site:domain.com etc.
+		str = str.replace(cache.cleanSearchQPatt, "$1")
+			.replace(cache.invalidQCharsPatt," ").replace(/\s+/g, " ").trim();
+		if ( !str ) return s;
 		tz.usc.searchEngines.forEach(function (item) {
 			var arr = item.split("|");
 			s = s + "<a class='search_link' rel='noreferrer' href='"
 				// Unescape html first (legacy), then escape
 				// search string must be encoded separatly
-				+ getNoReferrerUrl(__.escape(__.unescape(arr[1]).replace(/%s/g, encodeURIComponent(str))))
-				+ "'>" + __.escape(arr[0].replace(/_/g," ")) + "</a>";
+				+ getNoReferrerUrl(__.escape(__.unescape(arr[1]).replace(/%s/g, encodeURIComponent(str)))) + "'>"
+				+ __.escape(arr[0].replace(/_/g, " ")) + "</a>";
 		});
 		s = s + "<a href='/feed?q=" + __.escape(encodeURIComponent(s)) + "'><img src='"
 			+ cache.RSSIMG + "' width='16' height='16'></a>";
@@ -1683,7 +1700,9 @@
 			}
 			dlElements[i].className = unverifiedClName + coloredClName;
 		}
-		els.$body.addClass(doneResultClName);
+		if ( !els.$body.hasClass(doneResultClName) ) {
+			els.$body.addClass(doneResultClName);
+		}
 		if ( typeof callback === "function" ) {
 			return callback(resultsElement);
 		}
@@ -2253,6 +2272,8 @@
 		,sKeywordPatt		: /»\s+?(.*)$/i
 		,hashPatt			: /[a-zA-Z0-9]{40}/
 		,searchPagePatt		: /^\/(?:search|any|verified|advanced|tracker_)/
+		,cleanSearchQPatt	: /(^|\s)(?:site\:[-\.a-z0-9]+|(?:size|added)(?:\:[0-9dymgkt]+|\s*[<\>]\s*[0-9dymgkt]+)|(?:seed|leech|peer)\s*[<\>]\s*[0-9]+)/g
+		,invalidQCharsPatt	: /(?:^|\s)file\:|_|\*|\||\^|<|\>|\"/g
 		,metaDLpatt			: /(?:explicit\s+results?\s+hidden\s+by\s+family\s+filters?|results?\s+removed\s+in\s+compliance\s+with)/i
 		,validEpisodePatt	: /(.*?)([^sS=]|\b)S([0-9]{1,2})(E([0-9]{1,2}))?([^0-9]|\b)(.*)/i
 		,validLegacyEpPatt	: /(.*?)(?:[^0-9=]|\b)([0-9]{1,2})x([0-9]{1,2})(?:[^0-9]|\b)(.*)/i
@@ -2373,13 +2394,20 @@
 									bindAjaxLinks(results);
 								}
 							} else if ( tz.page.path === "/i" ) {
-								observer = new MutationObserver(ajaxResultsHandler);
-								observer.observe(els.$body[0], {
-									attributes		: true
-									,subtree		: true
-									,childList		: true
-									,characterData	: true
-								});
+								observer = typeof MutationObserver === "function"
+									? new MutationObserver(ajaxResultsHandler)
+									// Older Chrome and Safari
+									: typeof WebKitMutationObserver === "function"
+									? new WebKitMutationObserver(ajaxResultsHandler)
+									: null;
+								if ( observer ) {
+									observer.observe(els.$body[0], {
+										attributes		: true
+										,subtree		: true
+										,childList		: true
+										,characterData	: true
+									});
+								}
 							}
 							return lastAction();
 						});

@@ -1,5 +1,9 @@
 # Changelog
 
+**2.5.2** (2014-03-28)
+* Fixed ajax beaviour and search-tabs excluding some terms.
+* Small CSS bugs fixed.
+
 **2.5.1** (2014-03-27)
 * Bugfix for persistent ads showing regardless of `Hide Ads`.
 
