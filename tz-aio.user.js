@@ -246,7 +246,7 @@
 					+ "%5c%73%29%31%38%5c%2b%3f%28%3f%3a%5c%57%7c%5f%7c%5c%73%29%29"), "i")
 			},{
 				name	: "tv"
-				,pattern: /(?:\W|_|\s)(?:(?:[a-z]{2})?tv(?:\s?packs?)?|rartv|lol|s[0-9]{2}(?:e[0-9]{2})|tvteam|discovery|television|series|shows?|episodes?|seasons?)(?:\W|_|\s|$)/i
+				,pattern: /(?:\W|_|\s)(?:(?:[a-z]{2})?tv(?:\s?packs?)?|rartv|lol|s[0-9]{2}(?:e[0-9]{2})?|tvteam|discovery|television|series|shows?|episodes?|seasons?)(?:\W|_|\s|$)/i
 			},{
 				name	: "movie"
 				,pattern: /(?:\W|_|\s)(?:movies?|film|maxspeed|axxo|hdlite|yify|feature|video|dvdscr(?:eener)?|(?:hd)?cam(?:rip)?|r[3-6]|ts|telesync|vod(rip)?)(?:\W|_|\s|$)/i
@@ -747,7 +747,7 @@
 		var meta, o = tz.usc;
 		meta = "# " + tz.env.name + " " + tz.env.version + "\n"
 			+ "# Exported settings (" + (new Date().toString()) + ")\n\n";
-		return __.escape(meta + JSON.stringify(o));
+		return meta + JSON.stringify(o);
 	}
 	function getHelpHtml () {
 		var htmlArr = [ "<p><b>" + tz.env.name + " UserScript</b></p>"
@@ -846,7 +846,7 @@
 				,"with any http backup protocols." + copyBuiltInTrLink + "</p>"
 				,"<label for='" + tzCl + "_default_searchengines_textarea'>Search engines list</label>"
 				,"<textarea id='" + tzCl + "_default_searchengines_textarea' wrap='off' "
-				,"rows='6' class='i'>" + (__.escape(tz.usc.searchEngines.join("\n")))
+				,"rows='6' class='i'>" + __.escape(tz.usc.searchEngines.join("\n"))
 				,"</textarea><p>Optional. Search engines for the <b>Search Tabs</b> feature "
 				,"(title|url formatting, use <code>%s</code> to indicate keyword, and <code>_</code> "
 				,"to indicate a space). "
@@ -855,7 +855,7 @@
 				,"and appear as tabs underneith.</p>"
 				,"<label for='" + tzCl + "_custom_css_textarea'>Custom CSS</label>"
 				,"<textarea id='" + tzCl + "_custom_css_textarea' wrap='off' rows='6' "
-				,"class='i'>" + (tz.usc.customCss.join("\n")) + "</textarea>"
+				,"class='i'>" + __.escape(tz.usc.customCss.join("\n")) + "</textarea>"
 				,"<p>Optional. Edit this if you want to change the layout further, applies to all "
 				,"pages.</p><label for='" + tzCl + "_exclude_filter_input'>Exclude filter</label>"
 				,"<input type='text' class='i' id='" + tzCl + "_exclude_filter_input' "
@@ -878,7 +878,7 @@
 				,"Exported Settings</label><textarea onfocus='this.select()' onclick='this.select()' "
 				,"class='" + tzCl + "_exporter_forms' id='" + tzCl + "_export_settings_form' "
 				,"readonly='readonly' wrap='on' rows='6'>"
-				,(genExportedSettings()) + "</textarea><p class='" + tzCl + "_exporter_forms'>"
+				,__.escape(genExportedSettings()) + "</textarea><p class='" + tzCl + "_exporter_forms'>"
 				,"Copy and save it somewhere safe. Use the Importer to restore these values "
 				,"later. And remember: <b>do not alter!</b></p><div class='s'>"
 				,"<a href='#' id='" + tzCl + "_settings_reset'><span>Reset</span></a> | "
@@ -1172,8 +1172,9 @@
 									var filterMatch = tz.page.search.replace(/^\?(?:[a-z]+\=)?\+?(.+)/i,"$1")
 										.match(/^([^\&]+)/i);
 									if ( filterMatch && filterMatch.length === 2 && filterMatch[1] ) {
-										els.$theSearchBox.val(decodeURIComponent(filterMatch[1]
-											.replace(/\+/g," ")));
+										els.$theSearchBox
+											.val(decodeURIComponent(filterMatch[1].replace(/\+/g," ")))
+											.trigger("change");
 									}
 								}
 							}
