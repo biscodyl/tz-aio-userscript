@@ -1,5 +1,9 @@
 # Changelog
 
+**2.5.4** (2014-04-10)
+* Added removed DMCA counts to the top bar.
+* Some unescaped html fixed.
+
 **2.5.3** (2014-03-28)
 * Fixed typo in searchtabs rss link.
 

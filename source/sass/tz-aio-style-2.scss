@@ -13,6 +13,7 @@ $SRANIME        : #F4DE7A;
 $SRPINK         : #FFBFE2;
 $DMCA           : #FFE8DF;
 $TZBLUE         : #369;
+$TZRED			: #CC3A00;
 $TZORANGE       : #FFB090;
 $LIGHTTZBLUE    : #90B2D5;
 $DARKTZBLUE     : #0C2C4C;
@@ -702,6 +703,10 @@ $blinkto:   0.0;
 }
 
 .tz_aio_b.tz_aio_v2.tz_aio_colorized .results {
+	.meta-dmca {
+		color: $TZRED;
+		margin-right: 20px;
+	}
 	> h2, > h3 {
 		border-bottom: 0 none;
 	}

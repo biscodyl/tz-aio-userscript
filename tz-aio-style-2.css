@@ -1191,6 +1191,10 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   opacity: 1;
 }
 
+.tz_aio_b.tz_aio_v2.tz_aio_colorized .results .meta-dmca {
+  color: #cc3a00;
+  margin-right: 20px;
+}
 .tz_aio_b.tz_aio_v2.tz_aio_colorized .results > h2, .tz_aio_b.tz_aio_v2.tz_aio_colorized .results > h3 {
   border-bottom: 0 none;
 }

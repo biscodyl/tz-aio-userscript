@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.5.3
-// @date          2014-03-28
+// @version       2.5.4
+// @date          2014-04-10
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -18,8 +18,8 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
-// @require       http://elundmark.se/_files/js/tz-aio/source/js/spectrum.min.js?v=2-5-3-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-3-0
+// @require       http://elundmark.se/_files/js/tz-aio/source/js/spectrum.min.js?v=2-5-4-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-4-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -1044,7 +1044,7 @@
 			submittedOptions.customCss = saveCustomCss;
 			submittedOptions.searchResultColors = tz.usc.searchResultColors;
 			submittedOptions.excludeFilter = excludeFilterVal.replace(/(?:^\s*\,|\,\s*$)/g,"")
-				.replace(/\,{2,}/g,",").replace(/(?:^\s+|\s+$)/g,"");
+				.replace(/\,{2,}/g,",").trim();
 			if ( cache.freshUser ) {
 				confirmNewStorageRules = confirm("Settings are now being stored and used "
 					+ "across all Torrentz's domains.\nSave and continue?");
@@ -1084,7 +1084,7 @@
 		var json;
 		try {
 			// Catch invalid json here
-			json = JSON.parse(txt.replace(/^[ ]*\#.*$/gmi, "").replace(/(^\s+|\s+$)/g, ""));
+			json = JSON.parse(txt.replace(/^[ ]*\#.*$/gmi, "").trim());
 		} catch (error) {
 			json = null;
 			sendLog(error);
@@ -1447,8 +1447,7 @@
 					.replace(/\s*locations?\s*$/," ")
 					.replace(/\s*download\s*$/," ")
 					.replace(/\s*torrent\s*$/," ")
-					.replace(/\s+/g, " ")
-					.replace(/(^\s+|\s+$)/g, "");
+					.replace(/\s+/g, " ").trim();
 				if ( searchStr !== "" ) {
 					els.$theSearchBox.val(searchStr).trigger("change");
 				}
@@ -1629,7 +1628,6 @@
 			,linkPatt			= cache.hashPatt
 			,doColorize			= tz.usc.searchHighlight
 			,magnetTitleAppend	= " with magnetlink (" + trackerLen + " default tracker" + trAppend + ")"
-			,metaDLpatt			= cache.metaDLpatt
 			,keyPatterns		= getSearchGenres()
 			,metaCl				= doColorize ? "meta-info colorizeme" : "meta-info"
 			,currentClName
@@ -1647,7 +1645,7 @@
 			doneResultClName = tzCl + "_colorized";
 		}
 		for ( i = 0; i < dlElsLen; i++ ) {
-			if ( dlElements[i].textContent.match(metaDLpatt) ) {
+			if ( dlElements[i].textContent.match(cache.metaDLpatt) ) {
 				dlElements[i].className = metaCl;
 				continue;
 			}
@@ -1758,20 +1756,19 @@
 		} else {
 			title = text;
 		}
-		title = title.replace(/\s+/g," ");
+		title = title.replace(/\s+/g," ").trim();
 		return title;
 	}
 	function initialFilterOfList (list, callback) {
 		var dls						= list.getElementsByTagName("dl")
 			,deletedByFilterCount	= 0
-			,metaDLpatt				= cache.metaDLpatt
 			,dlsLen					= dls.length
 			,dlText
 			,i;
 		if ( tz.usc.excludeFilter ) {
 			for ( i = 0; i < dlsLen; i++ ) {
 				dlText = getResultTitle(dls[i]);
-				if ( !dlText.match(metaDLpatt) && dlText.match(makeExcludePatt(tz.usc.excludeFilter)) ) {
+				if ( !dlText.match(cache.metaDLpatt) && dlText.match(makeExcludePatt(tz.usc.excludeFilter)) ) {
 					deletedByFilterCount++;
 					dls[i].style.display = "none";
 				}
@@ -1943,6 +1940,19 @@
 	}
 	/* Tracker functions end */
 
+	function insertDMCACounter (num, $el) {
+		var $target;
+		num = num ? +num : 0;
+		if ( num ) {
+			$target = $el.find("> div:eq(0)");
+			if ( $target.length ) {
+				return $("<span/>", {
+					"class": "meta-dmca",
+					"text": "-"+num+" DMCA"
+				}).prependTo($target);
+			}
+		}
+	}
 	function getTvToolbarHtml (query) {
 		// Torrentz uses a smart episode filter when searching with the non-default
 		// pattern ex. S1E1, to S01E01, so this needs to validate as well,
@@ -2066,11 +2076,20 @@
 						if ( tz.usc.excludeFilter ) {
 							excludeCount = cache.deletedByFilterCount || 0;
 							cache.deletedByFilterCount = 0; // reset cache value
-							$result.find(" > dl:last").after("<dl class='" + dmcaClass + "'>"
-								+ "<dt style='text-align: right'><span class='" + tzCl
-								+ "_exclude_filter_count'></span></dt><dd></dd></dl>");
-							$logEl = $result.find("span." + tzCl + "_exclude_filter_count");
-							updateExcludeLog($logEl, excludeCount);
+							$result.find(" > dl:last").each(function (i, node) {
+								var $this = $(node), dmcaText;
+								if ( $this.hasClass("meta-info") ) {
+									dmcaText = node.textContent;
+									if ( dmcaText.toLowerCase().indexOf("dmca") !== -1 ) {
+										insertDMCACounter(dmcaText.match(/[0-9]+/), $result);
+									}
+								}
+								$this.after("<dl class='" + dmcaClass + "'>"
+									+ "<dt style='text-align: right'><span class='" + tzCl
+									+ "_exclude_filter_count'></span></dt><dd></dd></dl>");
+								$logEl = $result.find("span." + tzCl + "_exclude_filter_count");
+								updateExcludeLog($logEl, excludeCount);
+							});
 						}
 						if ( typeof callback === "function" ) {
 							return callback($result);
