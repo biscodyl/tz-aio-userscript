@@ -1,5 +1,9 @@
 # Changelog
 
+**2.5.5** (2014-04-18)
+* Fixed bug in dmca counter.
+* Added another proxy fix for tpb.
+
 **2.5.4** (2014-04-10)
 * Added removed DMCA counts to the top bar.
 * Some unescaped html fixed.
