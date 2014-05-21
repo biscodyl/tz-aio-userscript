@@ -798,7 +798,7 @@
 			,versionStr			= tz.env.version+" ("+tz.env.date+")"
 			,htmlArr			= [ "<p class='generic "+tzCl+"_info_p' style='"
 				,"background-image:url("+ tz.env.icon+");'>"
-				,"<a href='"+tz.env.link+"'>Torrent All-in-One</a> "
+				,"<a href='"+tz.env.link+"'>Torrentz All-in-One</a> "
 				,versionStr+" &mdash; Keyboard shortcuts? Learn about them <a href='"
 				,"/help#"+tzCl+"_help'>here</a>. <br>"
 				,"Like this userscript? Then please take a minute to rate and/or review this on <br>"
