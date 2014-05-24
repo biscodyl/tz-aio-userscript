@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.5.5
-// @date          2014-04-18
+// @version       2.5.6
+// @date          2014-05-24
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
 // @namespace     http://elundmark.se/code/tz-aio/
-// @homepage      https://userscripts.org/scripts/show/125001
-// @updateURL     https://userscripts.org/scripts/source/125001.meta.js
-// @downloadURL   https://userscripts.org/scripts/source/125001.user.js
+// @homepage      https://github.com/elundmark/tz-aio-userscript
+// @updateURL     http://elundmark.se/_files/js/tz-aio/tz-aio.meta.js
+// @downloadURL   http://elundmark.se/_files/js/tz-aio/tz-aio.user.js
 // @supportURL    https://github.com/elundmark/tz-aio-userscript/issues
 // @include       /^https?://(?:www\.)?(?:tz\.ai|torrents\.de|torrentz-proxy\.com|(?:torrentz\.(?:eu|ph|li|com|me|in|hk)))/.*/
 // @exclude       /^https?://[^/]+/feed(?:_[a-zA-Z]+)?\?.*/
@@ -18,8 +18,8 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
-// @require       http://elundmark.se/_files/js/tz-aio/source/js/spectrum.min.js?v=2-5-5-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-5-0
+// @require       http://elundmark.se/_files/js/tz-aio/source/js/spectrum.min.js?v=2-5-6-0
+// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-6-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -61,8 +61,8 @@
 
 */
 
+"use strict";
 (function ($, __, loadStartMS) {
-	"use strict";
 	if ( typeof __ !== "function" || typeof $ !== "function"
 		||(typeof GM_info !== "object" && typeof GM_getMetadata !== "function")  // added for Scriptish
 		|| typeof GM_log !== "function"
@@ -82,7 +82,7 @@
 		,tzCl
 		,tz				= {}
 		,els			= {}
-		// UserScript Engines Detection
+		/* UserScript Engines Detection */
 		// Greasemonkey
 		,isGM			= (typeof TM_log !== "function" && typeof GM_info === "object")
 		// Scriptish
@@ -802,8 +802,11 @@
 				,"<a href='"+tz.env.link+"'>Torrentz All-in-One</a> "
 				,versionStr+" &mdash; Keyboard shortcuts? Learn about them <a href='"
 				,"/help#"+tzCl+"_help'>here</a>. <br>"
-				,"Like this userscript? Then please take a minute to rate and/or review this on <br>"
-				,"<a href='"+tz.env.link+"'>userscipts.org</a>. Get the sourcecode on "
+				,"This userscript can be found on "
+				,"<a href='#'>openuserjs.org</a>, "
+				,"<a href='#'>greasyfork.org</a> and "
+				,"<a href='https://userscripts.org/scripts/show/125001'>userscripts.org</a>"
+				,". <br>Get the sourcecode on "
 				,"<a href='"+tz.env.gitHub+"'>GitHub</a>, report any "
 				,"issues <a href='"+tz.env.gitHubIssues+"'>here</a>.</p>"
 				,"<form id='"+tzCl+"_settings_submit' class='"
@@ -897,8 +900,8 @@
 	}
 	function getSelected () {
 		var t = "";
-		if ( typeof getSelection === "function" ) {
-			t = getSelection();
+		if ( typeof window.getSelection === "function" ) {
+			t = window.getSelection();
 		} else if ( d.getSelection ) {
 			t = d.getSelection();
 		} else if ( d.selection ) {
@@ -1053,7 +1056,7 @@
 			submittedOptions.excludeFilter = excludeFilterVal.replace(/(?:^\s*\,|\,\s*$)/g,"")
 				.replace(/\,{2,}/g,",").trim();
 			if ( cache.freshUser ) {
-				confirmNewStorageRules = confirm("Settings are now being stored and used "
+				confirmNewStorageRules = window.confirm("Settings are now being stored and used "
 					+"across all Torrentz's domains.\nSave and continue?");
 			}
 			if ( !cache.freshUser || confirmNewStorageRules ) {
@@ -1066,7 +1069,7 @@
 						location.href = tz.page.href;
 					} else {
 						disabledInput.prop("disabled", false);
-						alert("You broke something! Try reloading the page..."+cache.bugReportMsg);
+						window.alert("You broke something! Try reloading the page..."+cache.bugReportMsg);
 						sendLog("GM_getValue("+tz.env.storageName+") returned false! "
 							+"Nothing stored, logging that plus 'submittedOptions'");
 						sendLog("Failed! > submittedOptions");
@@ -1081,7 +1084,7 @@
 			invalidItemNames = !seValid ? invalidItemNames+" 'Search engines list'," : invalidItemNames;
 			invalidItemNames = !trValid ? invalidItemNames+" 'Default trackerlist'," : invalidItemNames;
 			invalidItemNames = !exValid ? invalidItemNames+" 'Exclude filter (regexp)'," : invalidItemNames;
-			alert("Invalid input in the "+invalidItemNames+" check your spelling!"
+			window.alert("Invalid input in the "+invalidItemNames+" check your spelling!"
 				+cache.bugReportMsg);
 			disabledInput.prop("disabled", false);
 		}
@@ -1097,7 +1100,7 @@
 			sendLog(error);
 		}
 		if ( !json ) {
-			alert("Invalid json! Reload the page and try again!"+cache.bugReportMsg);
+			window.alert("Invalid json! Reload the page and try again!"+cache.bugReportMsg);
 			return;
 		}
 		// Add any now options to what was imported
@@ -1109,7 +1112,7 @@
 				sendLog("This was imported, please add the following output to any issue report you have.");
 				location.href = tz.page.href;
 			} else {
-				alert("You broke something! Try reloading the page..."+cache.bugReportMsg);
+				window.alert("You broke something! Try reloading the page..."+cache.bugReportMsg);
 				sendLog("GM_getValue("+tz.env.storageName+") returned false! "
 					+"Nothing stored, logging that plus 'json>import'");
 				sendLog("Failed! > json > import");
@@ -1292,7 +1295,7 @@
 						// trigger a random torrent link each time
 						GM_openInTab(torrentLinks[(Math.floor(Math.random()*(torrentLinks.length)))].href, newTabOpt);
 					} else {
-						alert("No .torrent file to download!");
+						window.alert("No .torrent file to download!");
 					}
 				} else if ( key === 68 && noMods ) {
 					// 'd'
@@ -2215,7 +2218,7 @@
 				$("#"+tzCl+"_linkComments").attr("checked", tz.usc.linkComments);
 				$("#"+tzCl+"_searchTabs").attr("checked", tz.usc.searchTabs);
 				els.$resetEl.on("click", function (event) {
-					var refresh_page_reset = confirm("This will erase all your custom settings!"
+					var refresh_page_reset = window.confirm("This will erase all your custom settings!"
 						+"\nReset settings and reload the page?");
 					event.preventDefault();
 					if ( refresh_page_reset ) {
@@ -2428,7 +2431,7 @@
 								if ( tz.usc.ajaxedSorting ) {
 									if ( history.pushState ) {
 										// listen for popstate events
-										onpopstate = handlePopStates;
+										window.onpopstate = handlePopStates;
 									}
 									bindAjaxLinks(results);
 								}
@@ -2459,7 +2462,7 @@
 
 	});
 
-}(jQuery, (this._||_), (new Date().getTime())));
+}(jQuery, _, new Date().getTime()));
 
 /***************************************************************************************************
  * jQuery replaceText
@@ -2490,8 +2493,7 @@
  * 
  */
 
-(function($){
-	"use strict";
+(function ($) {
 	$.fn.replaceText = function( search, replace, text_only ) {
 		return this.each(function(){
 			var node = this.firstChild,

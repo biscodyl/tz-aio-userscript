@@ -1,5 +1,11 @@
 # Changelog
 
+**2.5.6** (2014-05-24)
+* New `meta.js` url, **disable _Require Secure Updates_** to enable future auto-updates.
+* New script hosting link(s).
+* Stricter use of `window` and `document`.
+* Typo fix in settings panel.
+
 **2.5.5** (2014-04-18)
 * Fixed bug in dmca counter.
 * Added another proxy fix for tpb.

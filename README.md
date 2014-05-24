@@ -1,13 +1,25 @@
-# **Torrentz All-in-one Userscript**
+# Torrentz All-in-one Userscript
 
-[Does everything you wish Torrentz could do!](http://userscripts.org/scripts/show/125001)
+## Does everything you wish Torrentz could do!
+
 This userscript enhances Torrentz (on all its domains) to include a bunch of new features. Among them are customizable magnet-links, ajaxed sorting, intelligent stats, and much much more... Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey. _(Will **not** work using Chrome's built in userscript installation.)_
-
-Please [rate and/or leave a review](https://userscripts.org/scripts/reviews/125001) if you like it, and please feel free to ask for more features!
 
 _This project is mainly maintained on [github](https://github.com/elundmark/tz-aio-userscript/), so please report any issues or requests @ [github.com/elundmark/tz-aio-userscript/issues](https://github.com/elundmark/tz-aio-userscript/issues)._
 
-# **Features**
+**Feel free to ask for more features!**
+
+## How to use
+
+1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) under Firefox, or [Scriptish](https://addons.mozilla.org/en-US/firefox/addon/scriptish/) which is also supported, or choose [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo) if you use Google Chrome.
+2. Install the userscript itself from any of the following repositories:
+    * _coming soon_
+    * _coming soon_
+    * [https://userscripts.org/scripts/show/125001](https://userscripts.org/scripts/show/125001)
+3. **Disable _Require Secure Updates_** in your userscript engine to enable updates _(I currently don't have SSL enabled on my webserver)_.
+
+## [Changelog](https://github.com/elundmark/tz-aio-userscript/blob/master/Changelog.md)
+
+## Features
 
 * **Default trackerlist**  _Customizable_ - Magically sorted trackers, that apply to all magnet-links.
 * **Custom Search Engines**  _Customizable_ - Appears automatically underneith the search-box, and any selected text in the title of individual torrents. For added security the referrer is removed using `data:text/html...` links.
@@ -33,7 +45,7 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 
 **Remember to hit `Save` when you change your settings!**
 
-## **More features worth mentioning**
+### More features worth mentioning
 
 * `.wmv` file warning.
 * Passes AdBlocker default blacklist.
@@ -41,7 +53,7 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 * As of **v2.4.0** no longer needs `unsafeWindow`.
 * All the data you save is stored permanently and applies across all domains, without the use of cookies or `localStorage`.
 
-# **Applies to these sites**
+## Applies to these sites
 
 * [http(s)://torrentz.eu/*](https://torrentz.eu/)
 * [http(s)://torrentz.ph/*](https://torrentz.ph/)
@@ -56,33 +68,28 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 
 __Note that not all of these work, some redirect to **torrentz.eu** and some to **torrentz-proxy.com**, but it doesn't hur to have them all apply anyways.__
 
-## Are you behind a proxy?
+## Using a proxy?
 
 If you can't use **torrentz-proxy.com**, read [these instructions](https://userscripts.org/topics/135018) to get an idea how you can make the script work again. If that fails, you can try installing [this special version](https://github.com/elundmark/tz-aio-userscript/raw/master/tz-aio.proxy-fix.user.js), which runs on _every_ page, thus making it work again. But It's not *100%* guarateed, it depends on the proxy provider, and seeing there's like 100.000.000 of them I'm not gonna even try.
 
-# **Help me, to help us**
+## Help me, to help us
 
 See something wrong in the code, or maybe you wanna collaborate in keeping this script even more up to date? If so, I'm super stoked! Throw me an email, or contribute to the repo right away!
 
 Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
-# **Included plugins**
+## Included plugins
 
 * [jQuery](http://jquery.com/) JavaScript Library v2.1.0. Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
 * [Spectrum Colorpicker](https://github.com/bgrins/spectrum) v1.3.3. Copyright (c) 2014 [Brian Grinstead](http://briangrinstead.com). [License](https://github.com/bgrins/spectrum/blob/master/LICENSE).
 * [jQuery replaceText](http://github.com/cowboy/jquery-replacetext/), Copyright (c) 2009 "Cowboy" Ben Alman. Version: 1.1, Last updated: 11/21/2009* [Dual licensed](http://benalman.com/about/license/) under the MIT and GPL licenses. [Project Home](http://benalman.com/projects/jquery-replacetext-plugin/).
 * [Underscore.js](http://underscorejs.org/) 1.6.0, (c) 2009-2014 Jeremy Ashkenas, DocumentCloud Inc. Freely distributable under the [MIT](http://www.opensource.org/licenses/mit-license.php) license.
 
-# **How to use**
-
-1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) under Firefox, or [Scriptish](https://addons.mozilla.org/en-US/firefox/addon/scriptish/) which is also supported, or choose [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo) if you use Google Chrome.
-2. Install the userscript itself from [userscripts.org](http://userscripts.org/scripts/show/125001), click on `Install`.
-
-# **TODO's**
+## TODO's
 
 * Nothing planned.
 
-# **Legality**
+## Legality
 
 Released under [CC0 1.0 Universal (CC0 1.0)](http://creativecommons.org/publicdomain/zero/1.0/).
 The author of this script takes no responsibility for any potetial harm done to any hamsters, servers, browsers or wallets. While browsing affected sites with this script is fully legal, downloading illegal copyrighted material still isn't.
