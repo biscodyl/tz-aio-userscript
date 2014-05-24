@@ -12,8 +12,7 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 
 1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) under Firefox, or [Scriptish](https://addons.mozilla.org/en-US/firefox/addon/scriptish/) which is also supported, or choose [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo) if you use Google Chrome.
 2. Install the userscript itself from any of the following repositories:
-    * _coming soon_
-    * _coming soon_
+    * [https://openuserjs.org/scripts/elundmark/httpelundmark.secodetz-aio/Torrentz_All-in-One](https://openuserjs.org/scripts/elundmark/httpelundmark.secodetz-aio/Torrentz_All-in-One)
     * [https://userscripts.org/scripts/show/125001](https://userscripts.org/scripts/show/125001)
 3. **Disable _Require Secure Updates_** in your userscript engine to enable updates _(I currently don't have SSL enabled on my webserver)_.
 
