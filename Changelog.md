@@ -1,5 +1,8 @@
 # Changelog
 
+**2.5.7** (2014-05-24)
+* Removed link to greasyfork due to limitations in `@require`.
+
 **2.5.6** (2014-05-24)
 * New `meta.js` url, **disable _Require Secure Updates_** to enable future auto-updates.
 * New script hosting link(s).
