@@ -1,5 +1,8 @@
 # Changelog
 
+**2.5.8** (2014-05-27)
+* Added `ch` domain for Switzerland.
+
 **2.5.7** (2014-05-24)
 * Removed link to greasyfork due to limitations in `@require`.
 

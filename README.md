@@ -61,6 +61,7 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 * [http(s)://torrentz.me/*](https://torrentz.me/)
 * [http(s)://torrentz.in/*](https://torrentz.in/)
 * [http(s)://torrentz.hk/*](https://torrentz.hk/)
+* [http(s)://torrentz.ch/*](https://torrentz.ch/)
 * [http(s)://torrents.de/*](https://torrents.de/)
 * [http(s)://tz.ai/*](https://tz.ai/)
 * [http://torrentz-proxy.com/*](http://torrentz-proxy.com/)
