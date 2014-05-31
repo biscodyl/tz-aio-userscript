@@ -2,7 +2,7 @@
 
 ## Does everything you wish Torrentz could do!
 
-This userscript enhances Torrentz (on all its domains) to include a bunch of new features. Among them are customizable magnet-links, ajaxed sorting, intelligent stats, and much much more... Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey. _(Will **not** work using Chrome's built in userscript installation.)_
+This userscript enhances Torrentz (on all its domains) to include a bunch of new features. Among them are customizable magnet-links, ajaxed sorting, intelligent stats, and much much more...
 
 _This project is mainly maintained on [github](https://github.com/elundmark/tz-aio-userscript/), so please report any issues or requests @ [github.com/elundmark/tz-aio-userscript/issues](https://github.com/elundmark/tz-aio-userscript/issues)._
 
@@ -10,11 +10,14 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 
 ## How to use
 
-1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) under Firefox, or [Scriptish](https://addons.mozilla.org/en-US/firefox/addon/scriptish/) which is also supported, or choose [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo) if you use Google Chrome.
+1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) or [Scriptish](https://addons.mozilla.org/en-US/firefox/addon/scriptish/) for Firefox, or [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo) for Google Chrome / Chromium.
 2. Install the userscript itself from any of the following repositories:
-    * [https://openuserjs.org/scripts/elundmark/httpelundmark.secodetz-aio/Torrentz_All-in-One](https://openuserjs.org/scripts/elundmark/httpelundmark.secodetz-aio/Torrentz_All-in-One)
-    * [https://userscripts.org/scripts/show/125001](https://userscripts.org/scripts/show/125001)
-3. **Disable _Require Secure Updates_** in your userscript engine to enable updates _(I currently don't have SSL enabled on my webserver)_.
+
+	* **[openuserjs.org](https://openuserjs.org/search/torrentz/scriptlist)**
+	* **[greasyfork.org](https://greasyfork.org/scripts/search?q=torrentz)**
+3. Disable _Require Secure Updates_ in your userscript engine to enable updates _(I currently don't have SSL enabled on my webserver)_. However, doing this is less secure, so be careful.
+
+_Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey. Do not use Chrome's built-in userscript installer)._
 
 ## [Changelog](https://github.com/elundmark/tz-aio-userscript/blob/master/Changelog.md)
 
@@ -32,10 +35,10 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 * **Ajaxed sorting**  _Customizable_ - Applies to all search results, uses `history.pushState`.
 * **Exclude filter**  _Customizable_ - Remove unwanted torrens by keywords or `RegExp`.
 * **Colorful results**  _Customizable_ - Uses a pretty solid `RegExp` pattern to figure out what is what and adds a background color, making it easier to scan every page.
-    * Colors can be changed w/ the built in Color Picker.
-    * All torrents in all search-results have their own magnet-link that includes your custom trackers.
-    * Old/dead-ish torrents are dimmed out to indicate a "dead-ish" torrent.
-    * If you use the exclude-filter, the number of excluded torrents are noted at the bottom of the list.
+		* Colors can be changed w/ the built in Color Picker.
+		* All torrents in all search-results have their own magnet-link that includes your custom trackers.
+		* Old/dead-ish torrents are dimmed out to indicate a "dead-ish" torrent.
+		* If you use the exclude-filter, the number of excluded torrents are noted at the bottom of the list.
 * **Comment links**  _Customizable_ - Changes all valid un-anchored links inside comments to links.
 * **Exporter + Importer** - Saves your settings and so you can restore them more easily.
 * **Smart keyboard shortcuts**  `'C'` to copy all the trackers or toggle the tracker box, `'D'` to trigger the magnet-link, `'SHIFT + D'` to download a randomly selected direct torrent file listed, `'← →'` to navigate search results pages (Left arrow Right arrow), `'SHIFT + →'` to go to the next episode/season, `'SHIFT + ←'` to go to the previous episode/season, `'ESC'` for general exit/close.
@@ -66,7 +69,7 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 * [http(s)://tz.ai/*](https://tz.ai/)
 * [http://torrentz-proxy.com/*](http://torrentz-proxy.com/)
 
-__Note that not all of these work, some redirect to **torrentz.eu** and some to **torrentz-proxy.com**, but it doesn't hur to have them all apply anyways.__
+__Note that not all of these work, some redirect to _torrentz.eu_ and some to _torrentz-proxy.com_, but it doesn't hur to have them all apply anyways.__
 
 ## Using a proxy?
 
@@ -79,6 +82,16 @@ See something wrong in the code, or maybe you wanna collaborate in keeping this 
 Email and info: [https://github.com/elundmark](https://github.com/elundmark)
 
 ## Included plugins
+
+The following resources are fetched externally by this userscript.
+
+* `@require		https://cdnjs.cloudflare.com/ajax/libs/jquery/2.x.x/jquery.min.js`
+* `@require		https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.x.x/underscore-min.js`
+* `@require		https://cdn.jsdelivr.net/jquery.spectrum/1.x.x/spectrum.js`
+* `@resource	https://cdn.jsdelivr.net/jquery.spectrum/1.x.x/spectrum.css`
+* `@resource	http://elundmark.se/_files/js/tz-aio/tz-aio-style-x.css`
+
+Licences:
 
 * [jQuery](http://jquery.com/) JavaScript Library v2.1.0. Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
 * [Spectrum Colorpicker](https://github.com/bgrins/spectrum) v1.3.3. Copyright (c) 2014 [Brian Grinstead](http://briangrinstead.com). [License](https://github.com/bgrins/spectrum/blob/master/LICENSE).

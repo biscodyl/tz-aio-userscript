@@ -92,7 +92,7 @@ $blinkto:   0.0;
 
 .tz_aio_b.tz_aio_v2 {
 
-	/* General and resets */
+	// General and resets
 
 	a {
 		outline: none;
@@ -299,7 +299,7 @@ $blinkto:   0.0;
 			top: 2px;
 		}
 	}
-	/* reset default background */
+	// Reset default background
 	.download dl dt a {
 		&:hover {
 			background-color: transparent;
@@ -346,7 +346,8 @@ $blinkto:   0.0;
 			padding: 0;
 			color: $DARKGRAY;
 			background-color: $WHITE;
-			font-size: 13px; /*'Ubuntu Mono', Menlo, Monaco, Consolas, Inconsolata, FreeMono, monospace;*/
+			font-size: 13px;
+			// 'Ubuntu Mono', Menlo, Monaco, Consolas, Inconsolata, FreeMono, monospace
 			line-height: 1.2;
 			width: 100%;
 			height: 100%;
@@ -408,7 +409,7 @@ $blinkto:   0.0;
 		left: 3px;
 	}
 
-	/* Settings */
+	// Settings
 	li.tz_aio_settings {
 		position: relative;
 	}
@@ -681,7 +682,7 @@ $blinkto:   0.0;
 	.results .tz_aio_fake_dl .tz_aio_magnet a {
 		@extend .fake-image;
 	}
-	/* empty ugly white status vote */
+	// Empty ugly white status vote
 	.tz_aio_unverified_dl .v {
 		visibility: hidden;
 	}
@@ -755,5 +756,23 @@ $blinkto:   0.0;
 	}
 	dl.anime {
 		background-color: $SRANIME;
+	}
+	// Overrides for Spectrum
+	.sp-container, .sp-replacer {
+		@include border-radius(3px);
+	}
+	.sp-container {
+		background-color: rgba(236, 236, 236, 0.95);
+		border-color: #567;
+	}
+	.sp-replacer:hover, .sp-replacer.sp-active {
+		border-color: #567;
+	}
+	.sp-dd {
+		padding: 10px 0 2px;
+	}
+	.sp-preview {
+		width: 38px;
+		height: 32px;
 	}
 }

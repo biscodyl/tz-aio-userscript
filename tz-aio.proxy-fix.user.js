@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One Proxy Fix
 // @description   Does everything you wish Torrentz.eu could do! (This script does not auto update!)
-// @version       2.5.8
-// @date          2014-05-27
+// @version       2.5.9
+// @date          2014-05-31
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -16,8 +16,9 @@
 // @exclude       /^https?://.+?/comment_.*/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
-// @require       http://elundmark.se/_files/js/tz-aio/source/js/spectrum.min.js?v=2-5-8-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-8-0
+// @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
+// @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-9-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -34,9 +35,9 @@
 /*
 	# Compatibility
 	
-	Tested in Firefox 19+ (and nightly dev) (GreaseMonkey 1.8+, Scriptish 0.1.8+)
-	and Chrome 25+ (Tampermonkey v2.12.3124.16+) on Ubuntu Linux
-	using Sublime Text, Sass, Compass, Git, and bash+node.js for debugging.
+	Tested in Firefox 19+ (GreaseMonkey 1.8+, Scriptish 0.1.8+)
+	and Chrome 25+ (Tampermonkey v2.12.3124.16+) on Lubuntu 14.04 LTS
+	using Sublime Text 3, Sass, Compass, Git, Bash and NodeJS for debugging.
 	 
 	# Legality
 	
@@ -62,7 +63,7 @@
 "use strict";
 (function ($, __, loadStartMS) {
 	if ( !$(".top a:contains('iTorrentz')").length ) return;
-	if ( typeof __ !== "function" || typeof $ !== "function"
+	if ( typeof __ !== "function" || typeof $ !== "function" || typeof sessionStorage !== "object"
 		||(typeof GM_info !== "object" && typeof GM_getMetadata !== "function")  // added for Scriptish
 		|| typeof GM_log !== "function"
 		|| typeof GM_deleteValue !== "function"
@@ -541,11 +542,16 @@
 		//  and the event is anonymous inside a jQuery function,
 		//  so the "easiest" and most maintainable way seems to be a
 		//  quiet refresh if the cookie is missing.
-		if ( typeof d.cookie === "string"
+		if ( navigator.cookieEnabled && typeof d.cookie === "string"
 			&& d.cookie.indexOf("wm_popundertz") === -1 ) {
-			d.cookie = "wm_popundertz="+ckVal;
-			d.cookie = "tz="+ckVal;
-			location.reload();
+			// 2014-05-31 Added navigator.cookieEnabled test and sessionStorage
+			// test to stop any infinite reloads for non-cookie users
+			if ( sessionStorage.getItem(tz.env.slug+"_SS_cookietest") !== "true" ) {
+				d.cookie = "wm_popundertz="+ckVal;
+				d.cookie = "tz="+ckVal;
+				sessionStorage.setItem(tz.env.slug+"_SS_cookietest", "true");
+				location.reload();
+			}
 		}
 	}
 	function handlePopStates (data) {
@@ -802,10 +808,11 @@
 				,versionStr+" &mdash; Keyboard shortcuts? Learn about them <a href='"
 				,"/help#"+tzCl+"_help'>here</a>. <br>"
 				,"This userscript can be installed from "
-				,"<a href='https://openuserjs.org/scripts/elundmark/httpelundmark.secodetz-aio/Torrentz_All-in-One'>openuserjs.org</a> and "
-				,"<a href='https://userscripts.org/scripts/show/125001'>userscripts.org</a>"
-				,". <br>Get the sourcecode on "
-				,"<a href='"+tz.env.gitHub+"'>GitHub</a>, report any "
+				,"<a href='https://openuserjs.org/search/torrentz/scriptlist' title='"
+				,"Search for Torrentz All-in-One'>openuserjs.org</a> and "
+				,"<a href='https://greasyfork.org/scripts/search?q=torrentz' title='"
+				,"Search for Torrentz All-in-One'>greasyfork.org</a>. "
+				,"<br>Get the sourcecode on <a href='"+tz.env.gitHub+"'>GitHub</a>, report any "
 				,"issues <a href='"+tz.env.gitHubIssues+"'>here</a>.</p>"
 				,"<form id='"+tzCl+"_settings_submit' class='"
 				,tzCl+"_settings_form profile' method='get' action='"
@@ -915,7 +922,8 @@
 		// so over-doing it is the way to go.
 		var htmlUrl	= __.escape(url)
 			,href	="data:text/html,&lt;html&gt;&lt;meta http-equiv=\x22refresh\x22 "
-			+"content=\x220; url="+__.escape(encodeURIComponent(url))+"\x22&gt;&lt;body&gt;&lt;a href=\x22"+htmlUrl
+			+"content=\x220; url="+__.escape(encodeURIComponent(url))
+			+"\x22&gt;&lt;body&gt;&lt;a href=\x22"+htmlUrl
 			+"\x22&gt;"+htmlUrl+"&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;";
 		return href;
 	}
@@ -996,8 +1004,8 @@
 					cache.ajaxTimer = (new Date().getTime());
 					return initSearchPage(cachedSearchEl, function (target) {
 						// DEBUG callback
-						return sendLog((target.length)+" ajaxed div."+target[0].className+" - Exec: "
-							+((new Date().getTime())-cache.ajaxTimer)+"ms");
+						return sendLog((target.length)+" ajaxed div."+target[0].className
+							+" - Exec: "+((new Date().getTime())-cache.ajaxTimer)+"ms");
 					});
 				}
 			});
@@ -1060,14 +1068,16 @@
 			if ( !cache.freshUser || confirmNewStorageRules ) {
 				setStorageOptions(submittedOptions, function (thisWasSaved) {
 					// log before anything could break, as a debug toll for anyone to submit
-					sendLog("This was saved, please add the following output to any issue report you have.");
+					sendLog("This was saved, please add the following output to any issue report "
+						+"you have.");
 					sendLog(thisWasSaved);
 					if ( thisWasSaved ) {
 						sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
 						location.href = tz.page.href;
 					} else {
 						disabledInput.prop("disabled", false);
-						window.alert("You broke something! Try reloading the page..."+cache.bugReportMsg);
+						window.alert("You broke something! Try reloading the page..."
+							+cache.bugReportMsg);
 						sendLog("GM_getValue("+tz.env.storageName+") returned false! "
 							+"Nothing stored, logging that plus 'submittedOptions'");
 						sendLog("Failed! > submittedOptions");
@@ -1079,9 +1089,12 @@
 				disabledInput.prop("disabled", false);
 			}
 		} else {
-			invalidItemNames = !seValid ? invalidItemNames+" 'Search engines list'," : invalidItemNames;
-			invalidItemNames = !trValid ? invalidItemNames+" 'Default trackerlist'," : invalidItemNames;
-			invalidItemNames = !exValid ? invalidItemNames+" 'Exclude filter (regexp)'," : invalidItemNames;
+			invalidItemNames = !seValid ? invalidItemNames+" 'Search engines list',"
+				: invalidItemNames;
+			invalidItemNames = !trValid ? invalidItemNames+" 'Default trackerlist',"
+				: invalidItemNames;
+			invalidItemNames = !exValid ? invalidItemNames+" 'Exclude filter (regexp)',"
+				: invalidItemNames;
 			window.alert("Invalid input in the "+invalidItemNames+" check your spelling!"
 				+cache.bugReportMsg);
 			disabledInput.prop("disabled", false);
@@ -1107,7 +1120,8 @@
 			if ( thisWasImported ) {
 				sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
 				sendLog(thisWasImported);
-				sendLog("This was imported, please add the following output to any issue report you have.");
+				sendLog("This was imported, please add the following output to any issue report "
+					+"you have.");
 				location.href = tz.page.href;
 			} else {
 				window.alert("You broke something! Try reloading the page..."+cache.bugReportMsg);
@@ -1121,80 +1135,89 @@
 	}
 	function bindAjaxLinks ($element) {
 		els.$ajaxedResult = $element;
-		els.$ajaxLinks = $element.find(" > div:eq(0) a, > h3:eq(0) a, > p:last a").on("click", function () {
-			var $this = $(this)
-				,validLink
-				,relMatch
-				,absLink
-				,currBGColor
-				,loadingInt
-				,$html
-				,newTitle;
-			if ( this.href ) {
-				relMatch = this.href.match(/https?\:\/\/[^\/]+(\/.*)/);
-				// prevent leaking of unwanted ajax links, shouldn't happen but it's good to remember
-				validLink = relMatch && relMatch.length === 2 && relMatch[1] && relMatch[1].indexOf("/i?") !== 0
-					&& relMatch[1].indexOf("/feed") !== 0 ? relMatch[1] : undefined;
-				if ( validLink ) {
-					absLink = relMatch[0];
-					cache.ajaxTimer = new Date().getTime();
-					currBGColor = $this.css("background-color");
-					$this.css("background-color","#ffff00");
-					loadingInt = setInterval(function() {
-						if ( String($this.css("background-color")).toLowerCase().match(/rgb\(255\,\s*255\,\s*0\)|\#ffff00/) ) {
-							$this.css("background-color", currBGColor||"inherit");
-						} else {
-							$this.css("background-color","#ffff00");
-						}
-					}, 333);
-					// changed from $.load() to enable getting the pages title
-					$.ajax({
-						url       : absLink
-						,dataType : "html"
-					}).fail(function () {
-						sendLog("Sorry, there was an error fetching the page '"+absLink+"'", function () {
-							location.href = absLink;
-						});
-					}).done(function (html) {
-						clearInterval(loadingInt);
-						$html = $(html);
-						newTitle = $html.filter("title").text();
-						if ( history.pushState ) {
-							history.pushState( { tz_aio_ajax : true, url : absLink }, newTitle, absLink);
-						}
-						tz.page = getPageParmaters();
-						tz.page.title = newTitle;
-						tz.page.titleEnc = encodeURIComponent(newTitle.replace(/\'/g,"_"));
-						$("title").html(newTitle);
-						els.$body.find("div.results:eq(0)").html($html.filter("div.results:eq(0)").html());
-						els.$ajaxedResult = $("body").find("div.results:eq(0)");
-						initSearchPage(els.$ajaxedResult, function (target) {
-							// calling unsafeWindow.scrollTop gives us 0
-							if ( typeof window === "object"
-								&& ($(window).scrollTop() - els.$ajaxedResult.offset().top) > 0 ) {
-								els.$bodyANDhtml.animate({ scrollTop : 0 }, "slow");
+		els.$ajaxLinks = $element.find(" > div:eq(0) a, > h3:eq(0) a, > p:last a")
+			.on("click", function () {
+				var $this = $(this)
+					,validLink
+					,relMatch
+					,absLink
+					,currBGColor
+					,loadingInt
+					,$html
+					,newTitle;
+				if ( this.href ) {
+					relMatch = this.href.match(/https?\:\/\/[^\/]+(\/.*)/);
+					// prevent leaking of unwanted ajax links, shouldn't happen but it's good to remember
+					validLink = relMatch && relMatch.length === 2 && relMatch[1] && relMatch[1]
+						.indexOf("/i?") !== 0 && relMatch[1].indexOf("/feed") !== 0
+						? relMatch[1] : undefined;
+					if ( validLink ) {
+						absLink = relMatch[0];
+						cache.ajaxTimer = new Date().getTime();
+						currBGColor = $this.css("background-color");
+						$this.css("background-color","#ffff00");
+						loadingInt = setInterval(function() {
+							if ( String($this.css("background-color")).toLowerCase()
+								.match(/rgb\(255\,\s*255\,\s*0\)|\#ffff00/) ) {
+								$this.css("background-color", currBGColor||"inherit");
+							} else {
+								$this.css("background-color","#ffff00");
 							}
-							if ( els.$theSearchBox.length ) {
-								els.$theSearchBox.parents("form:first").prop("action", tz.page.path);
-								if ( tz.page.search ) {
-									var filterMatch = tz.page.search.replace(/^\?(?:[a-z]+\=)?\+?(.+)/i,"$1")
-										.match(/^([^\&]+)/i);
-									if ( filterMatch && filterMatch.length === 2 && filterMatch[1] ) {
-										els.$theSearchBox
-											.val(decodeURIComponent(filterMatch[1].replace(/\+/g," ")))
-											.trigger("change");
+						}, 333);
+						// changed from $.load() to enable getting the pages title
+						$.ajax({
+							url       : absLink
+							,dataType : "html"
+						}).fail(function () {
+							sendLog("Sorry, there was an error fetching the page '"
+								+absLink+"'", function () {
+									location.href = absLink;
+								})
+							;
+						}).done(function (html) {
+							clearInterval(loadingInt);
+							$html = $(html);
+							newTitle = $html.filter("title").text();
+							if ( history.pushState ) {
+								history.pushState({tz_aio_ajax:true, url:absLink}, newTitle, absLink);
+							}
+							tz.page = getPageParmaters();
+							tz.page.title = newTitle;
+							tz.page.titleEnc = encodeURIComponent(newTitle.replace(/\'/g,"_"));
+							$("title").html(newTitle);
+							els.$body.find("div.results:eq(0)")
+								.html($html.filter("div.results:eq(0)").html());
+							els.$ajaxedResult = $("body").find("div.results:eq(0)");
+							initSearchPage(els.$ajaxedResult, function (target) {
+								// calling unsafeWindow.scrollTop gives us 0
+								if ( typeof window === "object"
+									&& ($(window).scrollTop() - els.$ajaxedResult.offset().top) > 0 ) {
+									els.$bodyANDhtml.animate({ scrollTop : 0 }, "slow");
+								}
+								if ( els.$theSearchBox.length ) {
+									els.$theSearchBox.parents("form:first").prop("action", tz.page.path);
+									if ( tz.page.search ) {
+										var filterMatch = tz.page.search
+											.replace(/^\?(?:[a-z]+\=)?\+?(.+)/i,"$1")
+											.match(/^([^\&]+)/i);
+										if ( filterMatch && filterMatch.length === 2
+											&& filterMatch[1] ) {
+											els.$theSearchBox
+												.val(decodeURIComponent(filterMatch[1].replace(/\+/g," ")))
+												.trigger("change");
+										}
 									}
 								}
-							}
-							bindAjaxLinks(target);
-							sendLog((target.length)+" ajaxed div."+target[0].className+" - Load+Exec: "
-								+((new Date().getTime())-cache.ajaxTimer)+"ms");
+								bindAjaxLinks(target);
+								sendLog((target.length)+" ajaxed div."+target[0].className
+									+" - Load+Exec: "+((new Date().getTime())-cache.ajaxTimer)+"ms");
+							});
 						});
-					});
-					return false;
+						return false;
+					}
 				}
-			}
-		});
+			})
+		;
 	}
 	function lastAction () {
 		if ( !cache.lastActionDone ) {
@@ -1227,15 +1250,16 @@
 				copyThis = els.$copyTextArea.find("textarea").val();
 				// note! jQuery strips out all \r in .val()
 				if ( isWindowsOS() ) {
-					// TamperMonkey (on Linux and Windows) < v3.4.3525 seems to remove \r ([CR]) chars,
-					// a fix for this has been released in their latest Beta
+					// TamperMonkey (on Linux and Windows) < v3.4.3525 seems to remove \r ([CR])
+					// chars, a fix for this has been released in their latest Beta
 					// http://tampermonkey.net/changelog.php?version=3.4.3525&ext=gcal
 					copyThis = copyThis.replace(/\n/g,"\r\n");
 				}
 				GM_setClipboard(copyThis);
 				if ( els.$copyTrackersLink && els.$copyTrackersLink.length ) {
 					els.$copyTrackersLink.addClass("active");
-					els.$copyTrackersLink.text(els.$copyTrackersLink.text().replace("Copy ","Copied "));
+					els.$copyTrackersLink.text(els.$copyTrackersLink.text()
+						.replace("Copy ","Copied "));
 				}
 			} else if ( els.$copyTrackersLink && els.$copyTrackersLink.length ) {
 				// single torrent
@@ -1291,7 +1315,9 @@
 					if ( torrentLinks.length ) {
 						newTabOpt = isTM ? { active : true, insert : true } : isSC ? true : null;
 						// trigger a random torrent link each time
-						GM_openInTab(torrentLinks[(Math.floor(Math.random()*(torrentLinks.length)))].href, newTabOpt);
+						GM_openInTab(torrentLinks[(
+							Math.floor(Math.random()*(torrentLinks.length))
+						)].href, newTabOpt);
 					} else {
 						window.alert("No .torrent file to download!");
 					}
@@ -1347,10 +1373,12 @@
 			if ( page === "common" ) {
 				// also remove common ads here once
 				els.$body.addClass("no_ads");
-				els.$body.find("iframe[src*='clkads.com']").parents("div[style]:eq(0)").addClass(adRemovedClass);
+				els.$body.find("iframe[src*='clkads.com']").parents("div[style]:eq(0)")
+					.addClass(adRemovedClass);
 				// removing iframes is tricky, look out for lastPass and such
 				els.$body.find("p.generic").has("iframe").addClass(adRemovedClass);
-				els.$body.find(" > div").has("a[href*='btguard.com/'] img").addClass(adRemovedClass);
+				els.$body.find(" > div").has("a[href*='btguard.com/'] img")
+					.addClass(adRemovedClass);
 				if ( $adIframes.length ) {
 					$adIframes.each(function () {
 						var iFrameDomain = $tmpLink.attr("href", this.src)[0].host;
@@ -1413,8 +1441,8 @@
 			htmlStr = htmlStr+"<a class='search_link' rel='noreferrer' href='"
 				// Unescape html first (legacy), then escape
 				// search string must be encoded separatly
-				+getNoReferrerUrl(__.escape(__.unescape(arr[1]).replace(/%s/g, encodeURIComponent(str))))+"'>"
-				+__.escape(arr[0].replace(/_/g, " "))+"</a>";
+				+getNoReferrerUrl(__.escape(__.unescape(arr[1]).replace(/%s/g, encodeURIComponent(str))))
+				+"'>"+__.escape(arr[0].replace(/_/g, " "))+"</a>";
 		});
 		htmlStr = htmlStr+"<a href='/feed?q="+__.escape(encodeURIComponent(str))+"'><img src='"
 			+cache.RSSIMG+"' width='16' height='16'></a>";
@@ -1466,8 +1494,8 @@
 		var magnetLinkHtml	= ""
 			,finalHtml		= ""
 			,filesInfoText	= ""
-			,allTrackers, seedTleach ,seedText ,minPeersText ,i ,commentText ,copyTrackersHtml ,trackerLen
-			,_upLen ,_downLen
+			,allTrackers, seedTleach ,seedText ,minPeersText ,i ,commentText
+			,copyTrackersHtml ,trackerLen ,_upLen ,_downLen
 			,wmvPatt		= /\.(?:wmv|WMV)$/
 			,trackersDiv	= els.$body.find("div.trackers:eq(0)")
 			,trackerLinks	= trackersDiv.find("dt a")
@@ -1498,7 +1526,8 @@
 			,verDownload	= isVerifiedDownload(els.$body.find(".votebox"))
 			,verDownloadCl	= verDownload > 0 && !notActive ? "_verified_dl" : notActive
 				? " not_active" : verDownload < 0 ? "_bogus_dl" : "_unverified_dl"
-			,filesSizeText	= filesDiv.find("div:contains('Size:'):eq(0)").text().replace("Size: ","")
+			,filesSizeText	= filesDiv.find("div:contains('Size:'):eq(0)").text()
+				.replace("Size: ","")
 			,commentDiv		= els.$body.find("div.comments")
 			// not the settings form!
 			,formFieldset	= els.$body.find("form.profile[method='post']:eq(0) fieldset")
@@ -1568,8 +1597,8 @@
 			seedColor = "green";
 		}
 		seedText = seedTitle+" <span class='"+tzCl+"_seed_"+seedColor+"'>"+seedMeter+"</span>";
-		minPeersText = " <span class='"+tzCl+"_connections_image'>&asymp; "+formatNumbers(minPeers, true)
-			+" peer"+getPlural(minPeers)+"</span>";
+		minPeersText = " <span class='"+tzCl+"_connections_image'>&asymp; "
+			+formatNumbers(minPeers, true)+" peer"+getPlural(minPeers)+"</span>";
 		copyTrackersHtml = "<a href='#' id='"+tzCl+"_copylist' class='"+tzCl
 			+"_copylink' title='Click to copy the trackerlist'>Copy "
 			+trackerLen+" tracker"+(getPlural(trackerLen))+"</a>";
@@ -1971,8 +2000,10 @@
 		// it also applies to the format 1x[0]1 that torrentz also translates.
 		var queryMatch	= query.match(/\?f=([^&]+)/i)
 			,datem		= queryMatch && queryMatch.length === 2
-				? decodeURIComponent(queryMatch[1]).replace(/(\d{4})\D?(\d{2})\D?(\d{2})/i, "$1"+"-"+"$2"+"-"+"$3")
-				.match(cache.validDatePatt) : null
+				? decodeURIComponent(queryMatch[1])
+				.replace(/(\d{4})\D?(\d{2})\D?(\d{2})/i, "$1"+"-"+"$2"+"-"+"$3")
+				.match(cache.validDatePatt)
+				: null
 			,epm		= queryMatch && queryMatch.length === 2
 				? queryMatch[1].match(cache.validEpisodePatt) : null
 			,legacym	= queryMatch && queryMatch.length === 2
@@ -1993,12 +2024,12 @@
 			dp.nextDate = getValidDate([dp.year, dp.month, dp.day], 1);
 			dp.prevDate = getValidDate([dp.year, dp.month, dp.day], -1);
 			htmlStr = "<b><a "+pEpLinkCl+" href='"
-				+makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.prevDate.nice+"\x22")
-				+"'>&lt; "+dp.prevDate.nice+"</a></b>";
+				+makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"
+				+dp.prevDate.nice+"\x22")+"'>&lt; "+dp.prevDate.nice+"</a></b>";
 			if ( dp.nextDate.ms && (dp.nextDate.ms - (new Date().getTime())) < 0 ) {
 				htmlStr = htmlStr+" | <b><a "+nEpLinkCl+" href='"
-					+makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.nextDate.nice+"\x22")
-					+"'>"+dp.nextDate.nice+" &gt;</a></b>";
+					+makeSearchQuery(datem[1], datem[2], datem[15], datem[16],
+					"\x22"+dp.nextDate.nice+"\x22")+"'>"+dp.nextDate.nice+" &gt;</a></b>";
 			}
 		} else if (epm && epm.length === 8) {
 			ep.episode = epm[5] && epm[5] !== "0" ? +epm[5].replace(/^0/,"") : 0;
@@ -2010,24 +2041,26 @@
 			ep.prevSeason = ep.season > 1 ? "S"+padZeroes((ep.season-1), 2) : "";
 			if ( ep.prevSeason ) {
 				htmlStr = htmlStr+"<a "+pSeLinkCl+" href='"
-					+makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.prevSeason+"E01" : ep.prevSeason))
-					+"'>&laquo; "+ep.prevSeason+"</a> ";
+					+makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4]
+					? ep.prevSeason+"E01" : ep.prevSeason)) +"'>&laquo; "+ep.prevSeason+"</a> ";
 			}
 			if ( epm[4] && ep.prevEpisode ) {
-				htmlStr = htmlStr+"<a "+pEpLinkCl+" href='"+makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.prevEpisode)
+				htmlStr = htmlStr+"<a "+pEpLinkCl+" href='"
+					+makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.prevEpisode)
 					+"'><b>&lt; "+ep.prevEpisode+"</b></a> ";
 			}
 			if ( (ep.prevSeason) || (epm[4] && ep.prevEpisode) ) {
 				htmlStr = htmlStr+"| ";
 			}
 			if ( epm[4] && ep.nextEpisode ) {
-				htmlStr = htmlStr+"<a "+nEpLinkCl+" href='"+makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.nextEpisode)
+				htmlStr = htmlStr+"<a "+nEpLinkCl+" href='"
+					+makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.nextEpisode)
 					+"'><b>"+ep.nextEpisode+" &gt;</b></a> ";
 			}
 			if ( ep.nextSeason ) {
 				htmlStr = htmlStr+"<a "+nSeLinkCl+" href='"
-					+makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.nextSeason+"E01" : ep.nextSeason))
-					+"'>"+ep.nextSeason+" &raquo;</a>";
+					+makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.nextSeason+"E01"
+					: ep.nextSeason))+"'>"+ep.nextSeason+" &raquo;</a>";
 			}
 		} else if ( legacym ) {
 			htmlStr = "Use s<b>NN</b>e<b>NN</b> to search for episodes";
@@ -2044,12 +2077,11 @@
 			resultsH2 = $resultsEl.find(" > h2");
 			// Add rss link for "approximate match" and no results
 			if ( $resultsEl.length === 1 && searchParameters && searchParameters.length >= 2
-				&& searchParameters[1] && resultsH2.length && !resultsH2.has("img[src*='rss.png']").length ) {
-
+				&& searchParameters[1] && resultsH2.length
+				&& !resultsH2.has("img[src*='rss.png']").length ) {
 				resultsH2.append("<a class='approximate_rss_link' href='/feed_anyA?q="
 					+String(searchParameters[1])+"'>&nbsp;<img width='16' height='16' src='"
-					+cache.RSSIMG+"' title='This RSS feed is empty'></a>")
-				;
+					+cache.RSSIMG+"' title='This RSS feed is empty'></a>");
 			}
 			if ( cache.isSearch && tz.page.path !== "/i" && !cache.isSingle ) {
 				$filterBar = $resultsEl.find(" > h3:eq(0)");
@@ -2335,7 +2367,7 @@
 	};
 
 	$.fn.extend({ doLastAction : lastAction });
-	myAddStyler(GM_getResourceText("css1"));
+	myAddStyler(GM_getResourceText("css1")+"\n"+GM_getResourceText("css2"));
 	$.ajaxSetup({ "cache" : true });
 
 	$(d).ready(function () {

@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.5.8
-// @date          2014-05-27
+// @version       2.5.9
+// @date          2014-05-31
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -18,8 +18,9 @@
 // @exclude       /^https?://[^/]+/comment_.*/
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
-// @require       http://elundmark.se/_files/js/tz-aio/source/js/spectrum.min.js?v=2-5-8-0
-// @resource css1 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-8-0
+// @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
+// @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-9-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -36,9 +37,9 @@
 /*
 	# Compatibility
 	
-	Tested in Firefox 19+ (and nightly dev) (GreaseMonkey 1.8+, Scriptish 0.1.8+)
-	and Chrome 25+ (Tampermonkey v2.12.3124.16+) on Ubuntu Linux
-	using Sublime Text, Sass, Compass, Git, and bash+node.js for debugging.
+	Tested in Firefox 19+ (GreaseMonkey 1.8+, Scriptish 0.1.8+)
+	and Chrome 25+ (Tampermonkey v2.12.3124.16+) on Lubuntu 14.04 LTS
+	using Sublime Text 3, Sass, Compass, Git, Bash and NodeJS for debugging.
 	 
 	# Legality
 	
@@ -63,7 +64,7 @@
 
 "use strict";
 (function ($, __, loadStartMS) {
-	if ( typeof __ !== "function" || typeof $ !== "function"
+	if ( typeof __ !== "function" || typeof $ !== "function" || typeof sessionStorage !== "object"
 		||(typeof GM_info !== "object" && typeof GM_getMetadata !== "function")  // added for Scriptish
 		|| typeof GM_log !== "function"
 		|| typeof GM_deleteValue !== "function"
@@ -542,11 +543,16 @@
 		//  and the event is anonymous inside a jQuery function,
 		//  so the "easiest" and most maintainable way seems to be a
 		//  quiet refresh if the cookie is missing.
-		if ( typeof d.cookie === "string"
+		if ( navigator.cookieEnabled && typeof d.cookie === "string"
 			&& d.cookie.indexOf("wm_popundertz") === -1 ) {
-			d.cookie = "wm_popundertz="+ckVal;
-			d.cookie = "tz="+ckVal;
-			location.reload();
+			// 2014-05-31 Added navigator.cookieEnabled test and sessionStorage
+			// test to stop any infinite reloads for non-cookie users
+			if ( sessionStorage.getItem(tz.env.slug+"_SS_cookietest") !== "true" ) {
+				d.cookie = "wm_popundertz="+ckVal;
+				d.cookie = "tz="+ckVal;
+				sessionStorage.setItem(tz.env.slug+"_SS_cookietest", "true");
+				location.reload();
+			}
 		}
 	}
 	function handlePopStates (data) {
@@ -803,11 +809,11 @@
 				,versionStr+" &mdash; Keyboard shortcuts? Learn about them <a href='"
 				,"/help#"+tzCl+"_help'>here</a>. <br>"
 				,"This userscript can be installed from "
-				,"<a href='https://openuserjs.org/scripts/elundmark/httpelundmark.secodetz-aio/"
-				,"Torrentz_All-in-One'>openuserjs.org</a> and "
-				,"<a href='https://userscripts.org/scripts/show/125001'>userscripts.org</a>"
-				,". <br>Get the sourcecode on "
-				,"<a href='"+tz.env.gitHub+"'>GitHub</a>, report any "
+				,"<a href='https://openuserjs.org/search/torrentz/scriptlist' title='"
+				,"Search for Torrentz All-in-One'>openuserjs.org</a> and "
+				,"<a href='https://greasyfork.org/scripts/search?q=torrentz' title='"
+				,"Search for Torrentz All-in-One'>greasyfork.org</a>. "
+				,"<br>Get the sourcecode on <a href='"+tz.env.gitHub+"'>GitHub</a>, report any "
 				,"issues <a href='"+tz.env.gitHubIssues+"'>here</a>.</p>"
 				,"<form id='"+tzCl+"_settings_submit' class='"
 				,tzCl+"_settings_form profile' method='get' action='"
@@ -2368,7 +2374,7 @@
 	};
 
 	$.fn.extend({ doLastAction : lastAction });
-	myAddStyler(GM_getResourceText("css1"));
+	myAddStyler(GM_getResourceText("css1")+"\n"+GM_getResourceText("css2"));
 	$.ajaxSetup({ "cache" : true });
 
 	$(d).ready(function () {
