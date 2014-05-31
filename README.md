@@ -40,7 +40,14 @@ _Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampe
 	* If you use the exclude-filter, the number of excluded torrents are noted at the bottom of the list.
 * **Comment links**  _Customizable_ - Changes all valid un-anchored links inside comments to links.
 * **Exporter + Importer** - Saves your settings and so you can restore them more easily.
-* **Smart keyboard shortcuts**  `'C'` to copy all the trackers or toggle the tracker box, `'D'` to trigger the magnet-link, `'SHIFT + D'` to download a randomly selected direct torrent file listed, `'← →'` to navigate search results pages (Left arrow Right arrow), `'SHIFT + →'` to go to the next episode/season, `'SHIFT + ←'` to go to the previous episode/season, `'ESC'` for general exit/close.
+* **Smart keyboard shortcuts**
+	* `C` **Copy all the trackers**
+	* `D` **Trigger the Magnet-link**
+	* `SHIFT + D` **Download a randomly selected torrent-file of those listed**
+	* `← →` : **Navigate search results pages (Left arrow Right arrow)**
+	* `SHIFT + →` **Next episode/season**
+	* `SHIFT + ←` **Previous episode/season**
+	* `ESC` **General exit/close**
 
 _All these settings are accessed by clicking 'TzAio' at the top of each page, and can be flushed and reset if you want to start over, or take advantage of (any) new default trackers that might have been added._
 
