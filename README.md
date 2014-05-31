@@ -15,6 +15,7 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 
 	* **[openuserjs.org](https://openuserjs.org/search/torrentz/scriptlist)**
 	* **[greasyfork.org](https://greasyfork.org/scripts/search?q=torrentz)**
+
 3. Disable _Require Secure Updates_ in your userscript engine to enable updates _(I currently don't have SSL enabled on my webserver)_. However, doing this is less secure, so be careful.
 
 _Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey. Do not use Chrome's built-in userscript installer)._
@@ -35,10 +36,10 @@ _Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampe
 * **Ajaxed sorting**  _Customizable_ - Applies to all search results, uses `history.pushState`.
 * **Exclude filter**  _Customizable_ - Remove unwanted torrens by keywords or `RegExp`.
 * **Colorful results**  _Customizable_ - Uses a pretty solid `RegExp` pattern to figure out what is what and adds a background color, making it easier to scan every page.
-		* Colors can be changed w/ the built in Color Picker.
-		* All torrents in all search-results have their own magnet-link that includes your custom trackers.
-		* Old/dead-ish torrents are dimmed out to indicate a "dead-ish" torrent.
-		* If you use the exclude-filter, the number of excluded torrents are noted at the bottom of the list.
+	* Colors can be changed w/ the built in Color Picker.
+	* All torrents in all search-results have their own magnet-link that includes your custom trackers.
+	* Old/dead-ish torrents are dimmed out to indicate a "dead-ish" torrent.
+	* If you use the exclude-filter, the number of excluded torrents are noted at the bottom of the list.
 * **Comment links**  _Customizable_ - Changes all valid un-anchored links inside comments to links.
 * **Exporter + Importer** - Saves your settings and so you can restore them more easily.
 * **Smart keyboard shortcuts**  `'C'` to copy all the trackers or toggle the tracker box, `'D'` to trigger the magnet-link, `'SHIFT + D'` to download a randomly selected direct torrent file listed, `'← →'` to navigate search results pages (Left arrow Right arrow), `'SHIFT + →'` to go to the next episode/season, `'SHIFT + ←'` to go to the previous episode/season, `'ESC'` for general exit/close.
