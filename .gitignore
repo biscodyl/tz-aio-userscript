@@ -12,5 +12,3 @@ Thumbs.db
 *.sublime-workspace
 *~
 .DS_Store
-tz-aio.meta.js
-tz-aio-style.css
