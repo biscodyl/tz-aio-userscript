@@ -79,7 +79,7 @@ __Note that not all of these work, some redirect to _torrentz.eu_ and some to _t
 
 ## Using a proxy?
 
-If you can't use **torrentz-proxy.com**, read [these instructions](https://userscripts.org/topics/135018) to get an idea how you can make the script work again. If that fails, you can try installing [this special version](https://github.com/elundmark/tz-aio-userscript/raw/master/tz-aio.proxy-fix.user.js), which runs on _every_ page, thus making it work again. But It's not *100%* guarateed, it depends on the proxy provider, and seeing there's like 100.000.000 of them I'm not gonna even try.
+If you can't use **torrentz-proxy.com**, you can try installing [this special version](https://github.com/elundmark/tz-aio-userscript/raw/master/tz-aio.proxy-fix.user.js), which runs on _every_ page, thus making it work again. But It's not *100%* guarateed, it depends on the proxy provider, and seeing there's like 100.000.000 of them I'm not gonna even try.
 
 ## Help me, to help us
 
