@@ -92,8 +92,26 @@ $blinkto:   0.0;
 
 .tz_aio_b.tz_aio_v2 {
 
-	// General and resets
+	// Overrides for Spectrum
+	.sp-container, .sp-replacer {
+		@include border-radius(3px);
+	}
+	.sp-container {
+		background-color: rgba(236, 236, 236, 0.95);
+		border-color: #567;
+	}
+	.sp-replacer:hover, .sp-replacer.sp-active {
+		border-color: #567;
+	}
+	.sp-dd {
+		padding: 10px 0 2px;
+	}
+	.sp-preview {
+		width: 38px;
+		height: 32px;
+	}
 
+	// General and resets
 	a {
 		outline: none;
 	}
@@ -756,23 +774,5 @@ $blinkto:   0.0;
 	}
 	dl.anime {
 		background-color: $SRANIME;
-	}
-	// Overrides for Spectrum
-	.sp-container, .sp-replacer {
-		@include border-radius(3px);
-	}
-	.sp-container {
-		background-color: rgba(236, 236, 236, 0.95);
-		border-color: #567;
-	}
-	.sp-replacer:hover, .sp-replacer.sp-active {
-		border-color: #567;
-	}
-	.sp-dd {
-		padding: 10px 0 2px;
-	}
-	.sp-preview {
-		width: 38px;
-		height: 32px;
 	}
 }

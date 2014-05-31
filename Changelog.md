@@ -1,5 +1,9 @@
 # Changelog
 
+**2.5.10** (2014-05-31)
+
+* CSS rule fix for spectrum color pickers.
+
 **2.5.9** (2014-05-31)
 
 * Changed `@require` and added `@resource`for [spectrum](https://github.com/bgrins/spectrum) to the cdn at [jsdelivr.net](http://www.jsdelivr.com/) to comply with [greasyfork.org](https://greasyfork.org/)'s [rules](https://greasyfork.org/help/external-scripts).
