@@ -4,9 +4,7 @@
 
 This userscript enhances Torrentz (on all its domains) to include a bunch of new features. Among them are customizable magnet-links, ajaxed sorting, intelligent stats, and much much more...
 
-_This project is mainly maintained on [github](https://github.com/elundmark/tz-aio-userscript/), so please report any issues or requests @ [github.com/elundmark/tz-aio-userscript/issues](https://github.com/elundmark/tz-aio-userscript/issues)._
-
-**Feel free to ask for more features!**
+_This project is mainly maintained on [github](https://github.com/elundmark/tz-aio-userscript/), so please report any issues or feature requests @ [github.com/elundmark/tz-aio-userscript/issues](https://github.com/elundmark/tz-aio-userscript/issues)._
 
 ## How to use
 
@@ -14,7 +12,8 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 2. Install the userscript itself from any of the following repositories:
 	* **[openuserjs.org](https://openuserjs.org/search/torrentz/scriptlist)**
 	* **[greasyfork.org](https://greasyfork.org/scripts/search?q=torrentz)**
-3. Disable _Require Secure Updates_ in your userscript engine to enable updates _(I currently don't have SSL enabled on my webserver)_. However, doing this is less secure, so be careful.
+	* **[monkeyguts.com](https://monkeyguts.com/code.php?id=194)** _supplies secure updates_
+3. Disable _Require Secure Updates_ in your userscript engine to enable updates, if not installed through [monkeyguts.com](https://monkeyguts.com/code.php?id=194). However, doing this is less secure, so be careful.
 
 _Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampermonkey. Do not use Chrome's built-in userscript installer)._
 
