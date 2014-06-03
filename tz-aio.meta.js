@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.5.10
-// @date          2014-05-31
+// @version       2.5.11
+// @date          2014-06-03
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -15,7 +15,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-10-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-11-0
 // @include       /^https?://(?:www\.)?(?:tz\.ai|torrents\.de|torrentz-proxy\.com|(?:torrentz\.(?:eu|ph|li|com|me|in|hk|ch)))/.*/
 // @exclude       /^https?://[^/]+/feed(?:_[a-zA-Z]+)?\?.*/
 // @exclude       /^https?://[^/]+/announcelist_.*/

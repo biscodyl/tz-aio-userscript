@@ -1,5 +1,10 @@
 # Changelog
 
+**2.5.11** (2014-06-03)
+
+* New click ad cookie detected `wgm`.
+* Monkeyguts link added.
+
 **2.5.10** (2014-05-31)
 
 * CSS rule fix for spectrum color pickers.

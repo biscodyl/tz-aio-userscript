@@ -26,7 +26,7 @@ _Tested on Firefox 17+ (GreaseMonkey/Scriptish) and Google Chrome 23+ with Tampe
 * **Custom CSS Editor** _Customizable_ - Added by demand, edit away!
 * **Force HTTPS**  _Customizable_ - Off by default, but forces SSL (`https://`) if enabled.
 * **TV Episode Links**  Helps you search for next/prev episode/season, click the links in the filter-bar or use `SHIFT+[arrowkeys]` when available by searching for the common patters _sNNeNN_ or _2013 01 01_.
-* **Ad removal**  _Customizable_ - Wouldn't be a UserScript without this. As new ads are added, this script will be updated.
+* **Ad removal**  _Customizable_ - Wouldn't be a UserScript without this. Also gets rid of the "click popup ads". As new ads are added, this script will be updated.
 * **Direct .torrent links**  Applies to all avaliable sites listed on each 'single page'.
 * **Stats-bar**  Get all the important info right away, like seed-ratio, a Copy trackerlist button, a Magnet-link, links to the comments and the files, and the total amout of peers.
 * **Copy Trackers Button**  Copies all trackers to your clipboard (if your engine doesn't support `GM_setClipboard` it shows them instead).
