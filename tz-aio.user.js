@@ -2359,7 +2359,7 @@
 		,trDomainPatt		: /^[a-z]+?\:\/\/([a-z0-9\-\.]+?([a-z0-9\-]+\.[a-z]{2,5}|[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4})(?:\:[0-9]+|\/|$).*)/
 		,trDomainPattAlt	: /^[a-z]+?\:\/\/([a-z0-9\-\.]+?([a-z0-9\-]+\.[a-z]{2,5}\.[a-z]{2,5})(?:\:[0-9]+|\/|$).*)/
 		,trBareBonesDomain	: /^[a-z]+?\:\/\/([a-z0-9\-]+\.[a-z]{2,5})(?:\:[0-9]+|\/|$).*/
-		,trTwoPartDomainPatt:/(?:\.com|\.co|\.info|\.mobi|\.net|\.ar|\.as|\.at|\.bb|\.bg|\.br|\.ca|\.ch|\.cn|\.cs|\.dk|\.ee|\.es|\.fi|\.fr|\.gr|\.in|\.is|\.it|\.jp|\.lu|\.no|\.se|\.pl|\.ru|\.tv|\.tw|\.tk|\.ua|\.uk|\.us){2}(?::[0-9]+|\/|$)/
+		,trTwoPartDomainPatt:/(?:\.(?:com|co|ie|eu|info|mobi|net|ar|as|at|bb|bg|br|ca|ch|cn|cs|dk|ee|es|fi|fr|gr|in|is|it|jp|lu|no|se|pl|ru|tv|tw|tk|ua|uk|us)){2}(?::[0-9]{2,5}|\/|$)/
 		,matchUrlPatt		: /[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}(\.[a-z]{2,4})?(\:[0-9]+)?\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i
 		,comLinksPatt		: /(?:(?:htt|ud|ft)ps?\:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(?:\/|\/([\w#!\:.?+=&%@!\-\/]))?)/gi
 		,selectTrashPatt	: /(?:\s+(\d+\s*torrent)?\s*|\s*torrent\s*|\s*download\s*|\s*locations\s*){1,3}(Download \.torrent[\s\S]*)?$/i
