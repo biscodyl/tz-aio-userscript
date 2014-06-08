@@ -37,9 +37,10 @@
 /*
 	# Compatibility
 	
-	Tested in Firefox 19+ (GreaseMonkey 1.8+, Scriptish 0.1.8+)
-	and Chrome 25+ (Tampermonkey v2.12.3124.16+) on Lubuntu 14.04 LTS
-	using Sublime Text 3, Sass, Compass, Git, Bash and NodeJS for debugging.
+	Tested in Firefox v19+ (GreaseMonkey v1.8+, Scriptish v0.1.8+),
+	Chrome v25+ (Tampermonkey v2.12.3124.16+),
+	and Opera v12+ (Violent Monkey v2.1.2.1) on Lubuntu 14.04 LTS
+	using Sublime Text 3, Sass, Compass, Git, Bash and NodeJS.
 	 
 	# Legality
 	
