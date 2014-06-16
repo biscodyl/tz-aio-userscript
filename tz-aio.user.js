@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.5.11
-// @date          2014-06-03
+// @version       2.5.12
+// @date          2014-06-16
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -20,7 +20,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-11-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-12-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -517,6 +517,25 @@
 			returnStr = String(i);
 		}
 		return returnStr;
+	}
+	function shuffledArray (len) {
+		var arr = []
+			,i
+			,ci
+			,tmp
+			,ri;
+		for ( i = 0; i < len; i++ ) {
+			arr.push(i);
+		}
+		ci = arr.length;
+		while ( 0 !== ci ) {
+			ri = Math.floor(Math.random() * ci);
+			ci -= 1;
+			tmp = arr[ci];
+			arr[ci] = arr[ri];
+			arr[ri] = tmp;
+		}
+		return arr;
 	}
 	function padZeroes (n, width, z) {
 		z = z || "0";
@@ -1321,11 +1340,12 @@
 					if ( torrentLinks.length ) {
 						newTabOpt = isTM ? { active : true, insert : true } : isSC ? true : null;
 						// trigger a random torrent link each time
-						GM_openInTab(torrentLinks[(
-							Math.floor(Math.random()*(torrentLinks.length))
-						)].href, newTabOpt);
+						if ( !cache.randomDirectLinks.length ) {
+							cache.randomDirectLinks = shuffledArray(torrentLinks.length);
+						}
+						return GM_openInTab(torrentLinks[cache.randomDirectLinks.pop()].href, newTabOpt);
 					} else {
-						window.alert("No .torrent file to download!");
+						return window.alert("No .torrent file to download!");
 					}
 				} else if ( key === 68 && noMods ) {
 					// 'd'
@@ -2347,6 +2367,7 @@
 		,RSSIMG				: "/img/rss.png"
 		,freshUser			: false
 		,settingsInserted	: false
+		,randomDirectLinks	: []
 		,sKeywordPatt		: /»\s+?(.*)$/i
 		,hashPatt			: /[a-zA-Z0-9]{40}/
 		,searchPagePatt		: /^\/(?:search|any|verified|advanced|tracker_)/

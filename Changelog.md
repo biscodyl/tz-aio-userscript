@@ -1,5 +1,9 @@
 # Changelog
 
+**2.5.12** (2014-06-16)
+
+* Small fix to the keyboard shortcut for the direct links.
+
 **2.5.11** (2014-06-03)
 
 * New click ad cookie detected `wgm`.
