@@ -830,7 +830,7 @@
 				,versionStr+" &mdash; Keyboard shortcuts? Learn about them <a href='"
 				,"/help#"+tzCl+"_help'>here</a>. <br>"
 				,"This userscript can be installed from "
-				,"<a href='https://openuserjs.org/search/torrentz/scriptlist' title='"
+				,"<a href='https://openuserjs.org/?q=torrentz' title='"
 				,"Search for Torrentz All-in-One'>openuserjs.org</a>, "
 				,"<a href='https://greasyfork.org/scripts/search?q=torrentz' title='"
 				,"Search for Torrentz All-in-One'>greasyfork.org</a> and "
