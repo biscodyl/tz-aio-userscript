@@ -101,20 +101,41 @@
 		,hpInitialURL	= d.location.href
 		// end fix
 		,scriptSource	= isGM ? GM_info.scriptMetaStr : isTM ? GM_info.scriptSource : ""
+		,crossEngineData= function (item, pos) {
+			// Scriptish returns string|object|array
+			var s	= ""
+				,o	= GM_getMetadata(item)
+				,key;
+			if ( $.isArray(o) ) {
+				return o[pos];
+			} else if ( typeof o === "string" ) {
+				return o.trim();
+			} else if (o) {
+				// object
+				for ( key in o ) {
+  					if ( o.hasOwnProperty(key) ) {
+  						s += String(o[key]);
+  					}
+  				}
+				return s;
+			} else {
+				return "ERROR-PARSING-GETMETADATA:"+item+pos;
+			}
+		}
 		,userScriptEnv	= function () {
 			var usEnv = {};
-			usEnv.name = isSC ? GM_getMetadata("name")[0] : GM_info.script.name;
+			usEnv.name = isSC ? crossEngineData("name", 0) : GM_info.script.name;
 			usEnv.slug = "tz_aio";
 			usEnv.storageName = usEnv.slug+"_useroptions";
-			usEnv.version = isSC ? GM_getMetadata("version")[0] : GM_info.script.version;
+			usEnv.version = isSC ? crossEngineData("version", 0) : GM_info.script.version;
 			usEnv.bodyClass = usEnv.slug+"_b "+usEnv.slug+"_v"+(usEnv.version.replace(/\..*/g,""));
-			usEnv.date = isSC ? GM_getMetadata("date")[0]
+			usEnv.date = isSC ? crossEngineData("date", 0)
 				: getMeta(new RegExp("//\\s*@date\\s+([0-9\\-]+)","i"), 1);
-			usEnv.link = isSC ? GM_getMetadata("homepage")[0]
+			usEnv.link = isSC ? crossEngineData("homepage", 0)
 				: getMeta(new RegExp("//\\s*@homepage\\s+(\\S+)","i"), 1);
-			usEnv.icon = isSC ? GM_getMetadata("icon")[0]
+			usEnv.icon = isSC ? crossEngineData("icon", 0)
 				: getMeta(new RegExp("//\\s*@icon\\s+(\\S+)","i"), 1);
-			usEnv.gitHubIssues = isSC ? GM_getMetadata("supporturl")[0]
+			usEnv.gitHubIssues = isSC ? crossEngineData("supporturl", 0)
 				: getMeta(new RegExp("//\\s*@supportURL\\s+(\\S+)","i"), 1);
 			usEnv.gitHub = usEnv.gitHubIssues.replace(/issues\/?$/,"");
 			return usEnv;
@@ -206,18 +227,25 @@
 			return callback();
 		}
 	}
-	function myAddStyler (cssArray) {
-		// https://gist.github.com/7450780
-		if ( !cssArray || !cssArray.length ) return;
-		var css = typeof cssArray === "string" ? cssArray : cssArray.join("\n")
+	function myAddStyler () {
+		var args = Array.prototype.slice.call(arguments, 0)
+			,css = ""
 			,heads
-			,node;
+			,node
+			,i;
+		for ( i = 0; i < args.length; i++ ) {
+			if ( !args[i] ) continue;
+			// Allow multi-dimensional arrays of css
+			css += ($.isArray(args[i])?args[i].join("\n"):typeof args[i]==="string"?args[i]:"");
+		}
+		// https://gist.github.com/7450780
+		if ( !css || css.length ) return;
 		if ( typeof GM_addStyle === "function") {
-			GM_addStyle(css);
+			return GM_addStyle(css);
 		} else if ( typeof PRO_addStyle === "function" ) {
-			PRO_addStyle(css);
+			return PRO_addStyle(css);
 		} else if ( typeof addStyle === "function" ) {
-			addStyle(css);
+			return addStyle(css);
 		} else {
 			heads = d.getElementsByTagName("head");
 			if (heads && heads.length === 1) {
@@ -225,6 +253,7 @@
 				node.type = "text/css";
 				node.appendChild(d.createTextNode(css));
 				heads[0].appendChild(node);
+				return css;
 			}
 		}
 	}
@@ -2400,7 +2429,7 @@
 	};
 
 	$.fn.extend({ doLastAction : lastAction });
-	myAddStyler(GM_getResourceText("css1")+"\n"+GM_getResourceText("css2"));
+	myAddStyler(GM_getResourceText("css1"), GM_getResourceText("css2"));
 	$.ajaxSetup({ "cache" : true });
 
 	$(d).ready(function () {
