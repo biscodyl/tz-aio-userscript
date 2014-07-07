@@ -1,5 +1,12 @@
 # Changelog
 
+**2.5.13** (2014-07-07)
+
+* **Important!** If you use Scriptish, upgrade it to the [latest version](https://addons.mozilla.org/en-US/firefox/addon/scriptish/versions/), at this moment `v0.1.12`. Earlier versions have a [bug](https://github.com/scriptish/scriptish/issues/237).
+* [Bugfixes](https://github.com/elundmark/tz-aio-userscript/issues/3) for embedding CSS.
+* Code syntax changed.
+* Updated jQuery to `v2.1.1`.
+
 **2.5.12** (2014-06-16)
 
 * Small fix to the keyboard shortcut for the direct links.

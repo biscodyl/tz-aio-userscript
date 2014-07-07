@@ -8,12 +8,14 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 
 ## How to use
 
-1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) or [Scriptish](https://addons.mozilla.org/en-US/firefox/addon/scriptish/) for Firefox, [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo) for Google Chrome / Chromium, or [Violent Monkey](https://addons.opera.com/en/extensions/details/violent-monkey/) for Opera.
+1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) or [Scriptish](https://addons.mozilla.org/en-US/firefox/addon/scriptish/)**(*)** for Firefox, [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo) for Google Chrome / Chromium, or [Violent Monkey](https://addons.opera.com/en/extensions/details/violent-monkey/) for Opera.
 2. Install the userscript itself from any of the following repositories:
 	* **[openuserjs.org](https://openuserjs.org/?q=torrentz)**
 	* **[greasyfork.org](https://greasyfork.org/scripts/search?q=torrentz)**
 	* **[monkeyguts.com](https://monkeyguts.com/code.php?id=194)** _supplies secure updates_
 3. Disable _Require Secure Updates_ in your userscript engine to enable updates, if not installed through [monkeyguts.com](https://monkeyguts.com/code.php?id=194). However, doing this is less secure, so be careful.
+
+**(*)** Make sure you use version `0.1.12` or higher. Download the latest version [here](https://addons.mozilla.org/en-US/firefox/addon/scriptish/versions/).
 
 _Tested on Firefox 17+ (GreaseMonkey/Scriptish) Google Chrome 23+ with Tampermonkey, and Opera 12+ with Violent Monkey. It does not work with Chrome's built-in userscript installer._
 
