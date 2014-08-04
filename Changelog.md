@@ -1,5 +1,9 @@
 # Changelog
 
+**2.5.14** (2014-08-04)
+
+* Fixed **next** and **prev** keyboard shortcuts, they broke because `rel=next` and `rel=prev` were removed.
+
 **2.5.13** (2014-07-07)
 
 * **Important!** If you use Scriptish, upgrade it to the [latest version](https://addons.mozilla.org/en-US/firefox/addon/scriptish/versions/), at this moment `v0.1.12`. Earlier versions have a [bug](https://github.com/scriptish/scriptish/issues/237).
