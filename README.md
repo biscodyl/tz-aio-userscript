@@ -17,7 +17,7 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 
 **(*)** Make sure you use version `0.1.12` or higher. Download the latest version [here](https://addons.mozilla.org/en-US/firefox/addon/scriptish/versions/).
 
-_Tested on Firefox 17+ (GreaseMonkey/Scriptish) Google Chrome 23+ with Tampermonkey, and Opera 12+ with Violent Monkey. It does not work with Chrome's built-in userscript installer._
+~~_Tested on Firefox 17+ (GreaseMonkey/Scriptish) Google Chrome 23+ with Tampermonkey, and Opera 12+ with Violent Monkey. It does not work with Chrome's built-in userscript installer._~~ - Needs a **real overhaul** as I havn't used Chrome all summer.
 
 ## [Changelog](https://github.com/elundmark/tz-aio-userscript/blob/master/Changelog.md)
 
@@ -111,7 +111,11 @@ Licences:
 
 ## TODO's
 
-* Nothing planned.
+* **`2.6.0`** | Nicer, squarer, image-less magnet-link buttons for all search pages.
+* **`2.6.0`** | Move the [main tzaio bar](http://elundmark.se/_files/js/tz-aio/screenshots/tzaio_single_page.jpg) inside the main div below, I think.
+* **`2.6.0`** | Go through all browsers and plugins better and test the current versions.
+* **`2.6.0`** | Convert build tools to `Grunt.js`.
+* **`2.6.0`** | Compress css files(s).
 
 ## Legality
 
