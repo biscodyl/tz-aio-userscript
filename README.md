@@ -116,6 +116,7 @@ Licences:
 * **`2.6.0`** | Go through all browsers and plugins better and test the current versions.
 * **`2.6.0`** | Convert build tools to `Grunt.js`.
 * **`2.6.0`** | Compress css files(s).
+* **`2.6.0`** | Edit old css files to show older version users where they can find a new version! Only 28% have a version released **after** the move from UserScripts.org :( - Need to save on the bandwidth as well, so this has to happen.
 
 ## Legality
 
