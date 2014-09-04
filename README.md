@@ -78,6 +78,10 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 
 __Note that not all of these work, some redirect to _torrentz.eu_ and some to _torrentz-proxy.com_, but it doesn't hur to have them all apply anyways.__
 
+## Known Issues
+
+* Some have had it stop working this summer, due to (**I think**) the fact that GreaseMonkey has changed it's ways. Follow the instructions **[here](https://github.com/elundmark/tz-aio-userscript/issues/5)** (Issue[#5](https://github.com/elundmark/tz-aio-userscript/issues/5)) and you should be able to spring it back to life. Please leave a comment if you had any luck - **and keep an eye on that page if you didn't have any luck, a solution definite solution should be up shortly**.
+
 ## Using a proxy?
 
 If you can't use **torrentz-proxy.com**, you can try installing [this special version](https://github.com/elundmark/tz-aio-userscript/raw/master/tz-aio.proxy-fix.user.js), which runs on _every_ page, thus making it work again. But It's not *100%* guarateed, it depends on the proxy provider, and seeing there's like 100.000.000 of them I'm not gonna even try.
