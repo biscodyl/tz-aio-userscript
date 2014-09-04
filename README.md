@@ -42,13 +42,13 @@ _This project is mainly maintained on [github](https://github.com/elundmark/tz-a
 * **Comment links**  _Customizable_ - Changes all valid un-anchored links inside comments to links.
 * **Exporter + Importer** - Saves your settings and so you can restore them more easily.
 * **Smart keyboard shortcuts**
-	* `C` **Copy all the trackers**
-	* `D` **Trigger the Magnet-link**
-	* `SHIFT + D` **Download a randomly selected torrent-file of those listed**
-	* `← →` : **Navigate search results pages (Left arrow Right arrow)**
-	* `SHIFT + →` **Next episode/season**
-	* `SHIFT + ←` **Previous episode/season**
-	* `ESC` **General exit/close**
+	* `C` - Copy all the trackers
+	* `D` - Trigger the Magnet-link
+	* `SHIFT + D` - Download a randomly selected torrent-file of those listed
+	* `← →` - Navigate search results pages (Left arrow Right arrow)
+	* `SHIFT + →` - Next episode/season
+	* `SHIFT + ←` - Previous episode/season
+	* `ESC` - General exit/close
 
 _All these settings are accessed by clicking 'TzAio' at the top of each page, and can be flushed and reset if you want to start over, or take advantage of (any) new default trackers that might have been added._
 
