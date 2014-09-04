@@ -80,7 +80,7 @@ __Note that not all of these work, some redirect to _torrentz.eu_ and some to _t
 
 ## Known Issues
 
-* Some have had it stop working this summer, due to (**I think**) the fact that GreaseMonkey has changed it's ways. Follow the instructions **[here](https://github.com/elundmark/tz-aio-userscript/issues/5)** (Issue[#5](https://github.com/elundmark/tz-aio-userscript/issues/5)) and you should be able to spring it back to life. Please leave a comment if you had any luck - **and keep an eye on that page if you didn't have any luck, a solution definite solution should be up shortly**.
+* Some have had it stop working this summer, due to (**I think**) the fact that GreaseMonkey has changed it's ways. Follow the instructions **[here](https://github.com/elundmark/tz-aio-userscript/issues/5)** (Issue[#5](https://github.com/elundmark/tz-aio-userscript/issues/5)) and you should be able to spring it back to life. Please leave a comment if you had any luck - **and keep an eye on that page if you didn't have any luck, a better and final solution should be up pretty soon**.
 
 ## Using a proxy?
 
