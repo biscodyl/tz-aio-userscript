@@ -38,34 +38,8 @@ $SOFTBLUE       : #BCC6CF;
 $COPYAREABG     : rgba(255,255,255,0.8);
 $WARNSHADOW     : rgba(0,0,0,0.2);
 $RGBATRANSP     : rgba(255,255,255,0);
-$TRANSPARENTGIF : "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 $INFORMATION    : "/img/information.png";
 $RSSIMG         : "/img/rss.png";
-
-.verified-image {
-	background-image : inline-image("download_button_normal.png");
-}
-.unverified-image {
-	background-image : inline-image("download_button_unv.png");
-}
-.fake-image {
-	background-image : inline-image("download_button_fake.png");
-}
-.folder-image {
-	background-image : inline-image("folder.png");
-}
-.peers-image {
-	background-image : inline-image("peers.png");
-}
-.comment-image {
-	background-image : inline-image("comment.png");
-}
-.clipboard-image {
-	background-image : inline-image("clipboard.png");
-}
-.connections-image {
-	background-image : inline-image("connections.png");
-}
 
 .tzAioborderBoxForm {
 	@include box-sizing(border-box);
@@ -77,15 +51,15 @@ $RSSIMG         : "/img/rss.png";
 $blinkfrom: 1.0;
 $blinkto:   0.0;
 
-@-moz-keyframes blinker {  
+@-moz-keyframes blinker {
 	from { opacity: $blinkfrom; }
 	to { opacity: $blinkto; }
 }
-@-webkit-keyframes blinker {  
+@-webkit-keyframes blinker {
 	from { opacity: $blinkfrom; }
 	to { opacity: $blinkto; }
 }
-@-keyframes blinker {  
+@-keyframes blinker {
 	from { opacity: $blinkfrom; }
 	to { opacity: $blinkto; }
 }
@@ -153,74 +127,32 @@ $blinkto:   0.0;
 	}
 
 	.tz_aio_info_bar {
-
-		text-align: center;
+		text-align: left;
 		position: relative;
-		margin: 20px 0;
-		min-height: 24px;
-		line-height: 24px;
-		padding-left: 32px;
-		overflow: visible;
+		margin: 0;
+		font-size: 17px;
+		line-height: 30px;
+		color: #E3C2B5;
+		display: block;
+		overflow-x: hidden;
+		white-space: nowrap;
+		font-weight: 400;
+		padding-left: 20px;
+		background-color: $LIGHTPINK;
 
-		.tz_aio_connections_image,
-		.tz_aio_folder_image,
-		.tz_aio_peers_image,
-		.tz_aio_comment_image {
-			background-color: transparent;
-			background-position: left center;
-			background-repeat: no-repeat;
-			display: inline-block;
-			padding-left: 32px;
-			@include background-size(24px 24px);
+		a {
+			color: #E3C2B5;
 		}
 
-		.tz_aio_connections_image {
-			@extend .connections-image;
+		.tz_aio_copylink {
+			cursor: pointer;
 		}
-
-		.tz_aio_folder_image {
-			@extend .folder-image;
-		}
-
-		.tz_aio_peers_image {
-			@extend .peers-image;
-		}
-
-		.tz_aio_comment_image {
-			@extend .comment-image;
-		}
-
 		.tz_aio_mlink, .tz_aio_copylink {
-			border-bottom: 1px dotted $GREEN;
 			overflow: visible;
 			position: relative;
-		}
-		.tz_aio_mlink::before, .tz_aio_copylink::before {
-			content: " ";
-			position: absolute;
-			top: -1px;
-			left: -32px;
-			width: 24px;
-			height: 24px;
-			background-color: transparent;
-			background-image: url($TRANSPARENTGIF);
-			background-repeat: no-repeat;
-			background-position: 50% 50%;
-			@include background-size(100% auto);
-		}
-
-		a.tz_aio_mlink.tz_aio_verified_dl::before {
-			@extend .verified-image;
-		}
-
-		a.tz_aio_mlink.tz_aio_unverified_dl::before {
-			@extend .unverified-image;
-		}
-		a.tz_aio_mlink.tz_aio_bogus_dl::before {
-			@extend .fake-image;
-		}
-		a.tz_aio_copylink::before {
-			@extend .clipboard-image;
+			&:hover {
+				text-decoration: underline;
+			}
 		}
 
 		.tz_aio_seed_green {
@@ -228,29 +160,15 @@ $blinkto:   0.0;
 		}
 
 		.tz_aio_seed_black {
+			color: #E3C2B5;
+		}
+		a:hover, a:active {
+			text-decoration: none;
+			color: $GRAY;
+		}
+		a:active {
+			top: 1px;
 			color: $BLACK;
-		}
-
-		.tz_aio_mlink:active::before,
-		.tz_aio_mlink.active::before,
-		.tz_aio_copylink:active::before,
-		.tz_aio_copylink.active::before {
-			top: 0px;
-		}
-		.tz_aio_copylink {
-			margin-left: 32px;
-			cursor: pointer;
-		}
-		a:active,
-		a.active,
-		.tz_aio_mlink.active {
-			color: $BLACK;
-		}
-		.tz_aio_mlink:hover,
-		.tz_aio_mlink.active,
-		.tz_aio_copylink:hover,
-		.tz_aio_copylink.hover {
-			border-bottom-style: solid;
 		}
 		.divided {
 			padding: 0 2px;
@@ -261,26 +179,25 @@ $blinkto:   0.0;
 			margin-right: 4px;
 		}
 		.warn {
-			color: red;
+			color: $WARNRED;
 			text-shadow: 0 1px 1px $WARNSHADOW;
 			padding-left: 4px;
-			-webkit-animation-name: blinker;  
-			-webkit-animation-iteration-count: 7;  
+			-webkit-animation-name: blinker;
+			-webkit-animation-iteration-count: 7;
 			-webkit-animation-timing-function: cubic-bezier(1.0,0,0,1.0);
 			-webkit-animation-duration: 1.5s;
-			-moz-animation-name: blinker;  
-			-moz-animation-iteration-count: 7;  
+			-moz-animation-name: blinker;
+			-moz-animation-iteration-count: 7;
 			-moz-animation-timing-function: cubic-bezier(1.0,0,0,1.0);
 			-moz-animation-duration: 1.5s;
-			animation-name: blinker;  
-			animation-iteration-count: 7;  
+			animation-name: blinker;
+			animation-iteration-count: 7;
 			animation-timing-function: cubic-bezier(1.0,0,0,1.0);
-			animation-duration: 1.5s; 
+			animation-duration: 1.5s;
 		}
 		.tz_aio_sep {
-			color: $DARKGRAY;
-			padding: 0 6px;
-			text-shadow: -1px 1px 0 $MILKWHITE;
+			color: $RGBATRANSP;
+			padding: 0 4px;
 		}
 
 	}
@@ -431,7 +348,7 @@ $blinkto:   0.0;
 	li.tz_aio_settings {
 		position: relative;
 	}
-	&.tz_aio_settings_saved .tz_aio_settings a::after, 
+	&.tz_aio_settings_saved .tz_aio_settings a::after,
 	.tz_aio_settings.tz_aio_settings_open a::after {
 		background-color: $WARNRED;
 		@include border-bottom-left-radius(3px);
@@ -632,7 +549,7 @@ $blinkto:   0.0;
 		}
 
 	}
-	
+
 	.results .tz_aio_episode_nav_links {
 		float: left;
 		text-align: left;
@@ -645,9 +562,9 @@ $blinkto:   0.0;
 	.results > dl {
 		position: relative !important;
 		background-color: $WHITE;
-		@include transition-property(background-color);
-		@include transition-duration(0.3s);
-		@include transition-timing-function(ease-in);
+		& > dt {
+			width: 694px;
+		}
 	}
 	.results > dl:hover {
 		position: relative;
@@ -655,57 +572,34 @@ $blinkto:   0.0;
 	}
 	.results .tz_aio_magnet {
 		width: 24px;
-		height: 24px;
+		height: 16px;
 		position: absolute;
-		top: 0;
-		left: 697px;
+		top: 5px;
+		left: 698px;
 		overflow: visible;
-		text-align: center;
 		z-index: 5;
-		opacity: 0;
-		@include transition-property(opacity);
-		@include transition-duration(0.3s);
-		@include transition-timing-function(ease-in);
-	}
-	.results .tz_aio_magnet {
-		opacity: 1;
-	}
-	.results .tz_aio_magnet a {
-		display: block;
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		color: $WHITE;
-		color: $RGBATRANSP;
-		@include transition-property(all);
-		@include transition-duration(0.15s);
-		@include transition-timing-function(linear);
-		@extend .verified-image;
-		background-position: 50% 50%;
-		background-repeat: no-repeat;
-		@include background-size(18px 18px);
-	}
-	.results .tz_aio_magnet a:hover {
-		@include background-size(24px 24px);
-	}
-	.results .tz_aio_magnet a:active {
-		@include background-size(14px 14px);
-	}
-	.results .tz_aio_unverified_dl .tz_aio_magnet a,
-	&.tz_aio_trackerlist .results .tz_aio_magnet a {
-		@extend .unverified-image;
-	}
-	.results .tz_aio_fake_dl .tz_aio_magnet a {
-		@extend .fake-image;
-	}
-	// Empty ugly white status vote
-	.tz_aio_unverified_dl .v {
-		visibility: hidden;
-	}
-	.results dl .v:empty {
-		visibility: hidden;
+		a {
+			@include border-radius(2px);
+			display: block;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			text-align: center;
+			font-size: 12px;
+			font-weight: bold;
+			color: $WHITE;
+			&:hover {
+				color: $BLACK;
+				text-decoration: none;
+			}
+			&:active {
+				top: 1px;
+				bottom: -1px;
+				text-decoration: none;
+			}
+		}
 	}
 	.results .tz_aio_exclude_filter_count:hover {
 		cursor: pointer;
@@ -774,5 +668,44 @@ $blinkto:   0.0;
 	}
 	dl.anime {
 		background-color: $SRANIME;
+	}
+}
+.tz_aio_b.tz_aio_v2 .results dl {
+	&.tz_aio_unverified_dl .tz_aio_magnet a,
+	&.tz_aio_unverified_dl span.v {
+		background-color: #C2C7BD !important;
+	}
+	&.tz_aio_one_dl .tz_aio_magnet a {
+		background-color: #A2EB80;
+	}
+	&.tz_aio_two_dl .tz_aio_magnet a {
+		background-color: #A2EB80;
+	}
+	&.tz_aio_three_dl .tz_aio_magnet a {
+		background-color: #8DDD69;
+	}
+	&.tz_aio_four_dl .tz_aio_magnet a {
+		background-color: #8DDD69;
+	}
+	&.tz_aio_five_dl .tz_aio_magnet a {
+		background-color: #79CC53;
+	}
+	&.tz_aio_six_dl .tz_aio_magnet a {
+		background-color: #79CC53;
+	}
+	&.tz_aio_seven_dl .tz_aio_magnet a {
+		background-color: #69BD43;
+	}
+	&.tz_aio_eight_dl .tz_aio_magnet a {
+		background-color: #69BD43;
+	}
+	&.tz_aio_nine_dl .tz_aio_magnet a {
+		background-color: #55A72F;
+	}
+	&.tz_aio_ten_dl .tz_aio_magnet a {
+		background-color: #55A72F;
+	}
+	&.tz_aio_fake_dl .tz_aio_magnet a {
+		background-color: #FDBFBF;
 	}
 }

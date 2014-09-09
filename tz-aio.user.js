@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.5.14
-// @date          2014-08-04
+// @version       2.6.0
+// @date          2014-09-09
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -20,7 +20,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-5-14-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-6-0-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -70,8 +70,6 @@
 	Spectrum Colorpicker by Brian Grinstead.
 		https://github.com/bgrins/spectrum/blob/master/LICENSE
 		http://briangrinstead.com
-	Icons by FatCow-Farm Fresh Icons
-		http://www.fatcow.com/free-icons
 
 */
 
@@ -104,7 +102,7 @@
 		// Tampermonkey
 		isTM = (!isGM && !isSC && typeof TM_log === "function"),
 		environment = isGM ? "Firefox/GreaseMonkey " : isTM ? "Chrome(-ium)/TamperMonkey "
-			: isSC ? "Firefox/Scriptish " : "unknown ",
+			: isSC ? "Firefox/Scriptish " : (window.opera && window.opera.buildNumber) ? "Opera " : "unknown ",
 		execStartMS,
 		startLogMsg,
 		d = document,
@@ -816,9 +814,8 @@
 			"<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, ",
 			"<a href='http://underscorejs.org/'>underscore.js</a>, ",
 			"<a href='http://github.com/cowboy/jquery-replacetext/'>",
-			"jQuery replaceText</a>, ",
-			"<a href='https://github.com/bgrins/spectrum'>Spectrum Colorpicker</a> &amp; ",
-			"icons by <a href='http://www.fatcow.com/free-icons'>FatCow-Farm Fresh Icons</a> </li>",
+			"jQuery replaceText</a> &amp; ",
+			"<a href='https://github.com/bgrins/spectrum'>Spectrum Colorpicker</a></li>",
 			"<li>Keyboard Shortcuts<ul>",
 			"<li><kbd>'C'</kbd> : "+(typeof GM_setClipboard === "function"
 				? "Copy all the trackers" : "Toggle the tracker box")+".</li>",
@@ -974,36 +971,8 @@
 			;
 		return href;
 	}
-	function isVerifiedDownload (votebox) {
-		var returnDigit = 0,
-			negativeVotes = 0,
-			negI = -1,
-			statusDigit,
-			negativeEls,
-			positiveVotes,
-			negativeElsLen,
-			negMatch;
-		if (votebox && votebox.length) {
-			statusDigit = getNodeNumber(votebox.find(".status")[0], true);
-			if (statusDigit >= 3) {
-				returnDigit = 1;
-			} else if (statusDigit < 0) {
-				returnDigit = -1;
-			} else {
-				// count the other boxes and compare
-				positiveVotes = getNodeNumber(votebox.find(".up")[0], true);
-				negativeEls = votebox.find(".replist").has("a+a+a");
-				negativeElsLen = negativeEls.length;
-				while ((++negI < negativeElsLen)) {
-					negMatch = getNodeNumber(negativeEls[negI], true);
-					negativeVotes = negativeVotes+negMatch;
-				}
-				if (positiveVotes >= 7 && (positiveVotes+negativeVotes) >= 2) {
-					returnDigit = 1;
-				}
-			}
-		}
-		return returnDigit;
+	function getVoteStatus (votebox) {
+		return votebox.find(".status")[0].style.color;
 	}
 	function setupCopyTextArea (arr) {
 		var textareaHTML = "<div id='"+tzCl+"_copy_tr_textarea' class='"+tzCl+"_copy_textarea'>"+
@@ -1029,13 +998,8 @@
 	}
 	function handleMagnetClicks (event) {
 		if (!event && !isAnyInputFocused()) {
-			// :active css class
-			els.$magnetLink.addClass("active");
 			location.href = els.$magnetLink[0].href;
 			return false;
-		} else if (event) {
-			// illogical, but this removes the override class active
-			els.$magnetLink.removeClass("active");
 		}
 	}
 	function ajaxResultsHandler (event) {
@@ -1298,7 +1262,6 @@
 				}
 				GM_setClipboard(copyThis);
 				if (els.$copyTrackersLink && els.$copyTrackersLink.length) {
-					els.$copyTrackersLink.addClass("active");
 					els.$copyTrackersLink.text(els.$copyTrackersLink.text()
 						.replace("Copy ","Copied "));
 				}
@@ -1346,7 +1309,6 @@
 					});
 				}
 				if (cache.isSingle) {
-					els.$magnetLink.removeClass("active");
 					els.$titleEl.trigger("mousedown");
 					toggleCopyBox(2);
 				}
@@ -1557,17 +1519,16 @@
 			dhtElsLenI = -1,
 			dhtElsMax,
 			seedColor = "black",
-			seedTitle = "S<span class='divided'>&frasl;</span>L &asymp;",
+			seedTitle = "Ratio: ",
 			filesDiv = els.$body.find("div.files:eq(0)"),
-			fileLinks = filesDiv.find("a"),
-			fileLinksLen = fileLinks.length,
+			fileLinks = filesDiv.find("li"),
+			folderLinks = filesDiv.find("li.t"),
+			fileLinksLen = fileLinks.length-folderLinks.length,
 			fileLinksLenI = fileLinksLen,
 			wmvWarning = false,
 			notActive = !!(els.$downloadDiv.next(".error").text()
 				.match(/active\s+locations?/i)),
-			verDownload = isVerifiedDownload(els.$body.find(".votebox")),
-			verDownloadCl = verDownload > 0 && !notActive ? "_verified_dl" : notActive
-				? " not_active" : verDownload < 0 ? "_bogus_dl" : "_unverified_dl",
+			statusColor = notActive ? "#FF5511" : getVoteStatus(els.$body.find(".votebox")),
 			filesSizeText = filesDiv.find("div:contains('Size:'):eq(0)").text()
 				.replace("Size: ",""),
 			commentDiv = els.$body.find("div.comments"),
@@ -1585,10 +1546,11 @@
 		trackerLen = allTrackers.length;
 		// final magnetlink uri
 		magnetLinkHtml = "<a id='"+tzCl+"_magnet_link"+"' class='"+tzCl+
-			"_mlink "+tzCl+verDownloadCl+"' href='"+
+			"_mlink "+"' href='"+
 			(getMagnetUrl(tz.page.thash, tz.page.title, allTrackers, true))+
 			"' title='Fully qualified magnet URI for newer BitTorrent clients, includes"+
-			" all "+trackerLen+" tracker"+(getPlural(trackerLen))+"'>Magnet Link</a>";
+			" all "+trackerLen+" tracker"+(getPlural(trackerLen))
+			+"' style='color:"+statusColor+";'>Magnet Link</a>";
 		// create seed leach ratio
 		while ((++upElemsLenI < upElemsLen)) {
 			_up[upElemsLenI] = getNodeNumber(upElems[upElemsLenI], true);
@@ -1639,42 +1601,41 @@
 			seedColor = "green";
 		}
 		seedText = seedTitle+" <span class='"+tzCl+"_seed_"+seedColor+"'>"+seedMeter+"</span>";
-		minPeersText = " <span class='"+tzCl+"_connections_image'>&asymp; "+
-			formatNumbers(minPeers, true)+" peer"+getPlural(minPeers)+"</span>";
+		minPeersText = " <span>Peers: "+formatNumbers(minPeers, true)+"</span>";
 		copyTrackersHtml = "<a href='#' id='"+tzCl+"_copylist' class='"+tzCl+
 			"_copylink' title='Click to copy the trackerlist'>Copy "+
 			trackerLen+" tracker"+(getPlural(trackerLen))+"</a>";
 		if (commentCount) {
-			commentText = "<a href='#comments_"+tzCl+"' class='"+tzCl+"_comment_image'>";
+			commentText = "<a href='#comments_"+tzCl+"'>";
 			commentDiv.before("<a name='comments_"+tzCl+"'></a>");
 		} else {
-			commentText = "<a href='#write_comment_"+tzCl+"' class='"+tzCl+"_comment_image'>";
+			commentText = "<a href='#write_comment_"+tzCl+"'"+(commentCount ? " class='"+tzCl+"_seed_green'" : "")+">";
 			formFieldset.before("<a name='write_comment_"+tzCl+"'></a>");
 		}
-		commentText += " "+commentCount+"</a>";
+		commentText += "&#x270e; "+commentCount+"</a>";
+		filesInfoText = "<a title='Including folders' "+
+			"href='#files_"+tzCl+"'> "+fileLinksLen+"&frasl;";
+		filesDiv.before("<a name='files_"+tzCl+"'></a>");
 		if (fileLinksLen && fileLinksLen <= 1000) {
-			// as fast as possible
-			while (fileLinksLenI--) {
-				if (fileLinks[fileLinksLenI].textContent.match(wmvPatt)
-					|| fileLinks[fileLinksLenI].href.match(wmvPatt)) {
-					wmvWarning = true;
-					fileLinksLenI = 0;
+			try {
+				while (fileLinksLenI--) {
+					if (fileLinks[fileLinksLenI].childNodes[0].nodeValue.match(wmvPatt)) {
+						wmvWarning = true;
+						break;
+					}
 				}
-			}
-			filesDiv.before("<a name='files_"+tzCl+"'></a>");
-			filesInfoText = "<a class='"+tzCl+"_folder_image' title='Not incl folders' "+
-				"href='#files_"+tzCl+"'> "+fileLinksLen+"</a> &frasl; ";
+			} catch (error) {}
 		}
-		filesInfoText += filesSizeText.length ? filesSizeText : "";
+		filesInfoText = filesInfoText+(filesSizeText.length ? filesSizeText : "")+"</a>";
 		if (filesInfoText.length && wmvWarning) {
 			filesInfoText += " <span class='warn'>.wmv</span>";
 		}
 		finalHtml += magnetLinkHtml+
 			htmlDivider+copyTrackersHtml+htmlDivider+minPeersText+
-			htmlDivider+"<span class='"+tzCl+"_peers_image'>"+seedText+"</span>"+
-			htmlDivider+commentText+(filesInfoText.length ? (htmlDivider+filesInfoText) : "");
-		els.$downloadDiv.before("<p id='"+tzCl+"' class='"+tzCl+"_info_bar generic "+tzCl+
-			verDownloadCl+"'"+cache.infoBarCss+">"+finalHtml+"</p>");
+			htmlDivider+"<span>"+seedText+"</span>"+htmlDivider+commentText+
+			(filesInfoText.length ? (htmlDivider+filesInfoText) : "");
+		els.$downloadDiv.find("> h2:eq(0)")
+			.after("<dl id='"+tzCl+"' class='"+tzCl+"_info_bar generic"+"'>"+finalHtml+"</dl>");
 		// edit torrentz own magnet link if available
 		els.$copyTrackersLink = $("#"+tzCl+"_copylist");
 		els.$magnetLink = $("#"+tzCl+"_magnet_link");
@@ -1705,6 +1666,7 @@
 			keyPatterns = getSearchGenres(),
 			metaCl = doColorize ? "meta-info colorizeme" : "meta-info",
 			currentClName,
+			torrQuality = null,
 			unverifiedClName = "",
 			coloredClName = "",
 			isActive = true,
@@ -1742,6 +1704,7 @@
 			linkMagnet = d.createElement("A");
 			linkMagnet.href = getMagnetUrl(torrHash, torrTitle, genericTrackers);
 			linkMagnet.title = "Download "+truncate(torrTitle, 20)+magnetTitleAppend;
+			linkMagnet.innerHTML = "&#x25bc;";
 			spanMagnet.appendChild(linkMagnet);
 			dlElements[i].appendChild(spanMagnet);
 			// stop if we're on a trackers list; too heavy and doesn't match enough anyways
@@ -1751,12 +1714,21 @@
 			vSpan = dlElements[i].getElementsByClassName("v");
 			vSpan = (vSpan && vSpan.length ? vSpan[0] : null);
 			if (vSpan) {
-				if (!/[1-9]/.test(vSpan.textContent)) {
+				torrQuality = vSpan.textContent.match(/\s*(-?[1-9])/);
+				if (torrQuality === null) {
 					// no votes
-					unverifiedClName = currentClName+" "+tzCl+"_unverified_dl";
-				} else if (/\-[0-9]/.test(vSpan.textContent)) {
-					// negative votes
-					unverifiedClName = currentClName+" "+tzCl+"_fake_dl";
+					vSpan.textContent = "0";
+					torrQuality = 0;
+				} else {
+					torrQuality = Number(torrQuality[1]);
+				}
+				if (torrQuality <= -1) {
+					// fake
+					torrQuality = 11;
+				}
+				if (torrQuality <= 11) {
+					// some votes
+					unverifiedClName = currentClName+" "+tzCl+cache.voteCssClasses[torrQuality];
 				}
 				// Keyword check
 				if (doColorize && keyPatterns && keyPatterns.length) {
@@ -2185,16 +2157,10 @@
 		}
 	}
 	function initSingleTorrent (callback) {
-		var infoDivHeight;
 		// check for height of div.top before removeAds
 		// and remember that adBlocker removes it first
 		// and that it might not be available at all times
 		els.$firstInfoDiv = els.$body.find(" > div.info:eq(0)");
-		infoDivHeight = els.$firstInfoDiv.is(":visible")
-			? els.$firstInfoDiv.outerHeight() - 20 : 0;
-			// 20 is the padding t+b of p.generic
-		cache.infoBarCss = infoDivHeight ? " style='min-height:"+
-			infoDivHeight+"px;line-height:"+infoDivHeight+"px;' " : " ";
 		// single page selectors
 		els.$downloadDiv = els.$body.find(".download:eq(0)");
 		els.$torrTitle = els.$body.find("h2:eq(0) span");
@@ -2205,17 +2171,16 @@
 		tz.page.titleEnc = encodeURIComponent(tz.page.title.replace(/\'/g,"_"));
 		// remove ads for single page
 		// inject download-buttons
-		removeAds("single");
-		return makeStatsBar(function (trackers) {
-			setupSelectToSearch();
-			els.$downloadDiv.find("a")
-				.not(els.$otherMagnetLinks)
-				.each(doDirectTorrentLink);
-			setupCopyTextArea(trackers);
-			linkifyCommentLinks();
-			if (typeof callback === "function") {
-				return callback();
-			}
+		return removeAds("single", null, function () {
+			return makeStatsBar(function (trackers) {
+				setupSelectToSearch();
+				els.$downloadDiv.find("a").not(els.$otherMagnetLinks).each(doDirectTorrentLink);
+				setupCopyTextArea(trackers);
+				linkifyCommentLinks();
+				if (typeof callback === "function") {
+					return callback();
+				}
+			});
 		});
 	}
 	function initSettingsPanel (callback) {
@@ -2406,7 +2371,21 @@
 		numberFormulaPatt: /((?:\-|\+)?\d+)/,
 		// https://en.wikipedia.org/wiki/Magnet_URI_scheme
 		magnetURI: "magnet:?xt=urn:btih:",
-		bugReportMsg: "\n(If this problem persists, please get in touch and I'll fix it\n"+tz.env.link+")"
+		bugReportMsg: "\n(If this problem persists, please get in touch and I'll fix it\n"+tz.env.link+")",
+		voteCssClasses: [
+			"_unverified_dl",
+			"_one_dl",
+			"_two_dl",
+			"_three_dl",
+			"_four_dl",
+			"_five_dl",
+			"_six_dl",
+			"_seven_dl",
+			"_eight_dl",
+			"_nine_dl",
+			"_ten_dl",
+			"_fake_dl"
+		]
 	};
 
 	$.fn.extend({ doLastAction: lastAction });

@@ -111,10 +111,7 @@ Licences:
 
 ## TODO's
 
-* **`2.6.0`** | Nicer, squarer, image-less magnet-link buttons for all search pages.
-* **`2.6.0`** | Move the [main tzaio bar](http://elundmark.se/_files/js/tz-aio/screenshots/tzaio_single_page.jpg) inside the main div below, I think.
-* **`2.6.0`** | Go through all browsers and plugins better and test the current versions.
-* **`2.6.0`** | Edit old css files to show older version users where they can find a new version! Only 28% have a version released **after** the move from UserScripts.org :( - Need to save on the bandwidth as well, so this has to happen.
+Nothing planned.
 
 ## Legality
 

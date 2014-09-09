@@ -1,5 +1,13 @@
 # Changelog
 
+**2.6.0** (2014-09-09)
+
+* New and improved infobar.
+* Scrapped images and lighter code.
+* New look for magnet-links.
+* Many small papercuts fixed.
+* Re-checked browser and plugin compatibility.
+
 **2.5.14** (2014-08-04)
 
 * Fixed **next** and **prev** keyboard shortcuts, they broke because `rel=next` and `rel=prev` were removed.
