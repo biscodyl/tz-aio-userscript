@@ -223,7 +223,7 @@ $blinkto:   0.0;
 			background: $TZPINK;
 			white-space: nowrap;
 			overflow: visible;
-			@include border-radius(6px);
+			@include border-radius(2px);
 		}
 		&:hover em {
 			background: $GREEN;
