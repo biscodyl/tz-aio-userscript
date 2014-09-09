@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Torrentz All-in-One Proxy Fix
 // @description   Does everything you wish Torrentz.eu could do! (This script does not auto update!)
-// @version       2.6.0
+// @version       2.6.1
 // @date          2014-09-09
 // @author        elundmark
 // @contact       mail@elundmark.se
@@ -18,7 +18,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-6-0-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-6-1-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -1499,7 +1499,7 @@
 			filesInfoText = "",
 			allTrackers, seedTleach ,seedText ,minPeersText ,i ,commentText,
 			copyTrackersHtml ,trackerLen ,_upLen ,_downLen,
-			wmvPatt = /\.(?:wmv|WMV)$/,
+			wmvPatt = /\.wmv$/i,
 			trackersDiv = els.$body.find("div.trackers:eq(0)"),
 			trackerLinks = trackersDiv.find("dt a"),
 			trackerLinksI = -1,
@@ -1522,7 +1522,7 @@
 			filesDiv = els.$body.find("div.files:eq(0)"),
 			fileLinks = filesDiv.find("li"),
 			folderLinks = filesDiv.find("li.t"),
-			fileLinksLen = fileLinks.length-folderLinks.length,
+			fileLinksLen = fileLinks.length-(folderLinks.length*2),
 			fileLinksLenI = fileLinksLen,
 			wmvWarning = false,
 			notActive = !!(els.$downloadDiv.next(".error").text()
@@ -1534,7 +1534,7 @@
 			// not the settings form!
 			formFieldset = els.$body.find("form.profile[method='post']:eq(0) fieldset"),
 			commentCount = els.$comments.length,
-			htmlDivider = " <span class='"+tzCl+"_sep'>&#124;</span> ",
+			htmlDivider = " <span class='"+tzCl+"_sep'>&#160;</span> ",
 			currTrackerList = [], _up = [], _down = [],
 			upNum = 0, downNum = 0, topUpNum = 0, topDownNum = 0, seedMeter = 0, minPeers = 0,
 			magnetUrl;
@@ -1599,11 +1599,11 @@
 		if (seedMeter >= 2 && topUpNum >= 5) {
 			seedColor = "green";
 		}
-		seedText = seedTitle+" <span class='"+tzCl+"_seed_"+seedColor+"'>"+seedMeter+"</span>";
-		minPeersText = " <span>Peers: "+formatNumbers(minPeers, true)+"</span>";
+		seedText = "<span>"+seedTitle+" <span class='"+tzCl+"_seed_"+seedColor+"'>"+seedMeter+"</span>";
+		minPeersText = " <span>Peers: "+formatNumbers(minPeers, true)+"</span></span>";
 		copyTrackersHtml = "<a href='#' id='"+tzCl+"_copylist' class='"+tzCl+
 			"_copylink' title='Click to copy the trackerlist'>Copy "+
-			trackerLen+" tracker"+(getPlural(trackerLen))+"</a>";
+			trackerLen+" Tracker"+(getPlural(trackerLen))+"</a>";
 		if (commentCount) {
 			commentText = "<a href='#comments_"+tzCl+"'>";
 			commentDiv.before("<a name='comments_"+tzCl+"'></a>");
@@ -1612,8 +1612,8 @@
 			formFieldset.before("<a name='write_comment_"+tzCl+"'></a>");
 		}
 		commentText += "&#x270e; "+commentCount+"</a>";
-		filesInfoText = "<a title='Including folders' "+
-			"href='#files_"+tzCl+"'> "+fileLinksLen+"&frasl;";
+		filesInfoText = "<a title='NOT including folders' "+
+			"href='#files_"+tzCl+"'>";
 		filesDiv.before("<a name='files_"+tzCl+"'></a>");
 		if (fileLinksLen && fileLinksLen <= 1000) {
 			try {
@@ -1625,14 +1625,13 @@
 				}
 			} catch (error) {}
 		}
-		filesInfoText = filesInfoText+(filesSizeText.length ? filesSizeText : "")+"</a>";
-		if (filesInfoText.length && wmvWarning) {
+		filesInfoText = filesInfoText+(filesSizeText.trim()||"")+" &frasl; "+fileLinksLen+
+			" File"+(getPlural(fileLinksLen))+"</a>";
+		if (wmvWarning) {
 			filesInfoText += " <span class='warn'>.wmv</span>";
 		}
-		finalHtml += magnetLinkHtml+
-			htmlDivider+copyTrackersHtml+htmlDivider+minPeersText+
-			htmlDivider+"<span>"+seedText+"</span>"+htmlDivider+commentText+
-			(filesInfoText.length ? (htmlDivider+filesInfoText) : "");
+		finalHtml += magnetLinkHtml+htmlDivider+copyTrackersHtml+htmlDivider+minPeersText+
+			htmlDivider+seedText+htmlDivider+commentText+htmlDivider+filesInfoText;
 		els.$downloadDiv.find("> h2:eq(0)")
 			.after("<dl id='"+tzCl+"' class='"+tzCl+"_info_bar generic"+"'>"+finalHtml+"</dl>");
 		// edit torrentz own magnet link if available
