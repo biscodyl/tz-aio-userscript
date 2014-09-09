@@ -37,10 +37,22 @@
 /*
 	# Compatibility
 
-	Tested in Firefox v19+ (GreaseMonkey v1.8+, Scriptish v0.1.8+),
-	Chrome v25+ (Tampermonkey v2.12.3124.16+),
-	and Opera v12+ (Violent Monkey v2.1.2.1) on Lubuntu 14.04 LTS
-	using Sublime Text 3, Sass, Compass, Git, Bash and NodeJS.
+	Tested in Firefox v32+ (GreaseMonkey 2.2+, Scriptish v0.1.12),
+	Chrome v37 (Tampermonkey v3.8.52),
+	and Opera v12.16 (Violent Monkey v1.6.3) on Lubuntu 14.04 LTS
+	Last checked 2014-09-05.
+
+	# GreaseMonkey bugs
+
+	There are reports that some installs have breaked (Q3 2014),
+	removing old config files and starting over will ppbly solve that:
+	Issue #5: https://github.com/elundmark/tz-aio-userscript/issues/5
+
+	# Scriptish bugs
+
+	Some bugs are found in versions 0.1.11 and below, though the
+	latest version isn't approved by Mozilla yet, you can still install it:
+	https://addons.mozilla.org/en-US/firefox/addon/scriptish/versions/
 
 	# Legality
 
@@ -804,8 +816,9 @@
 			"<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, ",
 			"<a href='http://underscorejs.org/'>underscore.js</a>, ",
 			"<a href='http://github.com/cowboy/jquery-replacetext/'>",
-			"jQuery replaceText</a> </li>",
-			"&amp; <a href='https://github.com/bgrins/spectrum'>Spectrum Colorpicker</a></li>",
+			"jQuery replaceText</a>, ",
+			"<a href='https://github.com/bgrins/spectrum'>Spectrum Colorpicker</a> &amp; ",
+			"icons by <a href='http://www.fatcow.com/free-icons'>FatCow-Farm Fresh Icons</a> </li>",
 			"<li>Keyboard Shortcuts<ul>",
 			"<li><kbd>'C'</kbd> : "+(typeof GM_setClipboard === "function"
 				? "Copy all the trackers" : "Toggle the tracker box")+".</li>",
@@ -2274,8 +2287,10 @@
 						"\nReset settings and reload the page?");
 					event.preventDefault();
 					if (refresh_page_reset) {
+						// Delete any and all saved values
 						setStorageOptions(false, function () {
 							sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
+							sessionStorage.removeItem(tz.env.slug+"_SS_cookietest_3");
 							location.href = tz.page.href;
 						});
 					}

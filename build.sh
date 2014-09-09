@@ -45,7 +45,7 @@ if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -x "$PASSM" ]]; then
 	reminder=$'\n'"Did you remember to update all version info?"$'\n'
 	if [[ "$1" ]] && [[ ! "$1" =~ ^all$ ]] ; then
 		for str_arg in $* ; do
-			if [[ "$str_arg" = "sass" ]] || [[ "$str_arg" = "css" ]] ; then
+			if [[ $str_arg =~ sass|s?css ]] ; then
 				sassCompile
 			fi
 			if [[ "$str_arg" = "git" ]] ; then
