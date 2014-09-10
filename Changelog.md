@@ -1,5 +1,9 @@
 # Changelog
 
+**2.6.3** (2014-09-11)
+
+* Annoying error fixed for `2.6.2`.
+
 **2.6.2** (2014-09-11)
 
 * Even better infobar (w/ readable code).
