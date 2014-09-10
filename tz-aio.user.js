@@ -736,15 +736,12 @@
 		}
 		return returnStr;
 	}
-	function getMagnetUrl (hash, title, trackers, htmlEnc) {
+	function getMagnetUrl (hash, title, trackers) {
 		var s;
 		trackers = trackers.map(function (e) {
 			return encodeURIComponent(e.trim())+"&tr=";
 		}).join("").replace(/\&tr=$/, "");
 		s = cache.magnetURI+hash+"&dn="+encodeURIComponent(title)+"&tr="+trackers;
-		if (htmlEnc) {
-			s = __.escape(s);
-		}
 		return s;
 	}
 	function genUserSRInputs () {
@@ -1546,11 +1543,8 @@
 		trackerLen = allTrackers.length;
 		// final magnetlink uri
 		magnetLinkHtml = "<a id='"+tzCl+"_magnet_link"+"' class='"+tzCl+
-			"_mlink "+"' href='"+
-			(getMagnetUrl(tz.page.thash, tz.page.title, allTrackers, true))+
-			"' title='Fully qualified magnet URI for newer BitTorrent clients, includes"+
-			" all "+trackerLen+" tracker"+(getPlural(trackerLen))
-			+"' style='color:"+statusColor+";'>Magnet Link</a>";
+			"_mlink' href='#' title='Fully qualified magnet URI for newer BitTorrent clients, includes"+
+			" all "+trackerLen+" tracker"+(getPlural(trackerLen))+"' style='color:"+statusColor+";'>Magnet Link</a>";
 		// create seed leach ratio
 		while ((++upElemsLenI < upElemsLen)) {
 			_up[upElemsLenI] = getNodeNumber(upElems[upElemsLenI], true);
@@ -1638,14 +1632,15 @@
 		// edit torrentz own magnet link if available
 		els.$copyTrackersLink = $("#"+tzCl+"_copylist");
 		els.$magnetLink = $("#"+tzCl+"_magnet_link");
+		// Changed to affect all incl. my own
+		els.$allMagnetLinks = $("a[href^='magnet:']").add(els.$magnetLink);
+		console.log(els.$allMagnetLinks.length);
+		magnetUrl = getMagnetUrl(tz.page.thash, tz.page.title, allTrackers);
+		console.log(magnetUrl);
+		els.$allMagnetLinks.each(function (index, element) {
+			$(element).attr("href", magnetUrl);
+		});
 		els.$magnetLink.on("click", handleMagnetClicks);
-		els.$otherMagnetLinks = els.$body.find("a[href^='magnet:']").not(els.$magnetLink);
-		if (els.$otherMagnetLinks.length) {
-			magnetUrl = getMagnetUrl(tz.page.thash, tz.page.title, allTrackers);
-			els.$otherMagnetLinks.each(function (index, element) {
-				$(element).attr("href", magnetUrl);
-			});
-		}
 		if (!commentCount) {
 			commentDiv.find(" > h2:eq(0)").replaceText(/\(\d+\)/, "(0)");
 		}
@@ -2173,7 +2168,7 @@
 		return removeAds("single", null, function () {
 			return makeStatsBar(function (trackers) {
 				setupSelectToSearch();
-				els.$downloadDiv.find("a").not(els.$otherMagnetLinks).each(doDirectTorrentLink);
+				els.$downloadDiv.find("a").not(els.$allMagnetLinks).each(doDirectTorrentLink);
 				setupCopyTextArea(trackers);
 				linkifyCommentLinks();
 				if (typeof callback === "function") {
