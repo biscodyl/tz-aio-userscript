@@ -197,7 +197,10 @@ $blinkto:   0.0;
 		}
 		.tz_aio_sep {
 			color: $RGBATRANSP;
-			padding: 0 4px;
+			padding: 0 10px;
+			display: inline-block;
+			box-sizing: border-box;
+			max-width: 20px;
 		}
 
 	}

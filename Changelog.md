@@ -1,5 +1,9 @@
 # Changelog
 
+**2.6.2** (2014-09-11)
+
+* Even better infobar (w/ readable code).
+
 **2.6.1** (2014-09-09)
 
 * Fixed some annoying text issues in the infobar.

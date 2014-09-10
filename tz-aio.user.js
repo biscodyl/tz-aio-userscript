@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.6.1
-// @date          2014-09-09
+// @version       2.6.2
+// @date          2014-09-11
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -20,7 +20,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-6-1-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-6-2-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -537,6 +537,25 @@
 		}
 		return returnStr;
 	}
+	function getVerifiedColor (min, max, n) {
+		var colors = [
+				"#E3C2B5",
+				"#A2EB80",
+				"#8DDD69",
+				"#8DDD69",
+				"#79CC53",
+				"#79CC53",
+				"#69BD43",
+				"#69BD43",
+				"#55A72F",
+				"#55A72F"
+			],
+			mod = (100 / min) * 10;
+		if (n >= max) return colors[9];
+		if (n <= min) return colors[0];
+		n = (n - min) * mod;
+		return colors[(Math.ceil(n / 100)-1)];
+	}
 	function shuffledArray (len) {
 		var arr = [],
 			i,
@@ -978,10 +997,6 @@
 		els.$body.append(textareaHTML);
 		els.$copyTextArea = $("#"+tzCl+"_copy_tr_textarea");
 		els.$copyTextArea.find("textarea").val(arr.join(""));
-		els.$copyTrackersLink.on("click", function () {
-			toggleCopyBox(1);
-			return false;
-		});
 	}
 	function setupSelectToSearch () {
 		if (tz.usc.searchTabs) {
@@ -1491,60 +1506,42 @@
 			}
 		}, 50);
 	}
-	function makeStatsBar (callback) {
-		var magnetLinkHtml = "",
-			finalHtml = "",
-			filesInfoText = "",
-			allTrackers, seedTleach ,seedText ,minPeersText ,i ,commentText,
-			copyTrackersHtml ,trackerLen ,_upLen ,_downLen,
-			wmvPatt = /\.wmv$/i,
-			trackersDiv = els.$body.find("div.trackers:eq(0)"),
+	function getPeerStats (callback) {
+		var trackersDiv = els.$body.find("div.trackers:eq(0)"),
 			trackerLinks = trackersDiv.find("dt a"),
 			trackerLinksI = -1,
 			trackerLinksLen = trackerLinks.length,
 			trackerDataEls = trackersDiv.find("dl:has(a) dd"),
 			upElems = trackerDataEls.find(".u"),
 			upElemsLen = upElems.length,
-			upElemsLenI = -1,
 			downElems = trackerDataEls.find(".d"),
 			downElemsLen = downElems.length,
 			downElemsLenI = -1,
 			dhtEls = trackersDiv[0].textContent.indexOf("(DHT)") !== -1
-				? trackersDiv.find("dl:eq(0):contains('(DHT)') span.u, "+
-				"dl:eq(0):contains('(DHT)') span.d") : [],
+				? trackersDiv.find("dl:eq(0):contains('(DHT)') span.u, dl:eq(0):contains('(DHT)') span.d")
+				: [],
+			seedTleach, i, _upLen, _downLen,
+			currTrackerList = [],
 			dhtElsLen = dhtEls.length,
 			dhtElsLenI = -1,
+			upElemsLenI = -1,
+			upNum = 0,
+			downNum = 0,
+			topUpNum = 0,
+			topDownNum = 0,
+			seedMeter = 0,
+			minPeers = 0,
+			trackerLen = 0,
+			allTrackers,
 			dhtElsMax,
-			seedColor = "black",
-			seedTitle = "Ratio: ",
-			filesDiv = els.$body.find("div.files:eq(0)"),
-			fileLinks = filesDiv.find("li"),
-			folderLinks = filesDiv.find("li.t"),
-			fileLinksLen = fileLinks.length-(folderLinks.length*2),
-			fileLinksLenI = fileLinksLen,
-			wmvWarning = false,
-			notActive = !!(els.$downloadDiv.next(".error").text()
-				.match(/active\s+locations?/i)),
-			statusColor = notActive ? "#FF5511" : getVoteStatus(els.$body.find(".votebox")),
-			filesSizeText = filesDiv.find("div:contains('Size:'):eq(0)").text()
-				.replace("Size: ",""),
-			commentDiv = els.$body.find("div.comments"),
-			// not the settings form!
-			formFieldset = els.$body.find("form.profile[method='post']:eq(0) fieldset"),
-			commentCount = els.$comments.length,
-			htmlDivider = " <span class='"+tzCl+"_sep'>&#160;</span> ",
-			currTrackerList = [], _up = [], _down = [],
-			upNum = 0, downNum = 0, topUpNum = 0, topDownNum = 0, seedMeter = 0, minPeers = 0,
-			magnetUrl;
+			_up = [],
+			_down = [];
+		// Get trackerlist for single torrent
 		while ((++trackerLinksI < trackerLinksLen)) {
 			currTrackerList.push((trackerLinks[trackerLinksI].textContent||""));
 		}
 		allTrackers = tz.trackers(currTrackerList);
 		trackerLen = allTrackers.length;
-		// final magnetlink uri
-		magnetLinkHtml = "<a id='"+tzCl+"_magnet_link"+"' class='"+tzCl+
-			"_mlink' href='#' title='Fully qualified magnet URI for newer BitTorrent clients, includes"+
-			" all "+trackerLen+" tracker"+(getPlural(trackerLen))+"' style='color:"+statusColor+";'>Magnet Link</a>";
 		// create seed leach ratio
 		while ((++upElemsLenI < upElemsLen)) {
 			_up[upElemsLenI] = getNodeNumber(upElems[upElemsLenI], true);
@@ -1571,11 +1568,13 @@
 			}
 		}
 		minPeers = topDownNum+topUpNum;
-		while ((++dhtElsLenI < dhtElsLen)) {
-			// DHT activity
-			dhtElsMax = getNodeNumber(dhtEls[dhtElsLenI], true);
-			if (dhtElsMax > minPeers) {
-				minPeers = dhtElsMax;
+		if (dhtElsLen) {
+			while ((++dhtElsLenI < dhtElsLen)) {
+				// DHT activity
+				dhtElsMax = getNodeNumber(dhtEls[dhtElsLenI], true);
+				if (dhtElsMax > minPeers) {
+					minPeers = dhtElsMax;
+				}
 			}
 		}
 		seedTleach = (upNum/downNum);
@@ -1591,26 +1590,99 @@
 		} else if (seedTleach >= 100) {
 			seedMeter = Math.round(seedTleach);
 		}
-		if (seedMeter >= 2 && topUpNum >= 5) {
-			seedColor = "green";
-		}
-		seedText = "<span>"+seedTitle+" <span class='"+tzCl+"_seed_"+seedColor+"'>"+seedMeter+"</span>";
-		minPeersText = " <span>Peers: "+formatNumbers(minPeers, true)+"</span></span>";
-		copyTrackersHtml = "<a href='#' id='"+tzCl+"_copylist' class='"+tzCl+
-			"_copylink' title='Click to copy the trackerlist'>Copy "+
-			trackerLen+" Tracker"+(getPlural(trackerLen))+"</a>";
-		if (commentCount) {
-			commentText = "<a href='#comments_"+tzCl+"'>";
-			commentDiv.before("<a name='comments_"+tzCl+"'></a>");
-		} else {
-			commentText = "<a href='#write_comment_"+tzCl+"'"+(commentCount ? " class='"+tzCl+"_seed_green'" : "")+">";
-			formFieldset.before("<a name='write_comment_"+tzCl+"'></a>");
-		}
-		commentText += "&#x270e; "+commentCount+"</a>";
-		filesInfoText = "<a title='NOT including folders' "+
-			"href='#files_"+tzCl+"'>";
+		return callback({
+			"seedMeter": seedMeter,
+			"minPeers": minPeers,
+			"trackerLen": trackerLen,
+			"allTrackers": allTrackers
+		});
+	}
+	function makeMainMagnetLink (color, tr) {
+		return $("<a/>", {
+			"href": "#", // Set later and applied to all magnetlinks on the page
+			"class": tzCl+"_mlink",
+			"id": tzCl+"_magnet_link",
+			"text": "Magnet Link",
+			"title": "Fully qualified magnet URI for newer BitTorrent clients, includes"+
+				" all "+tr+" tracker"+getPlural(tr),
+			on: {
+				"click": handleMagnetClicks
+			}
+		}).css("color", color);
+	}
+	function makeCopyTrackerList (tr) {
+		return $("<a/>", {
+			"href": "#",
+			"id": tzCl+"_copylist",
+			"class": tzCl+"_copylink",
+			"title": "Click to copy the trackerlist",
+			"text": "Copy "+tr+" Tracker"+getPlural(tr),
+			on: {
+				"click": function () {
+					toggleCopyBox(1);
+					return false;
+				}
+			}
+		});
+	}
+	function makeInfoBarContainer () {
+		return $("<dl/>", {
+			"id": tzCl,
+			"class": tzCl+"_info_bar"
+		});
+	}
+	function makeDivider () {
+		return $("<span>", {
+			"class": tzCl+"_sep",
+			"html": "&#160;"
+		});
+	}
+	function makeRatioSpan (ratio) {
+		var numEl = $("<span/>", {
+				"text": ratio+""
+			}).css("color", getVerifiedColor(180, 500, (ratio*100).toFixed(0))),
+			spanEl = $("<span/>", {
+				"text": "Ratio: "
+			});
+		numEl.appendTo(spanEl);
+		return spanEl;
+	}
+	function makePeersSpan (min) {
+		return $("<span/>", {
+			"text": "Peers: "+formatNumbers(min, true)
+		});
+	}
+	function makeCommentLink (n) {
+		return $("<a/>", {
+			"href": n ? "#comments_"+tzCl : "#write_comment_"+tzCl,
+			"html": "&#x270e; "+n
+		}).css("color", getVerifiedColor(100, 1000, n*100));
+	}
+	function makeFilesLink (s, n) {
+		return $("<a/>", {
+			"href": "#files_"+tzCl,
+			"html": "Size: "+s+" &frasl; "+n+" File"+getPlural(n),
+			"title": "NOT including folders"
+		});
+	}
+	function makeWmvWarning () {
+		return $("<span/>", {
+			"class": "warn",
+			"text": " .wmv"
+		});
+	}
+	function getFilesInfo (callback) {
+		var wmvPatt = /\.wmv$/i,
+			filesDiv = els.$body.find("div.files:eq(0)"),
+			fileLinks = filesDiv.find("li"),
+			folderLinks = filesDiv.find("li.t"),
+			fileLinksLen = fileLinks.length-(folderLinks.length*2),
+			fileLinksLenI = fileLinksLen,
+			filesSizeText = filesDiv.find("div:contains('Size:'):eq(0)").text().replace("Size: ",""),
+			wmvWarning = false;
 		filesDiv.before("<a name='files_"+tzCl+"'></a>");
 		if (fileLinksLen && fileLinksLen <= 1000) {
+			// Not important enough to be able to break everything
 			try {
 				while (fileLinksLenI--) {
 					if (fileLinks[fileLinksLenI].childNodes[0].nodeValue.match(wmvPatt)) {
@@ -1620,33 +1692,63 @@
 				}
 			} catch (error) {}
 		}
-		filesInfoText = filesInfoText+(filesSizeText.trim()||"")+" &frasl; "+fileLinksLen+
-			" File"+(getPlural(fileLinksLen))+"</a>";
-		if (wmvWarning) {
-			filesInfoText += " <span class='warn'>.wmv</span>";
-		}
-		finalHtml += magnetLinkHtml+htmlDivider+copyTrackersHtml+htmlDivider+minPeersText+
-			htmlDivider+seedText+htmlDivider+commentText+htmlDivider+filesInfoText;
-		els.$downloadDiv.find("> h2:eq(0)")
-			.after("<dl id='"+tzCl+"' class='"+tzCl+"_info_bar generic"+"'>"+finalHtml+"</dl>");
-		// edit torrentz own magnet link if available
-		els.$copyTrackersLink = $("#"+tzCl+"_copylist");
-		els.$magnetLink = $("#"+tzCl+"_magnet_link");
-		// Changed to affect all incl. my own
-		els.$allMagnetLinks = $("a[href^='magnet:']").add(els.$magnetLink);
-		console.log(els.$allMagnetLinks.length);
-		magnetUrl = getMagnetUrl(tz.page.thash, tz.page.title, allTrackers);
-		console.log(magnetUrl);
-		els.$allMagnetLinks.each(function (index, element) {
-			$(element).attr("href", magnetUrl);
+		return callback({
+			"text": filesSizeText.trim(),
+			"len": fileLinksLen,
+			"wmv": wmvWarning
 		});
-		els.$magnetLink.on("click", handleMagnetClicks);
-		if (!commentCount) {
-			commentDiv.find(" > h2:eq(0)").replaceText(/\(\d+\)/, "(0)");
-		}
-		if (typeof callback === "function") {
-			return callback(allTrackers);
-		}
+	}
+	function makeStatsBar (callback) {
+		var notActive = !!(els.$downloadDiv.next(".error").text()
+				.match(/active\s+locations?/i)),
+			statusColor = notActive ? "#FF5511" : getVoteStatus(els.$body.find(".votebox")),
+			commentDiv = els.$body.find("div.comments"),
+			infoBar,
+			magnetUrl;
+
+		infoBar = makeInfoBarContainer();
+		return getPeerStats(function (stats) {
+			// Magnet Link
+			makeMainMagnetLink(statusColor, stats.trackerLen).appendTo(infoBar);
+			makeDivider().appendTo(infoBar);
+			// Copy N Trackers
+			makeCopyTrackerList(stats.trackerLen).appendTo(infoBar);
+			makeDivider().appendTo(infoBar);
+			// Peers:
+			makePeersSpan(stats.minPeers).appendTo(infoBar);
+			makeDivider().appendTo(infoBar);
+			// Ratio:
+			makeRatioSpan(stats.seedMeter).appendTo(infoBar);
+			makeDivider().appendTo(infoBar);
+			// File info link
+			return getFilesInfo(function (fileStats) {
+				makeFilesLink(fileStats.text, fileStats.len).appendTo(infoBar);
+				if (fileStats.wmv) makeWmvWarning().appendTo(infoBar);
+				makeDivider().appendTo(infoBar);
+				// Comments:
+				makeCommentLink(els.$comments.length).appendTo(infoBar);
+				// Prepend it to download > h2
+				els.$downloadDiv.find("> h2:eq(0)").after(infoBar);
+				// Stuff to do after the bar has been created
+				els.$copyTrackersLink = $("#"+tzCl+"_copylist");
+				els.$magnetLink = $("#"+tzCl+"_magnet_link");
+				els.$allMagnetLinks = $("a[href^='magnet:']").add(els.$magnetLink);
+				magnetUrl = getMagnetUrl(tz.page.thash, tz.page.title, stats.allTrackers);
+				els.$allMagnetLinks.each(function (index, element) {
+					$(element).attr("href", magnetUrl);
+				});
+				if (els.$comments.length) {
+					commentDiv.before("<a name='comments_"+tzCl+"'></a>");
+				} else {
+					els.$body.find("form.profile[method='post']:eq(0) fieldset")
+						.before("<a name='write_comment_"+tzCl+"'></a>");
+					commentDiv.find(" > h2:eq(0)").replaceText(/\(\d+\)/, "(0)");
+				}
+				if (typeof callback === "function") {
+					return callback(stats.allTrackers);
+				}
+			});
+		});
 	}
 	function dlResultsActions (resultsElement, callback) {
 		var dlElements = resultsElement.getElementsByTagName("dl"),
