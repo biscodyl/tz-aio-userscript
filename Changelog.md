@@ -1,5 +1,9 @@
 # Changelog
 
+**2.6.4** (2014-09-11)
+
+* Another stupid pos fix for `2.6.3`.
+
 **2.6.3** (2014-09-11)
 
 * Annoying error fixed for `2.6.2`.
