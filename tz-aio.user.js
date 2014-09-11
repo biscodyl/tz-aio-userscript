@@ -550,28 +550,30 @@
 				"#55A72F",
 				"#55A72F"
 			];
+		console.log(n, kind);
 		if (kind === "comments") {
-			if (n <= 0) i = 0;
-			if (n <= 1) i = 2;
-			if (n <= 2) i = 4;
-			if (n <= 3) i = 5;
-			if (n <= 4) i = 6;
-			if (n <= 5) i = 7;
-			if (n <= 6) i = 8;
-			if (n <= 7) i = 9;
-			if (n > 7) i = 9;
+			if (n <= 0) { i = 0; }
+			else if (n <= 1) { i = 2; }
+			else if (n <= 2) { i = 4; }
+			else if (n <= 3) { i = 5; }
+			else if (n <= 4) { i = 6; }
+			else if (n <= 5) { i = 7; }
+			else if (n <= 6) { i = 8; }
+			else if (n <= 7) { i = 9; }
+			else if (n > 7) { i = 9; }
+			console.log(i);
 		} else if (kind === "ratio") {
-			if (n <= 1.74) i = 0;
-			if (n <= (1*0.125)+1.75) i = 1;
-			if (n <= (2*0.125)+1.75) i = 2;
-			if (n <= (3*0.125)+1.75) i = 3;
-			if (n <= (4*0.125)+1.75) i = 4;
-			if (n <= (5*0.125)+1.75) i = 5;
-			if (n <= (6*0.125)+1.75) i = 6;
-			if (n <= (7*0.125)+1.75) i = 7;
-			if (n <= (8*0.125)+1.75) i = 8;
-			if (n <= (9*0.125)+1.75) i = 9;
-			if (n >= 3) i = 9;
+			if (n <= 1.74) { i = 0; }
+			else if (n <= (1*0.125)+1.75) { i = 1; }
+			else if (n <= (2*0.125)+1.75) { i = 2; }
+			else if (n <= (3*0.125)+1.75) { i = 3; }
+			else if (n <= (4*0.125)+1.75) { i = 4; }
+			else if (n <= (5*0.125)+1.75) { i = 5; }
+			else if (n <= (6*0.125)+1.75) { i = 6; }
+			else if (n <= (7*0.125)+1.75) { i = 7; }
+			else if (n <= (8*0.125)+1.75) { i = 8; }
+			else if (n <= (9*0.125)+1.75) { i = 9; }
+			else if (n >= 3) { i = 9; }
 		}
 		return colors[i];
 	}
@@ -1746,6 +1748,7 @@
 				makeDivider().appendTo(infoBar);
 				// Comments:
 				makeCommentLink(els.$comments.length).appendTo(infoBar);
+				console.log(els.$comments.length);
 				// Prepend it to download > h2
 				els.$downloadDiv.find("> h2:eq(0)").after(infoBar);
 				// Stuff to do after the bar has been created
