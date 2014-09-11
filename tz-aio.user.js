@@ -550,7 +550,6 @@
 				"#55A72F",
 				"#55A72F"
 			];
-		console.log(n, kind);
 		if (kind === "comments") {
 			if (n <= 0) { i = 0; }
 			else if (n <= 1) { i = 2; }
@@ -561,7 +560,6 @@
 			else if (n <= 6) { i = 8; }
 			else if (n <= 7) { i = 9; }
 			else if (n > 7) { i = 9; }
-			console.log(i);
 		} else if (kind === "ratio") {
 			if (n <= 1.74) { i = 0; }
 			else if (n <= (1*0.125)+1.75) { i = 1; }
@@ -1748,7 +1746,6 @@
 				makeDivider().appendTo(infoBar);
 				// Comments:
 				makeCommentLink(els.$comments.length).appendTo(infoBar);
-				console.log(els.$comments.length);
 				// Prepend it to download > h2
 				els.$downloadDiv.find("> h2:eq(0)").after(infoBar);
 				// Stuff to do after the bar has been created
