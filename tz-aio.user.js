@@ -538,18 +538,7 @@
 		return returnStr;
 	}
 	function getVerifiedColor (n, kind) {
-		var i, colors = [
-				"#E3C2B5",
-				"#A2EB80",
-				"#8DDD69",
-				"#8DDD69",
-				"#79CC53",
-				"#79CC53",
-				"#69BD43",
-				"#69BD43",
-				"#55A72F",
-				"#55A72F"
-			];
+		var i;
 		if (kind === "comments") {
 			if (n <= 0) { i = 0; }
 			else if (n <= 1) { i = 2; }
@@ -573,7 +562,8 @@
 			else if (n <= (9*0.125)+1.75) { i = 9; }
 			else if (n >= 3) { i = 9; }
 		}
-		return colors[i];
+		if (i !== 0) i += 1;
+		return cache.voteCssClasses[i].replace(/_bg$/, "");
 	}
 	function shuffledArray (len) {
 		var arr = [],
@@ -1658,8 +1648,9 @@
 	}
 	function makeRatioSpan (ratio) {
 		var numEl = $("<span/>", {
-				"text": ratio+""
-			}).css("color", getVerifiedColor(ratio, "ratio")),
+				"text": ratio+"",
+				"class": tzCl+getVerifiedColor(ratio, "ratio")
+			}),
 			spanEl = $("<span/>", {
 				"text": "Ratio: "
 			});
@@ -1674,8 +1665,9 @@
 	function makeCommentLink (n) {
 		return $("<a/>", {
 			"href": n ? "#comments_"+tzCl : "#write_comment_"+tzCl,
-			"html": "&#x270e; "+n
-		}).css("color", getVerifiedColor(n, "comments"));
+			"html": "&#x270e; "+n,
+			"class": tzCl+getVerifiedColor(n, "comments")
+		});
 	}
 	function makeFilesLink (s, n) {
 		return $("<a/>", {
@@ -2488,18 +2480,18 @@
 		magnetURI: "magnet:?xt=urn:btih:",
 		bugReportMsg: "\n(If this problem persists, please get in touch and I'll fix it\n"+tz.env.link+")",
 		voteCssClasses: [
-			"_unverified_dl",
-			"_one_dl",
-			"_two_dl",
-			"_three_dl",
-			"_four_dl",
-			"_five_dl",
-			"_six_dl",
-			"_seven_dl",
-			"_eight_dl",
-			"_nine_dl",
-			"_ten_dl",
-			"_fake_dl"
+			"_unverified_dl_bg",
+			"_one_dl_bg",
+			"_two_dl_bg",
+			"_three_dl_bg",
+			"_four_dl_bg",
+			"_five_dl_bg",
+			"_six_dl_bg",
+			"_seven_dl_bg",
+			"_eight_dl_bg",
+			"_nine_dl_bg",
+			"_ten_dl_bg",
+			"_fake_dl_bg"
 		]
 	};
 

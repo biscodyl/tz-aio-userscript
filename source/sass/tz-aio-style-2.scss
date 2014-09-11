@@ -35,6 +35,17 @@ $LIGHTGREEN     : #d4ffd4;
 $ORANGE         : #F51;
 $WARNRED        : #C00;
 $SOFTBLUE       : #BCC6CF;
+$GREENUNVERIFIED: #E3C2B5;
+$GREENONE       : #A2EB80;
+$GREENTWO       : #A2EB80;
+$GREENTHREE     : #8DDD69;
+$GREENFOUR      : #8DDD69;
+$GREENFIVE      : #79CC53;
+$GREENSIX       : #79CC53;
+$GREENSEVEN     : #69BD43;
+$GREENEIGHT     : #69BD43;
+$GREENNINE      : #55A72F;
+$GREENTEN       : #55A72F;
 $COPYAREABG     : rgba(255,255,255,0.8);
 $WARNSHADOW     : rgba(0,0,0,0.2);
 $RGBATRANSP     : rgba(255,255,255,0);
@@ -132,7 +143,7 @@ $blinkto:   0.0;
 		margin: 0;
 		font-size: 17px;
 		line-height: 30px;
-		color: #E3C2B5;
+		color: $GREENUNVERIFIED;
 		display: block;
 		overflow-x: hidden;
 		white-space: nowrap;
@@ -142,7 +153,7 @@ $blinkto:   0.0;
 		@include background-image(linear-gradient(left, $LIGHTPINK 0%, $LIGHTPINK 79%, $WHITE 100%));
 
 		a {
-			color: #E3C2B5;
+			color: $GREENUNVERIFIED;
 		}
 
 		.tz_aio_copylink {
@@ -161,7 +172,7 @@ $blinkto:   0.0;
 		}
 
 		.tz_aio_seed_black {
-			color: #E3C2B5;
+			color: $GREENUNVERIFIED;
 		}
 		a:hover, a:active {
 			text-decoration: none;
@@ -202,6 +213,40 @@ $blinkto:   0.0;
 			display: inline-block;
 			box-sizing: border-box;
 			max-width: 20px;
+		}
+
+		.tz_aio_one_dl {
+			color: $GREENONE;
+		}
+		.tz_aio_two_dl {
+			color: $GREENTWO;
+		}
+		.tz_aio_three_dl {
+			color: $GREENTHREE;
+		}
+		.tz_aio_four_dl {
+			color: $GREENFOUR;
+		}
+		.tz_aio_five_dl {
+			color: $GREENFIVE;
+		}
+		.tz_aio_six_dl {
+			color: $GREENSIX;
+		}
+		.tz_aio_seven_dl {
+			color: $GREENSEVEN;
+		}
+		.tz_aio_eight_dl {
+			color: $GREENEIGHT;
+		}
+		.tz_aio_nine_dl {
+			color: $GREENNINE;
+		}
+		.tz_aio_ten_dl {
+			color: $GREENTEN;
+		}
+		.tz_aio_fake_dl {
+			color: #FF5511;
 		}
 
 	}
@@ -675,41 +720,41 @@ $blinkto:   0.0;
 	}
 }
 .tz_aio_b.tz_aio_v2 .results dl {
-	&.tz_aio_unverified_dl .tz_aio_magnet a,
-	&.tz_aio_unverified_dl span.v {
+	&.tz_aio_unverified_dl_bg .tz_aio_magnet a,
+	&.tz_aio_unverified_dl_bg span.v {
 		background-color: #C2C7BD !important;
 	}
-	&.tz_aio_one_dl .tz_aio_magnet a {
-		background-color: #A2EB80;
+	&.tz_aio_one_dl_bg .tz_aio_magnet a {
+		background-color: $GREENONE;
 	}
-	&.tz_aio_two_dl .tz_aio_magnet a {
-		background-color: #A2EB80;
+	&.tz_aio_two_dl_bg .tz_aio_magnet a {
+		background-color: $GREENTWO;
 	}
-	&.tz_aio_three_dl .tz_aio_magnet a {
-		background-color: #8DDD69;
+	&.tz_aio_three_dl_bg .tz_aio_magnet a {
+		background-color: $GREENTHREE;
 	}
-	&.tz_aio_four_dl .tz_aio_magnet a {
-		background-color: #8DDD69;
+	&.tz_aio_four_dl_bg .tz_aio_magnet a {
+		background-color: $GREENFOUR;
 	}
-	&.tz_aio_five_dl .tz_aio_magnet a {
-		background-color: #79CC53;
+	&.tz_aio_five_dl_bg .tz_aio_magnet a {
+		background-color: $GREENFIVE;
 	}
-	&.tz_aio_six_dl .tz_aio_magnet a {
-		background-color: #79CC53;
+	&.tz_aio_six_dl_bg .tz_aio_magnet a {
+		background-color: $GREENSIX;
 	}
-	&.tz_aio_seven_dl .tz_aio_magnet a {
-		background-color: #69BD43;
+	&.tz_aio_seven_dl_bg .tz_aio_magnet a {
+		background-color: $GREENSEVEN;
 	}
-	&.tz_aio_eight_dl .tz_aio_magnet a {
-		background-color: #69BD43;
+	&.tz_aio_eight_dl_bg .tz_aio_magnet a {
+		background-color: $GREENEIGHT;
 	}
-	&.tz_aio_nine_dl .tz_aio_magnet a {
-		background-color: #55A72F;
+	&.tz_aio_nine_dl_bg .tz_aio_magnet a {
+		background-color: $GREENNINE;
 	}
-	&.tz_aio_ten_dl .tz_aio_magnet a {
-		background-color: #55A72F;
+	&.tz_aio_ten_dl_bg .tz_aio_magnet a {
+		background-color: $GREENTEN;
 	}
-	&.tz_aio_fake_dl .tz_aio_magnet a {
+	&.tz_aio_fake_dl_bg .tz_aio_magnet a {
 		background-color: #FDBFBF;
 	}
 }

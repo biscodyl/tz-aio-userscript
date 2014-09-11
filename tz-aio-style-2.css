@@ -21,19 +21,30 @@
 .tz_aio_b.tz_aio_v2 .autocomplete { z-index: 10; }
 .tz_aio_b.tz_aio_v2 .trackers a[href*='announcelist_']::after { content: " (doesn't include your default trackers)"; color: #6b3f2e; }
 .tz_aio_b.tz_aio_v2 .download dl { position: relative; }
-.tz_aio_b.tz_aio_v2 .tz_aio_info_bar { text-align: left; position: relative; margin: 0; font-size: 17px; line-height: 30px; color: #E3C2B5; display: block; overflow-x: hidden; white-space: nowrap; font-weight: 400; padding-left: 20px; background-image: #faefeb; background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #faefeb), color-stop(79%, #faefeb), color-stop(100%, #ffffff)); background-image: -webkit-linear-gradient(left, #faefeb 0%, #faefeb 79%, #ffffff 100%); background-image: -moz-linear-gradient(left, #faefeb 0%, #faefeb 79%, #ffffff 100%); background-image: -o-linear-gradient(left, #faefeb 0%, #faefeb 79%, #ffffff 100%); background-image: linear-gradient(left, #faefeb 0%, #faefeb 79%, #ffffff 100%); }
-.tz_aio_b.tz_aio_v2 .tz_aio_info_bar a { color: #E3C2B5; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar { text-align: left; position: relative; margin: 0; font-size: 17px; line-height: 30px; color: #e3c2b5; display: block; overflow-x: hidden; white-space: nowrap; font-weight: 400; padding-left: 20px; background-image: #faefeb; background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #faefeb), color-stop(79%, #faefeb), color-stop(100%, #ffffff)); background-image: -webkit-linear-gradient(left, #faefeb 0%, #faefeb 79%, #ffffff 100%); background-image: -moz-linear-gradient(left, #faefeb 0%, #faefeb 79%, #ffffff 100%); background-image: -o-linear-gradient(left, #faefeb 0%, #faefeb 79%, #ffffff 100%); background-image: linear-gradient(left, #faefeb 0%, #faefeb 79%, #ffffff 100%); }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar a { color: #e3c2b5; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_copylink { cursor: pointer; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_mlink, .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_copylink { overflow: visible; position: relative; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_mlink:hover, .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_copylink:hover { text-decoration: underline; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_seed_green { color: #00b900; }
-.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_seed_black { color: #E3C2B5; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_seed_black { color: #e3c2b5; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar a:hover, .tz_aio_b.tz_aio_v2 .tz_aio_info_bar a:active { text-decoration: none; color: #aaaaaa; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar a:active { top: 1px; color: black; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .divided { padding: 0 2px; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar img { vertical-align: text-top; border: 0; margin-right: 4px; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .warn { color: #cc0000; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); padding-left: 4px; -webkit-animation-name: blinker; -webkit-animation-iteration-count: 7; -webkit-animation-timing-function: cubic-bezier(1, 0, 0, 1); -webkit-animation-duration: 1.5s; -moz-animation-name: blinker; -moz-animation-iteration-count: 7; -moz-animation-timing-function: cubic-bezier(1, 0, 0, 1); -moz-animation-duration: 1.5s; animation-name: blinker; animation-iteration-count: 7; animation-timing-function: cubic-bezier(1, 0, 0, 1); animation-duration: 1.5s; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_sep { color: rgba(255, 255, 255, 0); padding: 0 10px; display: inline-block; box-sizing: border-box; max-width: 20px; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_one_dl { color: #a2eb80; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_two_dl { color: #a2eb80; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_three_dl { color: #8ddd69; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_four_dl { color: #8ddd69; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_five_dl { color: #79cc53; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_six_dl { color: #79cc53; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_seven_dl { color: #69bd43; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_eight_dl { color: #69bd43; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_nine_dl { color: #55a72f; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_ten_dl { color: #55a72f; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_fake_dl { color: #FF5511; }
 .tz_aio_b.tz_aio_v2 .tz_aio_dllink { display: block; width: 126px; height: 20px; padding-top: 5px; padding-bottom: 5px; position: absolute; top: 0; right: 62px; }
 .tz_aio_b.tz_aio_v2 .tz_aio_dllink em { color: #805b4d; font-size: 12px; line-height: 20px; height: 20px; font-style: normal; font-weight: normal; display: block; text-align: center; background: #f5dfd6; white-space: nowrap; overflow: visible; -webkit-border-radius: 2px; -moz-border-radius: 2px; -ms-border-radius: 2px; -o-border-radius: 2px; border-radius: 2px; }
 .tz_aio_b.tz_aio_v2 .tz_aio_dllink:hover em { background: #00b900; color: white; -webkit-box-shadow: inset 0 0 2px #00b900; -moz-box-shadow: inset 0 0 2px #00b900; box-shadow: inset 0 0 2px #00b900; }
@@ -124,15 +135,15 @@
 .tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.misc { background-color: #ddbfdd; }
 .tz_aio_b.tz_aio_v2.tz_aio_colorized .results dl.anime { background-color: #f4de7a; }
 
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_unverified_dl .tz_aio_magnet a, .tz_aio_b.tz_aio_v2 .results dl.tz_aio_unverified_dl span.v { background-color: #C2C7BD !important; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_one_dl .tz_aio_magnet a { background-color: #A2EB80; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_two_dl .tz_aio_magnet a { background-color: #A2EB80; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_three_dl .tz_aio_magnet a { background-color: #8DDD69; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_four_dl .tz_aio_magnet a { background-color: #8DDD69; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_five_dl .tz_aio_magnet a { background-color: #79CC53; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_six_dl .tz_aio_magnet a { background-color: #79CC53; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_seven_dl .tz_aio_magnet a { background-color: #69BD43; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_eight_dl .tz_aio_magnet a { background-color: #69BD43; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_nine_dl .tz_aio_magnet a { background-color: #55A72F; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_ten_dl .tz_aio_magnet a { background-color: #55A72F; }
-.tz_aio_b.tz_aio_v2 .results dl.tz_aio_fake_dl .tz_aio_magnet a { background-color: #FDBFBF; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_unverified_dl_bg .tz_aio_magnet a, .tz_aio_b.tz_aio_v2 .results dl.tz_aio_unverified_dl_bg span.v { background-color: #C2C7BD !important; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_one_dl_bg .tz_aio_magnet a { background-color: #a2eb80; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_two_dl_bg .tz_aio_magnet a { background-color: #a2eb80; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_three_dl_bg .tz_aio_magnet a { background-color: #8ddd69; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_four_dl_bg .tz_aio_magnet a { background-color: #8ddd69; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_five_dl_bg .tz_aio_magnet a { background-color: #79cc53; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_six_dl_bg .tz_aio_magnet a { background-color: #79cc53; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_seven_dl_bg .tz_aio_magnet a { background-color: #69bd43; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_eight_dl_bg .tz_aio_magnet a { background-color: #69bd43; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_nine_dl_bg .tz_aio_magnet a { background-color: #55a72f; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_ten_dl_bg .tz_aio_magnet a { background-color: #55a72f; }
+.tz_aio_b.tz_aio_v2 .results dl.tz_aio_fake_dl_bg .tz_aio_magnet a { background-color: #FDBFBF; }
