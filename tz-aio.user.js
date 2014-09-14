@@ -852,6 +852,56 @@
 		];
 		return htmlArr.join("");
 	}
+	function makeTextNode (txt) {
+		return $(document.createTextNode(txt));
+	}
+	function makeSettParagraph () {
+		var p = $("<p/>", {
+			"class": "generic "+tzCl+"_info_p"
+		}).css("background-image", "url("+tz.env.icon+")");
+		$("<a/>", {
+			"href": tz.env.link,
+			"text": "Torrentz All-in-One"
+		}).appendTo(p);
+		makeTextNode(" "+tz.env.version+" ("+tz.env.date+") — Keyboard shortcuts? Learn about them ").appendTo(p);
+		$("<a/>", {
+			"href": "/help#"+tzCl+"_help",
+			"text": "here"
+		}).appendTo(p);
+		makeTextNode(". ").appendTo(p);
+		$("<br/>").appendTo(p);
+		makeTextNode("This userscript can be installed from ").appendTo(p);
+		$("<a/>", {
+			"href": "https://openuserjs.org/?q=torrentz",
+			"title": "Search for Torrentz All-in-One",
+			"text": "openuserjs.org"
+		}).appendTo(p);
+		makeTextNode(", ").appendTo(p);
+		$("<a/>", {
+			"href": "https://greasyfork.org/scripts/search?q=torrentz",
+			"title": "Search for Torrentz All-in-One",
+			"text": "greasyfork.org"
+		}).appendTo(p);
+		makeTextNode(" and ").appendTo(p);
+		$("<br/>").appendTo(p);
+		$("<a/>", {
+			"href": "https://monkeyguts.com/index.php?search=torrentz",
+			"title": "Search for Torrentz All-in-One",
+			"text": "monkeyguts.com"
+		}).appendTo(p);
+		makeTextNode(". Get the sourcecode on ").appendTo(p);
+		$("<a/>", {
+			"href": tz.env.gitHub,
+			"text": "GitHub"
+		}).appendTo(p);
+		makeTextNode(", report any issues ").appendTo(p);
+		$("<a/>", {
+			"href": tz.env.gitHubIssues,
+			"text": "here"
+		}).appendTo(p);
+		makeTextNode(".").appendTo(p);
+		return p;
+	}
 	function getSettingsHtml (trackersString) {
 		var checkHighlight = tz.usc.searchHighlight ? " checked='checked' " : " ",
 			checkAds = tz.usc.removeAds ? " checked='checked' " : " ",
@@ -863,21 +913,7 @@
 				? " <em>If you need the built-in list that is baked into"+
 				" the userscript, <a id='"+tzCl+"_copy_built_in_trackerlist' href='#'>click here</a>"+
 				" to copy that list.</em>" : "",
-			versionStr = tz.env.version+" ("+tz.env.date+")",
-			htmlArr = [ "<p class='generic "+tzCl+"_info_p' style='",
-				"background-image:url("+tz.env.icon+");'>",
-				"<a href='"+tz.env.link+"'>Torrentz All-in-One</a> ",
-				versionStr+" &mdash; Keyboard shortcuts? Learn about them <a href='",
-				"/help#"+tzCl+"_help'>here</a>. <br>",
-				"This userscript can be installed from ",
-				"<a href='https://openuserjs.org/?q=torrentz' title='",
-				"Search for Torrentz All-in-One'>openuserjs.org</a>, ",
-				"<a href='https://greasyfork.org/scripts/search?q=torrentz' title='",
-				"Search for Torrentz All-in-One'>greasyfork.org</a> and ",
-				"<br><a title='Search for Torrentz All-in-One' href='",
-				"https://monkeyguts.com/index.php?search=torrentz'>monkeyguts.com</a>. ",
-				"Get the sourcecode on <a href='"+tz.env.gitHub+"'>GitHub</a>, report any ",
-				"issues <a href='"+tz.env.gitHubIssues+"'>here</a>.</p>",
+			htmlArr = [
 				"<form id='"+tzCl+"_settings_submit' class='",
 				tzCl+"_settings_form profile' method='get' action='",
 				tz.page.path+"'><fieldset><legend>TzAio Settings</legend>",
@@ -917,14 +953,14 @@
 				"<label>Search Result Colors</label>",
 				"<div class='"+tzCl+"_user_sr_paragraph'>"+(genUserSRInputs())+"</div>",
 				"<label for='"+tzCl+"_default_trackers_textarea'>Default trackerlist</label>",
-				"<textarea rows='6' class='i' id='"+tzCl+"_default_trackers_textarea' wrap='off'>",
+				"<textarea rows='6' class='i' id='"+tzCl+"_default_trackers_textarea'>",
 				trackersString+"</textarea><p>Optional. Default trackerlist ",
 				"(these are added to all torrents\' ",
 				"trackers, if absent). Note that these are combined with the torrents own trackers, and ",
 				"after that duplicates are removed, they get sorted by domain, and finally grouped ",
 				"with any http backup protocols."+copyBuiltInTrLink+"</p>",
 				"<label for='"+tzCl+"_default_searchengines_textarea'>Search engines list</label>",
-				"<textarea id='"+tzCl+"_default_searchengines_textarea' wrap='off' ",
+				"<textarea id='"+tzCl+"_default_searchengines_textarea' ",
 				"rows='6' class='i'>"+__.escape(tz.usc.searchEngines.join("\n")),
 				"</textarea><p>Optional. Search engines for the <b>Search Tabs</b> feature ",
 				"(title|url formatting, use <code>%s</code> to indicate keyword, and <code>_</code> ",
@@ -933,7 +969,7 @@
 				"anything written in the search box will turned into links for these engines, ",
 				"and appear as tabs underneith.</p>",
 				"<label for='"+tzCl+"_custom_css_textarea'>Custom CSS</label>",
-				"<textarea id='"+tzCl+"_custom_css_textarea' wrap='off' rows='6' ",
+				"<textarea id='"+tzCl+"_custom_css_textarea' rows='6' ",
 				"class='i'>"+__.escape(tz.usc.customCss.join("\n"))+"</textarea>",
 				"<p>Optional. Edit this if you want to change the layout further, applies to all ",
 				"pages.</p><label for='"+tzCl+"_exclude_filter_input'>Exclude filter</label>",
@@ -950,13 +986,13 @@
 				"<code>/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/</code></p>",
 				"<label class='"+tzCl+"_importer_forms' for='"+tzCl+"_import_settings_form'>",
 				"Import Settings</label><textarea class='"+tzCl+"_importer_forms' id='",
-				tzCl+"_import_settings_form' wrap='on' rows='6'>",
+				tzCl+"_import_settings_form' rows='6'>",
 				"</textarea><p class='"+tzCl+"_importer_forms'>Paste in your previously exported ",
 				"settings in this box and click <button>Import</button></p>",
 				"<label class='"+tzCl+"_exporter_forms' for='"+tzCl+"_export_settings_form'>",
 				"Exported Settings</label><textarea onfocus='this.select()' onclick='this.select()' ",
 				"class='"+tzCl+"_exporter_forms' id='"+tzCl+"_export_settings_form' ",
-				"readonly='readonly' wrap='on' rows='6'>",
+				"readonly='readonly' rows='6'>",
 				__.escape(genExportedSettings())+"</textarea><p class='"+tzCl+"_exporter_forms'>",
 				"Copy and save it somewhere safe. Use the Importer to restore these values ",
 				"later. And remember: <b>do not alter!</b></p><div class='s'>",
@@ -1275,7 +1311,7 @@
 					// TamperMonkey (on Linux and Windows) < v3.4.3525 seems to remove \r ([CR])
 					// chars, a fix for this has been released in their latest Beta
 					// http://tampermonkey.net/changelog.php?version=3.4.3525&ext=gcal
-					copyThis = copyThis.replace(/\n/g,"\r\n");
+					copyThis = copyThis.replace(/\r?\n/g,"\r\n");
 				}
 				GM_setClipboard(copyThis);
 				if (els.$copyTrackersLink && els.$copyTrackersLink.length) {
@@ -2298,6 +2334,7 @@
 			if (!cache.settingsInserted) {
 				// Only insert once needed to save on reflows ans load time
 				els.$topDiv.after(getSettingsHtml(tz.trackers().join("")));
+				els.$topDiv.after(makeSettParagraph());
 				els.$scriptInfoP = els.$topDiv.next("p.generic");
 				els.$settingsForm = $("#"+tzCl+"_settings_submit").on("submit", handleSettingsSubmit);
 				els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum({
@@ -2371,7 +2408,7 @@
 						var sortedOriginal = tz.trackers(false).join("");
 						sendLog(sortedOriginal);
 						if (isWindowsOS()) {
-							sortedOriginal = sortedOriginal.replace(/\n/g,"\r\n");
+							sortedOriginal = sortedOriginal.replace(/\r?\n/g,"\r\n");
 						}
 						GM_setClipboard(sortedOriginal);
 						$(this).css("opacity", "0.5");
