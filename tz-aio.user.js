@@ -764,7 +764,7 @@
 		var s;
 		trackers = trackers.map(function (e) {
 			return encodeURIComponent(e.trim())+"&tr=";
-		}).join("").replace(/\&tr=$/, "");
+		}).join("").replace(/^\&tr=|\&tr=$/g, "");
 		s = cache.magnetURI+hash+"&dn="+encodeURIComponent(title)+"&tr="+trackers;
 		return s;
 	}
