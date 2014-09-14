@@ -771,16 +771,28 @@
 	function genUserSRInputs () {
 		var srObj = tz.usc.searchResultColors,
 			cls = tz.env.slug+"_user_sr_color",
-			htmlStr = "";
+			collection = $();
 		srObj.forEach(function (sr) {
 			var srName = sr.name.toLowerCase()
 				.replace(/^sr/,"")
 				.replace(/^[a-z]/i, function (a) { return a.toUpperCase(); })
-				.replace(/^pink$/i, "xxx");
-			htmlStr = htmlStr+"<div class='"+cls+"_box'><em class='"+cls+"_title'>"+srName+
-				"</em><input data-color='"+sr.color+"' class='"+cls+"' "+"data-color_name='"+sr.name+"' /></div>";
+				.replace(/^pink$/i, "xxx"),
+				elem;
+			elem = $("<div/>", { "class": cls+"_box" });
+			$("<em/>", {
+				"text": srName,
+				"class": cls+"_title"
+			}).appendTo(elem);
+			$("<input/>", {
+				"attr": {
+					"data-color": sr.color+"",
+					"data-color_name": sr.name+""
+				},
+				"class": cls
+			}).appendTo(elem);
+			collection.add(elem);
 		});
-		return htmlStr;
+		return collection;
 	}
 	function genSearchColorPalette () {
 		var userColors = tz.usc.searchResultColors.map(function (x) { return x.color; }),
@@ -903,105 +915,297 @@
 		return p;
 	}
 	function getSettingsHtml (trackersString) {
-		var checkHighlight = tz.usc.searchHighlight ? " checked='checked' " : " ",
-			checkAds = tz.usc.removeAds ? " checked='checked' " : " ",
-			checkCommentLinks = tz.usc.linkComments ? " checked='checked' " : " ",
-			checkAjaxSorting = tz.usc.ajaxedSorting ? " checked='checked' " : " ",
-			checkForceHTTPS = tz.usc.forceHTTPS ? " checked='checked' " : " ",
-			checkSearchTabs = tz.usc.searchTabs ? " checked='checked' " : " ",
-			copyBuiltInTrLink = typeof GM_setClipboard === "function"
-				? " <em>If you need the built-in list that is baked into"+
-				" the userscript, <a id='"+tzCl+"_copy_built_in_trackerlist' href='#'>click here</a>"+
-				" to copy that list.</em>" : "",
-			htmlArr = [
-				"<form id='"+tzCl+"_settings_submit' class='",
-				tzCl+"_settings_form profile' method='get' action='",
-				tz.page.path+"'><fieldset><legend>TzAio Settings</legend>",
-				"<label>Activated Features</label>",
-				"<p class='"+tzCl+"_main_radioselect'>",
-				"<input type='checkbox' value='forceHTTPS'"+checkForceHTTPS+"id='",
-				tzCl+"_forceHTTPS' />",
-				"<label for='"+tzCl+"_forceHTTPS' title='This will redirect all pages to ",
-				"secure SSL, beware that if HTTPS is unavailable, you have to try another mirror ",
-				"and turn this option off again. ",
-				"That`s why this option is turned off by default. Also note that this will ",
-				"not be applied if you`re on a proxy.'>Force HTTPS</label>",
-				"<input type='checkbox' value='removeAds'"+checkAds+"id='"+tzCl+"_removeAds' />",
-				"<label for='"+tzCl+"_removeAds' title='This will hide all ads, including ",
-				"image ads, flash-based ads, and linked text ads. If you still see an ad, ",
-				"it is probably brand new and still not known to this script.'>Hide Ads</label>",
-				"<input type='checkbox' value='searchHighlight' ",
-				"id='"+tzCl+"_searchHighlight'"+checkHighlight+" />",
-				"<label for='"+tzCl+"_searchHighlight' title='This is what highlights all ",
-				"results and makes the background for each row change color. All results ",
-				"will still have a magnetlink.'>Colorful results</label>",
-				"<input type='checkbox' value='ajaxedSorting'",
-				checkAjaxSorting+"id='"+tzCl+"_ajaxedSorting'>",
-				"<label for='"+tzCl+"_ajaxedSorting' title='This feature turns on ajax for ",
-				"paged searchresults, sorting and episode links. The advantage is that it ",
-				"is some what faster, and puts less stress on the webserver.",
-				"'>Ajaxed sorting</label>",
-				"<input type='checkbox' value='linkComments'",
-				checkCommentLinks+"id='"+tzCl+"_linkComments'>",
-				"<label for='"+tzCl+"_linkComments' title='This feature looks for any link-like ",
-				"text in each user comment and converts it to real, clickable links.",
-				"'>Comment links</label>",
-				"<input type='checkbox' value='searchTabs'",
-				checkSearchTabs+"id='"+tzCl+"_searchTabs'>",
-				"<label for='"+tzCl+"_searchTabs' title='Show links underneith the searchbox ",
-				"for your search-engines, when applicable.'>Show Search Tabs</label></p>",
-				"<label>Search Result Colors</label>",
-				"<div class='"+tzCl+"_user_sr_paragraph'>"+(genUserSRInputs())+"</div>",
-				"<label for='"+tzCl+"_default_trackers_textarea'>Default trackerlist</label>",
-				"<textarea rows='6' class='i' id='"+tzCl+"_default_trackers_textarea'>",
-				trackersString+"</textarea><p>Optional. Default trackerlist ",
-				"(these are added to all torrents\' ",
-				"trackers, if absent). Note that these are combined with the torrents own trackers, and ",
-				"after that duplicates are removed, they get sorted by domain, and finally grouped ",
-				"with any http backup protocols."+copyBuiltInTrLink+"</p>",
-				"<label for='"+tzCl+"_default_searchengines_textarea'>Search engines list</label>",
-				"<textarea id='"+tzCl+"_default_searchengines_textarea' ",
-				"rows='6' class='i'>"+__.escape(tz.usc.searchEngines.join("\n")),
-				"</textarea><p>Optional. Search engines for the <b>Search Tabs</b> feature ",
-				"(title|url formatting, use <code>%s</code> to indicate keyword, and <code>_</code> ",
-				"to indicate a space). ",
-				"<em>How do I use them?</em> &mdash; If you have <b>Show Search Tabs</b> enabled, ",
-				"anything written in the search box will turned into links for these engines, ",
-				"and appear as tabs underneith.</p>",
-				"<label for='"+tzCl+"_custom_css_textarea'>Custom CSS</label>",
-				"<textarea id='"+tzCl+"_custom_css_textarea' rows='6' ",
-				"class='i'>"+__.escape(tz.usc.customCss.join("\n"))+"</textarea>",
-				"<p>Optional. Edit this if you want to change the layout further, applies to all ",
-				"pages.</p><label for='"+tzCl+"_exclude_filter_input'>Exclude filter</label>",
-				"<input type='text' class='i' id='"+tzCl+"_exclude_filter_input' ",
-				"value='"+tz.usc.excludeFilter+"' ",
-				"placeholder='keyword1,keyword2,keyword3' /><p>Optional. If you want to hide ",
-				"certain torrents (based on name), enter some key phrases here (comma seperated).",
-				" Remember that they are <em>not</em> case-sensitive, and that spaces will match ",
-				"any letter. Also note that before applying the filter, any 2 or more spaces in ",
-				"the title are replaced by one, that makes things a whole lot easier. Advanced: ",
-				"This supports ",
-				"<a href='http://www.regular-expressions.info/javascript.html' target='_blank'>RegExp</a> ",
-				"too, to use it, type your pattern inside 2 forward slashes, ex: ",
-				"<code>/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/</code></p>",
-				"<label class='"+tzCl+"_importer_forms' for='"+tzCl+"_import_settings_form'>",
-				"Import Settings</label><textarea class='"+tzCl+"_importer_forms' id='",
-				tzCl+"_import_settings_form' rows='6'>",
-				"</textarea><p class='"+tzCl+"_importer_forms'>Paste in your previously exported ",
-				"settings in this box and click <button>Import</button></p>",
-				"<label class='"+tzCl+"_exporter_forms' for='"+tzCl+"_export_settings_form'>",
-				"Exported Settings</label><textarea onfocus='this.select()' onclick='this.select()' ",
-				"class='"+tzCl+"_exporter_forms' id='"+tzCl+"_export_settings_form' ",
-				"readonly='readonly' rows='6'>",
-				__.escape(genExportedSettings())+"</textarea><p class='"+tzCl+"_exporter_forms'>",
-				"Copy and save it somewhere safe. Use the Importer to restore these values ",
-				"later. And remember: <b>do not alter!</b></p><div class='s'>",
-				"<a href='#' id='"+tzCl+"_settings_reset'><span>Reset</span></a> | ",
-				"<a href='#' id='"+tzCl+"_settings_export_link'><span>Export</span></a> | ",
-				"<a href='#' id='"+tzCl+"_settings_import_link'><span>Import</span></a>",
-				"<input type='submit' value='Save'></div></fieldset></form>"
-			];
-		return htmlArr.join("");
+		var form = $("<fieldset/>").appendTo($("<form/>", {
+			"id": tzCl+"_settings_submit",
+			"class": tzCl+"_settings_form profile",
+			"attr": {
+				"method": "get",
+				"action": tz.page.path
+			}
+		}));
+		$("<legend/>", { "text": "TzAio Settings" }).appendTo(form);
+		$("<label/>", { "text": "Activated Features" }).appendTo(form);
+		$("<input/>", {
+			"id": tzCl+"_forceHTTPS",
+			"attr": { "type": "checkbox", "value": "forceHTTPS" },
+			"checked": tz.usc.forceHTTPS
+		}).add(
+		$("<label/>", {
+			"text": "Force HTTPS",
+			"attr": {
+				"for": tzCl+"_forceHTTPS",
+				"title": "This will redirect all pages to secure SSL, beware that if HTTPS is unavailable, you have to "+
+					"try another mirror and turn this option off again. That`s why this option is turned off by default."+
+					" Also note that this will not be applied if you`re on a proxy."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_removeAds",
+			"attr": { "type": "checkbox", "value": "removeAds" },
+			"checked": tz.usc.removeAds
+		})).add(
+		$("<label/>", {
+			"text": "Hide Ads",
+			"attr": {
+				"for": tzCl+"_removeAds",
+				"title": "This will hide all ads, including image ads, flash-based ads, and linked text ads. If you still "+
+					"see an ad, it is probably brand new and still not known to this script."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_searchHighlight",
+			"attr": { "type": "checkbox", "value": "searchHighlight" },
+			"checked": tz.usc.searchHighlight
+		})).add(
+		$("<label/>", {
+			"text": "Colorful results",
+			"attr": {
+				"for": tzCl+"_searchHighlight",
+				"title": "This is what highlights all results and makes the background for each row change color. "+
+					"All results will still have a magnetlink."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_ajaxedSorting",
+			"attr": { "type": "checkbox", "value": "ajaxedSorting" },
+			"checked": tz.usc.ajaxedSorting
+		})).add(
+		$("<label/>", {
+			"text": "Ajaxed sorting",
+			"attr": {
+				"for": tzCl+"_ajaxedSorting",
+				"title": "This feature turns on ajax for paged searchresults, sorting and episode links. The advantage is "+
+					"that it's some what faster, and puts less stress on the webserver."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_linkComments",
+			"attr": { "type": "checkbox", "value": "linkComments" },
+			"checked": tz.usc.linkComments
+		})).add(
+		$("<label/>", {
+			"text": "Comment links",
+			"attr": {
+				"for": tzCl+"_linkComments",
+				"title": "This feature looks for any link-like text in each user comment and converts it to real, "+
+					"clickable links."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_searchTabs",
+			"attr": { "type": "checkbox", "value": "searchTabs" },
+			"checked": tz.usc.searchTabs
+		})).add(
+		$("<label/>", {
+			"text": "Show Search Tabs",
+			"attr": {
+				"for": tzCl+"_searchTabs",
+				"title": "Show links underneith the searchbox for your search-engines, when applicable."
+			}
+		})).appendTo($("<p/>", { "class": tzCl+"_main_radioselect" })).appendTo(form);
+		$("<label/>", { "text": "Search Result Colors" }).appendTo(form);
+		(genUserSRInputs()).appendTo($("<div/>", { "class": tzCl+"_user_sr_paragraph" })).appendTo(form);
+		$("<label/>", {
+			"text": "Default trackerlist",
+			"attr": {
+				"for": tzCl+"_default_trackers_textarea"
+			}
+		}).appendTo(form);
+		$("<textarea/>", {
+			"attr": {
+				"rows": 6
+			},
+			"class": "i",
+			"id": tzCl+"_default_trackers_textarea"
+		}).val(trackersString).appendTo(form);
+		makeTextNode("Optional. Default trackerlist (these are added to all torrents\' "+
+			"trackers, if absent). Note that these are combined with the torrents own trackers, and "+
+			"after that duplicates are removed, they get sorted by domain, and finally grouped "+
+			"with any http backup protocols. If you need the built-in list that is baked into"+
+			" the userscript, ").add(
+		$("<a/>", {
+			"href": "#",
+			"id": tzCl+"_copy_built_in_trackerlist",
+			"text": "click here",
+			on: {
+				"click": function () {
+					var sortedOriginal = tz.trackers(false).join("");
+					if (typeof GM_setClipboard !== "function") {
+						return window.alert("Your scriptengine does not support copying with GM_setClipboard");
+					}
+					sendLog(sortedOriginal);
+					if (isWindowsOS()) {
+						sortedOriginal = sortedOriginal.replace(/\r?\n/g,"\r\n");
+					}
+					GM_setClipboard(sortedOriginal);
+					$(this).css("opacity", "0.5");
+					return false;
+				}
+			}
+		})).add(makeTextNode(" to copy that list.")).appendTo($("<p/>")).appendTo(form);
+		$("<label/>", {
+			"text": "Search engines list",
+			"attr": {
+				"for": tzCl+"_default_searchengines_textarea"
+			}
+		}).appendTo(form);
+		$("<textarea/>", {
+			"id": tzCl+"_default_searchengines_textarea",
+			"attr": {
+				"rows": 6,
+				"class": "i"
+			}
+		}).val(tz.usc.searchEngines.join("\n")).appendTo(form);
+		makeTextNode("Optional. Search engines for the ").add(
+		$("<b/>", {"text": "Search Tabs"})).add(
+		makeTextNode(" feature (title|url formatting, use ")).add(
+		$("<code/>", {"text": "%s"})).add(
+		makeTextNode(" to indicate keyword, and ")).add(
+		$("<code/>", {"text": "_"})).add(
+		makeTextNode(" to indicate a space). ")).add(
+		$("<em/>", {"text": "How do I use them?"})).add(
+		makeTextNode(" — If you have ")).add(
+		$("<b/>", {"text": "Show Search Tabs"})).add(
+		makeTextNode(" enabled, anything written in the search box will turned into links for these engines, "+
+			"and appear as tabs underneith.")).appendTo($("<p/>")).appendTo(form);
+		$("<label/>", {
+			"text": "Custom CSS",
+			"attr": {
+				"for": tzCl+"_custom_css_textarea"
+			}
+		}).appendTo(form);
+		$("<textarea/>", {
+			"id": tzCl+"_custom_css_textarea",
+			"class": "i",
+			"attr": {
+				"rows": 6
+			}
+		}).val(tz.usc.customCss.join("\n")).appendTo(form);
+		$("<p/>", {"text": "Optional. Edit this if you want to change the layout further, applies to all pages."})
+			.appendTo(form);
+		$("<label/>", {
+			"text": "Exclude filter",
+			"attr": {
+				"for": tzCl+"_exclude_filter_input"
+			}
+		}).appendTo(form);
+		$("<input/>", {
+			"id": tzCl+"_exclude_filter_input",
+			"class": "i",
+			"attr": {
+				"type": "text",
+				"placeholder": "keyword1,keyword2,keyword3"
+			}
+		}).val(tz.usc.excludeFilter).appendTo(form);
+		makeTextNode("Optional. If you want to hide certain torrents (based on name), enter some key phrases here "+
+			"(comma seperated). Remember that they are ").add(
+		$("<em/>", "text", "not")).add(
+		makeTextNode(" case-sensitive, and that spaces will match any letter. Also note that before applying the "+
+			"filter, any 2 or more spaces in the title are replaced by one, that makes things a whole lot easier. "+
+			"Advanced: This supports ")).add(
+		$("<a/>", {
+			"href": "http://www.regular-expressions.info/javascript.html",
+			"attr": { "target": "_blank" },
+			"text": "RegExp"
+		})).add(
+		makeTextNode(" too, to use it, type your pattern inside 2 forward slashes, ex: ")).add(
+		$("<code/>", {"text": "/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/"})).appendTo($("<p/>")).appendTo(form);
+		$("<label/>", {
+			"text": "Import Settings",
+			"class": tzCl+"_importer_forms",
+			"attr": {
+				"for": tzCl+"_import_settings_form"
+			}
+		}).appendTo(form);
+		$("<textarea/>", {
+			"class": tzCl+"_importer_forms",
+			"id": tzCl+"_import_settings_form",
+			"attr": {
+				"rows": 6
+			}
+		}).appendTo(form);
+		$("<button/>", { "text": "Import" }).appendTo($("<p/>", {
+			"class": tzCl+"_importer_forms",
+			"text": "Paste in your previously exported settings in this box and click "
+		})).appendTo(form);
+
+		$("<label/>", {
+			"text": "Exported Settings",
+			"class": tzCl+"_exporter_forms",
+			"attr": {
+				"for": tzCl+"_export_settings_form"
+			}
+		}).appendTo(form);
+		$("<textarea/>", {
+			"onfocus": "this.select()",
+			"onclick": "this.select()",
+			"class": tzCl+"_exporter_forms",
+			"id": tzCl+"_export_settings_form",
+			"attr": {
+				"readonly": true,
+				"rows": 6
+			}
+		}).val(genExportedSettings()).appendTo(form);
+		$("<b>", {
+			"text": "do not alter!"
+		}).appendTo($("<p/>", {
+			"class": tzCl+"_exporter_forms",
+			"text": "Copy and save it somewhere safe. Use the Importer to restore these values later. And remember: "
+		})).appendTo(form);
+		$("<span/>", { "text": "Reset" })
+		.appendTo($("<a/>", {
+			"href": "#",
+			"id": tzCl+"_settings_reset",
+			on: {
+				"click": function (event) {
+					var refresh_page_reset = window.confirm("This will erase all your custom settings!"+
+						"\nReset settings and reload the page?");
+					event.preventDefault();
+					if (refresh_page_reset) {
+						// Delete any and all saved values
+						setStorageOptions(false, function () {
+							sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
+							sessionStorage.removeItem(tz.env.slug+"_SS_cookietest_3");
+							location.href = tz.page.href;
+						});
+					}
+					return false;
+				}
+			}
+		})).add(
+		makeTextNode(" | ")).add(
+		$("<span/>", { "text": "Export" })
+		.appendTo($("<a/>", {
+			"href": "#",
+			"id": tzCl+"_settings_export_link",
+			on: {
+				"click": function () {
+					$("."+tzCl+"_importer_forms").addClass("hide");
+					$("."+tzCl+"_exporter_forms").removeClass("hide");
+					return false;
+				}
+			}
+		}))).add(
+		makeTextNode(" | ")).add(
+		$("<span/>", { "text": "Import" })
+		.appendTo($("<a/>", {
+			"href": "#",
+			"id": tzCl+"_settings_import_link",
+			on: {
+				"click": function () {
+					$("."+tzCl+"_exporter_forms").addClass("hide");
+					$("."+tzCl+"_importer_forms").removeClass("hide");
+					return false;
+				}
+			}
+		}))).add(
+		$("<input/>", {
+			"attr": {
+				"type": "submit",
+				"value": "Save"
+			}
+		})).appendTo($("<div/>", { "class": "s" })).appendTo(form);
+		return form;
 	}
 	function getSelected () {
 		var t = "";
@@ -2359,16 +2563,6 @@
 				els.$exportArea = $("#"+tzCl+"_export_settings_form");
 				els.$importLink = $("#"+tzCl+"_settings_import_link");
 				els.$exportLink = $("#"+tzCl+"_settings_export_link");
-				els.$exportLink.on("click", function () {
-					els.$importAreas.addClass("hide");
-					els.$exportAreas.removeClass("hide");
-					return false;
-				});
-				els.$importLink.on("click", function () {
-					els.$exportAreas.addClass("hide");
-					els.$importAreas.removeClass("hide");
-					return false;
-				});
 				els.$importSubmit.on("click", function (event) {
 					event.stopPropagation();
 					event.preventDefault();
@@ -2387,34 +2581,6 @@
 				$("#"+tzCl+"_searchHighlight").trigger("change");
 				$("#"+tzCl+"_linkComments").attr("checked", tz.usc.linkComments);
 				$("#"+tzCl+"_searchTabs").attr("checked", tz.usc.searchTabs);
-				els.$resetEl.on("click", function (event) {
-					var refresh_page_reset = window.confirm("This will erase all your custom settings!"+
-						"\nReset settings and reload the page?");
-					event.preventDefault();
-					if (refresh_page_reset) {
-						// Delete any and all saved values
-						setStorageOptions(false, function () {
-							sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
-							sessionStorage.removeItem(tz.env.slug+"_SS_cookietest_3");
-							location.href = tz.page.href;
-						});
-					}
-					return false;
-				});
-				els.$copyBuiltInListLink = $("#"+tzCl+"_copy_built_in_trackerlist");
-				if (els.$copyBuiltInListLink.length) {
-					els.$copyBuiltInListLink.on("click", function () {
-						// we know this exists now
-						var sortedOriginal = tz.trackers(false).join("");
-						sendLog(sortedOriginal);
-						if (isWindowsOS()) {
-							sortedOriginal = sortedOriginal.replace(/\r?\n/g,"\r\n");
-						}
-						GM_setClipboard(sortedOriginal);
-						$(this).css("opacity", "0.5");
-						return false;
-					});
-				}
 				cache.settingsInserted = true;
 			}
 			if (els.$settingsForm.hasClass("expand")) {
