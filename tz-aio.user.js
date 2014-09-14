@@ -768,11 +768,12 @@
 		s = cache.magnetURI+hash+"&dn="+encodeURIComponent(title)+"&tr="+trackers;
 		return s;
 	}
-	function genUserSRInputs () {
+	function genUserSRInputs (callback) {
 		var srObj = tz.usc.searchResultColors,
 			cls = tz.env.slug+"_user_sr_color",
 			collection = $();
-		srObj.forEach(function (sr) {
+		if (!srObj.length) return callback(collection);
+		srObj.forEach(function (sr, i) {
 			var srName = sr.name.toLowerCase()
 				.replace(/^sr/,"")
 				.replace(/^[a-z]/i, function (a) { return a.toUpperCase(); })
@@ -791,8 +792,11 @@
 				"class": cls
 			}).appendTo(elem);
 			collection.add(elem);
+			console.log(i, collection.size());
+			if ((i+1) === srObj.length) {
+				return callback(collection);
+			}
 		});
-		return collection;
 	}
 	function genSearchColorPalette () {
 		var userColors = tz.usc.searchResultColors.map(function (x) { return x.color; }),
@@ -914,8 +918,10 @@
 		makeTextNode(".").appendTo(p);
 		return p;
 	}
-	function getSettingsHtml (trackersString) {
-		var form = $("<fieldset/>").appendTo($("<form/>", {
+	function getSettingsHtml (trackersString, callback) {
+		if (cache.settingsInserted) return callback(null);
+		var submitDiv = $("<div/>", { "class": "s" }),
+			form = $("<fieldset/>").appendTo($("<form/>", {
 			"id": tzCl+"_settings_submit",
 			"class": tzCl+"_settings_form profile",
 			"attr": {
@@ -1002,210 +1008,213 @@
 				"for": tzCl+"_searchTabs",
 				"title": "Show links underneith the searchbox for your search-engines, when applicable."
 			}
-		})).appendTo($("<p/>", { "class": tzCl+"_main_radioselect" })).appendTo(form);
+		})).appendTo($("<p/>", { "class": tzCl+"_main_radioselect" })).parent().appendTo(form);
 		$("<label/>", { "text": "Search Result Colors" }).appendTo(form);
-		(genUserSRInputs()).appendTo($("<div/>", { "class": tzCl+"_user_sr_paragraph" })).appendTo(form);
-		$("<label/>", {
-			"text": "Default trackerlist",
-			"attr": {
-				"for": tzCl+"_default_trackers_textarea"
-			}
-		}).appendTo(form);
-		$("<textarea/>", {
-			"attr": {
-				"rows": 6
-			},
-			"class": "i",
-			"id": tzCl+"_default_trackers_textarea"
-		}).val(trackersString).appendTo(form);
-		makeTextNode("Optional. Default trackerlist (these are added to all torrents\' "+
-			"trackers, if absent). Note that these are combined with the torrents own trackers, and "+
-			"after that duplicates are removed, they get sorted by domain, and finally grouped "+
-			"with any http backup protocols. If you need the built-in list that is baked into"+
-			" the userscript, ").add(
-		$("<a/>", {
-			"href": "#",
-			"id": tzCl+"_copy_built_in_trackerlist",
-			"text": "click here",
-			on: {
-				"click": function () {
-					var sortedOriginal = tz.trackers(false).join("");
-					if (typeof GM_setClipboard !== "function") {
-						return window.alert("Your scriptengine does not support copying with GM_setClipboard");
-					}
-					sendLog(sortedOriginal);
-					if (isWindowsOS()) {
-						sortedOriginal = sortedOriginal.replace(/\r?\n/g,"\r\n");
-					}
-					GM_setClipboard(sortedOriginal);
-					$(this).css("opacity", "0.5");
-					return false;
+		genUserSRInputs(function (colorDivs) {
+			colorDivs.appendTo($("<div/>", { "class": tzCl+"_user_sr_paragraph" })).parent().appendTo(form);
+			$("<label/>", {
+				"text": "Default trackerlist",
+				"attr": {
+					"for": tzCl+"_default_trackers_textarea"
 				}
-			}
-		})).add(makeTextNode(" to copy that list.")).appendTo($("<p/>")).appendTo(form);
-		$("<label/>", {
-			"text": "Search engines list",
-			"attr": {
-				"for": tzCl+"_default_searchengines_textarea"
-			}
-		}).appendTo(form);
-		$("<textarea/>", {
-			"id": tzCl+"_default_searchengines_textarea",
-			"attr": {
-				"rows": 6,
-				"class": "i"
-			}
-		}).val(tz.usc.searchEngines.join("\n")).appendTo(form);
-		makeTextNode("Optional. Search engines for the ").add(
-		$("<b/>", {"text": "Search Tabs"})).add(
-		makeTextNode(" feature (title|url formatting, use ")).add(
-		$("<code/>", {"text": "%s"})).add(
-		makeTextNode(" to indicate keyword, and ")).add(
-		$("<code/>", {"text": "_"})).add(
-		makeTextNode(" to indicate a space). ")).add(
-		$("<em/>", {"text": "How do I use them?"})).add(
-		makeTextNode(" — If you have ")).add(
-		$("<b/>", {"text": "Show Search Tabs"})).add(
-		makeTextNode(" enabled, anything written in the search box will turned into links for these engines, "+
-			"and appear as tabs underneith.")).appendTo($("<p/>")).appendTo(form);
-		$("<label/>", {
-			"text": "Custom CSS",
-			"attr": {
-				"for": tzCl+"_custom_css_textarea"
-			}
-		}).appendTo(form);
-		$("<textarea/>", {
-			"id": tzCl+"_custom_css_textarea",
-			"class": "i",
-			"attr": {
-				"rows": 6
-			}
-		}).val(tz.usc.customCss.join("\n")).appendTo(form);
-		$("<p/>", {"text": "Optional. Edit this if you want to change the layout further, applies to all pages."})
-			.appendTo(form);
-		$("<label/>", {
-			"text": "Exclude filter",
-			"attr": {
-				"for": tzCl+"_exclude_filter_input"
-			}
-		}).appendTo(form);
-		$("<input/>", {
-			"id": tzCl+"_exclude_filter_input",
-			"class": "i",
-			"attr": {
-				"type": "text",
-				"placeholder": "keyword1,keyword2,keyword3"
-			}
-		}).val(tz.usc.excludeFilter).appendTo(form);
-		makeTextNode("Optional. If you want to hide certain torrents (based on name), enter some key phrases here "+
-			"(comma seperated). Remember that they are ").add(
-		$("<em/>", "text", "not")).add(
-		makeTextNode(" case-sensitive, and that spaces will match any letter. Also note that before applying the "+
-			"filter, any 2 or more spaces in the title are replaced by one, that makes things a whole lot easier. "+
-			"Advanced: This supports ")).add(
-		$("<a/>", {
-			"href": "http://www.regular-expressions.info/javascript.html",
-			"attr": { "target": "_blank" },
-			"text": "RegExp"
-		})).add(
-		makeTextNode(" too, to use it, type your pattern inside 2 forward slashes, ex: ")).add(
-		$("<code/>", {"text": "/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/"})).appendTo($("<p/>")).appendTo(form);
-		$("<label/>", {
-			"text": "Import Settings",
-			"class": tzCl+"_importer_forms",
-			"attr": {
-				"for": tzCl+"_import_settings_form"
-			}
-		}).appendTo(form);
-		$("<textarea/>", {
-			"class": tzCl+"_importer_forms",
-			"id": tzCl+"_import_settings_form",
-			"attr": {
-				"rows": 6
-			}
-		}).appendTo(form);
-		$("<button/>", { "text": "Import" }).appendTo($("<p/>", {
-			"class": tzCl+"_importer_forms",
-			"text": "Paste in your previously exported settings in this box and click "
-		})).appendTo(form);
+			}).appendTo(form);
+			$("<textarea/>", {
+				"attr": {
+					"rows": 6
+				},
+				"class": "i",
+				"id": tzCl+"_default_trackers_textarea"
+			}).val(trackersString).appendTo(form);
+			makeTextNode("Optional. Default trackerlist (these are added to all torrents\' "+
+				"trackers, if absent). Note that these are combined with the torrents own trackers, and "+
+				"after that duplicates are removed, they get sorted by domain, and finally grouped "+
+				"with any http backup protocols. If you need the built-in list that is baked into"+
+				" the userscript, ").add(
+			$("<a/>", {
+				"href": "#",
+				"id": tzCl+"_copy_built_in_trackerlist",
+				"text": "click here",
+				on: {
+					"click": function () {
+						var sortedOriginal = tz.trackers(false).join("");
+						if (typeof GM_setClipboard !== "function") {
+							return window.alert("Your scriptengine does not support copying with GM_setClipboard");
+						}
+						sendLog(sortedOriginal);
+						if (isWindowsOS()) {
+							sortedOriginal = sortedOriginal.replace(/\r?\n/g,"\r\n");
+						}
+						GM_setClipboard(sortedOriginal);
+						$(this).css("opacity", "0.5");
+						return false;
+					}
+				}
+			})).add(makeTextNode(" to copy that list.")).appendTo($("<p/>")).parent().appendTo(form);
+			$("<label/>", {
+				"text": "Search engines list",
+				"attr": {
+					"for": tzCl+"_default_searchengines_textarea"
+				}
+			}).appendTo(form);
+			$("<textarea/>", {
+				"id": tzCl+"_default_searchengines_textarea",
+				"attr": {
+					"rows": 6,
+					"class": "i"
+				}
+			}).val(tz.usc.searchEngines.join("\n")).appendTo(form);
+			makeTextNode("Optional. Search engines for the ").add(
+			$("<b/>", {"text": "Search Tabs"})).add(
+			makeTextNode(" feature (title|url formatting, use ")).add(
+			$("<code/>", {"text": "%s"})).add(
+			makeTextNode(" to indicate keyword, and ")).add(
+			$("<code/>", {"text": "_"})).add(
+			makeTextNode(" to indicate a space). ")).add(
+			$("<em/>", {"text": "How do I use them?"})).add(
+			makeTextNode(" — If you have ")).add(
+			$("<b/>", {"text": "Show Search Tabs"})).add(
+			makeTextNode(" enabled, anything written in the search box will turned into links for these engines, "+
+				"and appear as tabs underneith.")).appendTo($("<p/>")).parent().appendTo(form);
+			$("<label/>", {
+				"text": "Custom CSS",
+				"attr": {
+					"for": tzCl+"_custom_css_textarea"
+				}
+			}).appendTo(form);
+			$("<textarea/>", {
+				"id": tzCl+"_custom_css_textarea",
+				"class": "i",
+				"attr": {
+					"rows": 6
+				}
+			}).val(tz.usc.customCss.join("\n")).appendTo(form);
+			$("<p/>", {"text": "Optional. Edit this if you want to change the layout further, applies to all pages."})
+				.appendTo(form);
+			$("<label/>", {
+				"text": "Exclude filter",
+				"attr": {
+					"for": tzCl+"_exclude_filter_input"
+				}
+			}).appendTo(form);
+			$("<input/>", {
+				"id": tzCl+"_exclude_filter_input",
+				"class": "i",
+				"attr": {
+					"type": "text",
+					"placeholder": "keyword1,keyword2,keyword3"
+				}
+			}).val(tz.usc.excludeFilter).appendTo(form);
+			makeTextNode("Optional. If you want to hide certain torrents (based on name), enter some key phrases here "+
+				"(comma seperated). Remember that they are ").add(
+			$("<em/>", "text", "not")).add(
+			makeTextNode(" case-sensitive, and that spaces will match any letter. Also note that before applying the "+
+				"filter, any 2 or more spaces in the title are replaced by one, that makes things a whole lot easier. "+
+				"Advanced: This supports ")).add(
+			$("<a/>", {
+				"href": "http://www.regular-expressions.info/javascript.html",
+				"attr": { "target": "_blank" },
+				"text": "RegExp"
+			})).add(
+			makeTextNode(" too, to use it, type your pattern inside 2 forward slashes, ex: ")).add(
+			$("<code/>", {"text": "/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/"})).appendTo($("<p/>")).parent().appendTo(form);
+			$("<label/>", {
+				"text": "Import Settings",
+				"class": tzCl+"_importer_forms",
+				"attr": {
+					"for": tzCl+"_import_settings_form"
+				}
+			}).appendTo(form);
+			$("<textarea/>", {
+				"class": tzCl+"_importer_forms",
+				"id": tzCl+"_import_settings_form",
+				"attr": {
+					"rows": 6
+				}
+			}).appendTo(form);
+			$("<button/>", { "text": "Import" }).appendTo($("<p/>", {
+				"class": tzCl+"_importer_forms",
+				"text": "Paste in your previously exported settings in this box and click "
+			})).parent().appendTo(form);
 
-		$("<label/>", {
-			"text": "Exported Settings",
-			"class": tzCl+"_exporter_forms",
-			"attr": {
-				"for": tzCl+"_export_settings_form"
-			}
-		}).appendTo(form);
-		$("<textarea/>", {
-			"onfocus": "this.select()",
-			"onclick": "this.select()",
-			"class": tzCl+"_exporter_forms",
-			"id": tzCl+"_export_settings_form",
-			"attr": {
-				"readonly": true,
-				"rows": 6
-			}
-		}).val(genExportedSettings()).appendTo(form);
-		$("<b>", {
-			"text": "do not alter!"
-		}).appendTo($("<p/>", {
-			"class": tzCl+"_exporter_forms",
-			"text": "Copy and save it somewhere safe. Use the Importer to restore these values later. And remember: "
-		})).appendTo(form);
-		$("<span/>", { "text": "Reset" })
-		.appendTo($("<a/>", {
-			"href": "#",
-			"id": tzCl+"_settings_reset",
-			on: {
-				"click": function (event) {
-					var refresh_page_reset = window.confirm("This will erase all your custom settings!"+
-						"\nReset settings and reload the page?");
-					event.preventDefault();
-					if (refresh_page_reset) {
-						// Delete any and all saved values
-						setStorageOptions(false, function () {
-							sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
-							sessionStorage.removeItem(tz.env.slug+"_SS_cookietest_3");
-							location.href = tz.page.href;
-						});
+			$("<label/>", {
+				"text": "Exported Settings",
+				"class": tzCl+"_exporter_forms",
+				"attr": {
+					"for": tzCl+"_export_settings_form"
+				}
+			}).appendTo(form);
+			$("<textarea/>", {
+				"onfocus": "this.select()",
+				"onclick": "this.select()",
+				"class": tzCl+"_exporter_forms",
+				"id": tzCl+"_export_settings_form",
+				"attr": {
+					"readonly": true,
+					"rows": 6
+				}
+			}).val(genExportedSettings()).appendTo(form);
+			$("<b>", {
+				"text": "do not alter!"
+			}).appendTo($("<p/>", {
+				"class": tzCl+"_exporter_forms",
+				"text": "Copy and save it somewhere safe. Use the Importer to restore these values later. And remember: "
+			})).parent().appendTo(form);
+			$("<span/>", { "text": "Reset" })
+			.appendTo($("<a/>", {
+				"href": "#",
+				"id": tzCl+"_settings_reset",
+				on: {
+					"click": function (event) {
+						var refresh_page_reset = window.confirm("This will erase all your custom settings!"+
+							"\nReset settings and reload the page?");
+						event.preventDefault();
+						if (refresh_page_reset) {
+							// Delete any and all saved values
+							setStorageOptions(false, function () {
+								sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
+								sessionStorage.removeItem(tz.env.slug+"_SS_cookietest_3");
+								location.href = tz.page.href;
+							});
+						}
+						return false;
 					}
-					return false;
 				}
-			}
-		})).add(
-		makeTextNode(" | ")).add(
-		$("<span/>", { "text": "Export" })
-		.appendTo($("<a/>", {
-			"href": "#",
-			"id": tzCl+"_settings_export_link",
-			on: {
-				"click": function () {
-					$("."+tzCl+"_importer_forms").addClass("hide");
-					$("."+tzCl+"_exporter_forms").removeClass("hide");
-					return false;
+			})).parent().appendTo(submitDiv);
+			makeTextNode(" | ").appendTo(submitDiv);
+			$("<span/>", { "text": "Export" })
+			.appendTo($("<a/>", {
+				"href": "#",
+				"id": tzCl+"_settings_export_link",
+				on: {
+					"click": function () {
+						$("."+tzCl+"_importer_forms").addClass("hide");
+						$("."+tzCl+"_exporter_forms").removeClass("hide");
+						return false;
+					}
 				}
-			}
-		}))).add(
-		makeTextNode(" | ")).add(
-		$("<span/>", { "text": "Import" })
-		.appendTo($("<a/>", {
-			"href": "#",
-			"id": tzCl+"_settings_import_link",
-			on: {
-				"click": function () {
-					$("."+tzCl+"_exporter_forms").addClass("hide");
-					$("."+tzCl+"_importer_forms").removeClass("hide");
-					return false;
+			})).parent().appendTo(submitDiv);
+			makeTextNode(" | ").appendTo(submitDiv);
+			$("<span/>", { "text": "Import" })
+			.appendTo($("<a/>", {
+				"href": "#",
+				"id": tzCl+"_settings_import_link",
+				on: {
+					"click": function () {
+						$("."+tzCl+"_exporter_forms").addClass("hide");
+						$("."+tzCl+"_importer_forms").removeClass("hide");
+						return false;
+					}
 				}
-			}
-		}))).add(
-		$("<input/>", {
-			"attr": {
-				"type": "submit",
-				"value": "Save"
-			}
-		})).appendTo($("<div/>", { "class": "s" })).appendTo(form);
-		return form;
+			})).parent().appendTo(submitDiv);
+			$("<input/>", {
+				"attr": {
+					"type": "submit",
+					"value": "Save"
+				}
+			}).appendTo(submitDiv);
+			submitDiv.appendTo(form);
+			return callback(form.parent());
+		});
 	}
 	function getSelected () {
 		var t = "";
@@ -2535,69 +2544,71 @@
 		els.$settingsLink = els.$topDiv.find(" > ul > li."+tzCl+"_settings a");
 		els.$settingsLink.on("click", function (event) {
 			event.preventDefault();
-			if (!cache.settingsInserted) {
-				// Only insert once needed to save on reflows ans load time
-				els.$topDiv.after(getSettingsHtml(tz.trackers().join("")));
-				els.$topDiv.after(makeSettParagraph());
-				els.$scriptInfoP = els.$topDiv.next("p.generic");
-				els.$settingsForm = $("#"+tzCl+"_settings_submit").on("submit", handleSettingsSubmit);
-				els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum({
-					showInput: true,
-					showInitial: true,
-					showPalette: true,
-					showButtons: false,
-					allowEmpty: false,
-					showSelectionPalette: true,
-					preferredFormat: "hex",
-					localStorageKey: tzCl+".spectrum.colors",
-					palette: genSearchColorPalette(),
-					change: function (color) {
-						return setStoredResultColor(color, this);
-					}
-				});
-				els.$resetEl = $("#"+tzCl+"_settings_reset");
-				els.$importAreas = $("."+tzCl+"_importer_forms");
-				els.$exportAreas = $("."+tzCl+"_exporter_forms");
-				els.$importSubmit = els.$importAreas.find("button");
-				els.$importArea = $("#"+tzCl+"_import_settings_form");
-				els.$exportArea = $("#"+tzCl+"_export_settings_form");
-				els.$importLink = $("#"+tzCl+"_settings_import_link");
-				els.$exportLink = $("#"+tzCl+"_settings_export_link");
-				els.$importSubmit.on("click", function (event) {
-					event.stopPropagation();
-					event.preventDefault();
-					parseImportedSettings(els.$importArea.val());
-					return false;
-				});
-				$("#"+tzCl+"_removeAds").attr("checked", tz.usc.removeAds);
-				$("#"+tzCl+"_searchHighlight").change(function () {
-					var $colors = $("div."+tz.env.slug+"_user_sr_paragraph");
-					if (this.checked) {
-						$colors.stop().fadeTo(0.5, 1);
-					} else {
-						$colors.stop().fadeTo(0.5, 0.33);
-					}
-				}).attr("checked", tz.usc.searchHighlight);
-				$("#"+tzCl+"_searchHighlight").trigger("change");
-				$("#"+tzCl+"_linkComments").attr("checked", tz.usc.linkComments);
-				$("#"+tzCl+"_searchTabs").attr("checked", tz.usc.searchTabs);
-				cache.settingsInserted = true;
-			}
-			if (els.$settingsForm.hasClass("expand")) {
-				els.$settingsForm.find("."+tzCl+"_user_sr_color").each(function (i, el) {
-					$(el).spectrum("set", $(el).data("color"));
-					return setStoredResultColor($(el).data("color"), el);
-				});
-			} else {
-				els.$importAreas.addClass("hide");
-				els.$exportAreas.addClass("hide");
-			}
-			els.$scriptInfoP.toggleClass("expand");
-			els.$settingsForm.toggleClass("expand");
-			els.$settingsLink.parent("li")
-				.toggleClass(tz.env.slug+"_settings_open");
-			els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum("hide");
-			toggleCopyBox(2);
+			// Only insert once needed to save on reflows ans load time
+			getSettingsHtml(tz.trackers().join(""), function (formEl) {
+				if (formEl) {
+					els.$topDiv.after(formEl);
+					els.$topDiv.after(makeSettParagraph());
+					els.$scriptInfoP = els.$topDiv.next("p.generic");
+					els.$settingsForm = $("#"+tzCl+"_settings_submit").on("submit", handleSettingsSubmit);
+					els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum({
+						showInput: true,
+						showInitial: true,
+						showPalette: true,
+						showButtons: false,
+						allowEmpty: false,
+						showSelectionPalette: true,
+						preferredFormat: "hex",
+						localStorageKey: tzCl+".spectrum.colors",
+						palette: genSearchColorPalette(),
+						change: function (color) {
+							return setStoredResultColor(color, this);
+						}
+					});
+					els.$resetEl = $("#"+tzCl+"_settings_reset");
+					els.$importAreas = $("."+tzCl+"_importer_forms");
+					els.$exportAreas = $("."+tzCl+"_exporter_forms");
+					els.$importSubmit = els.$importAreas.find("button");
+					els.$importArea = $("#"+tzCl+"_import_settings_form");
+					els.$exportArea = $("#"+tzCl+"_export_settings_form");
+					els.$importLink = $("#"+tzCl+"_settings_import_link");
+					els.$exportLink = $("#"+tzCl+"_settings_export_link");
+					els.$importSubmit.on("click", function (event) {
+						event.stopPropagation();
+						event.preventDefault();
+						parseImportedSettings(els.$importArea.val());
+						return false;
+					});
+					$("#"+tzCl+"_removeAds").attr("checked", tz.usc.removeAds);
+					$("#"+tzCl+"_searchHighlight").change(function () {
+						var $colors = $("div."+tz.env.slug+"_user_sr_paragraph");
+						if (this.checked) {
+							$colors.stop().fadeTo(0.5, 1);
+						} else {
+							$colors.stop().fadeTo(0.5, 0.33);
+						}
+					}).attr("checked", tz.usc.searchHighlight);
+					$("#"+tzCl+"_searchHighlight").trigger("change");
+					$("#"+tzCl+"_linkComments").attr("checked", tz.usc.linkComments);
+					$("#"+tzCl+"_searchTabs").attr("checked", tz.usc.searchTabs);
+					cache.settingsInserted = true;
+				}
+				if (els.$settingsForm.hasClass("expand")) {
+					els.$settingsForm.find("."+tzCl+"_user_sr_color").each(function (i, el) {
+						$(el).spectrum("set", $(el).data("color"));
+						return setStoredResultColor($(el).data("color"), el);
+					});
+				} else {
+					els.$importAreas.addClass("hide");
+					els.$exportAreas.addClass("hide");
+				}
+				els.$scriptInfoP.toggleClass("expand");
+				els.$settingsForm.toggleClass("expand");
+				els.$settingsLink.parent("li")
+					.toggleClass(tz.env.slug+"_settings_open");
+				els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum("hide");
+				toggleCopyBox(2);
+			});
 			return false;
 		});
 		if (typeof callback === "function") {
