@@ -771,32 +771,35 @@
 	function genUserSRInputs (callback) {
 		var srObj = tz.usc.searchResultColors,
 			cls = tz.env.slug+"_user_sr_color",
-			collection = $();
+			collection = $(),
+			x,
+			makeAdder = function (sr, i) {
+				var srName = sr.name.toLowerCase()
+					.replace(/^sr/,"")
+					.replace(/^[a-z]/i, function (a) { return a.toUpperCase(); })
+					.replace(/^pink$/i, "xxx"),
+					elem;
+				elem = $("<div/>", { "class": cls+"_box" });
+				$("<em/>", {
+					"text": srName,
+					"class": cls+"_title"
+				}).appendTo(elem);
+				$("<input/>", {
+					"attr": {
+						"data-color": sr.color+"",
+						"data-color_name": sr.name+""
+					},
+					"class": cls
+				}).appendTo(elem);
+				collection = collection.add(elem);
+				if ((i+1) === srObj.length) {
+					return callback(collection);
+				}
+			};
 		if (!srObj.length) return callback(collection);
-		srObj.forEach(function (sr, i) {
-			var srName = sr.name.toLowerCase()
-				.replace(/^sr/,"")
-				.replace(/^[a-z]/i, function (a) { return a.toUpperCase(); })
-				.replace(/^pink$/i, "xxx"),
-				elem;
-			elem = $("<div/>", { "class": cls+"_box" });
-			$("<em/>", {
-				"text": srName,
-				"class": cls+"_title"
-			}).appendTo(elem);
-			$("<input/>", {
-				"attr": {
-					"data-color": sr.color+"",
-					"data-color_name": sr.name+""
-				},
-				"class": cls
-			}).appendTo(elem);
-			collection.add(elem);
-			console.log(i, collection.size());
-			if ((i+1) === srObj.length) {
-				return callback(collection);
-			}
-		});
+		for (x = 0; x < srObj.length; x++) {
+			makeAdder(srObj[x], x);
+		}
 	}
 	function genSearchColorPalette () {
 		var userColors = tz.usc.searchResultColors.map(function (x) { return x.color; }),
