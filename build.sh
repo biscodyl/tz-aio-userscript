@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PASSM="/dev/shm/.password_manager"
+PASSM="/run/shm/.password_manager"
 if [[ "$PWD" =~ TzAiOv2$ ]] && [[ -x "$PASSM" ]]; then
 	rsyncWeb () {
 		local SSHHOME=$($PASSM "binero-ssh-path")
