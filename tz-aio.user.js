@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.6.4
-// @date          2014-09-11
+// @version       2.7.0
+// @date          2014-09-15
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -20,7 +20,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-6-4-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-0-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -106,10 +106,6 @@
 		execStartMS,
 		startLogMsg,
 		d = document,
-		// start webkit popstate "fire on load" fix
-		hpPopped = ("state" in history && history.state !== null),
-		hpInitialURL = d.location.href,
-		// end fix
 		scriptSource = isGM ? GM_info.scriptMetaStr : isTM ? GM_info.scriptSource : "",
 		userScriptEnv = function () {
 			var usEnv = {};
@@ -128,7 +124,7 @@
 				: getMeta(new RegExp("//\\s*@icon\\s+(\\S+)","i"), 1);
 			usEnv.gitHubIssues = isSC ? GM_getMetadata("supporturl")[0]
 				: getMeta(new RegExp("//\\s*@supportURL\\s+(\\S+)","i"), 1);
-			usEnv.gitHub = usEnv.gitHubIssues.replace(/issues\/?$/,"");
+			usEnv.gitHub = usEnv.gitHubIssues.replace(/\/issues\/?$/,"");
 			return usEnv;
 		},
 		defaultOpts = function (use) {
@@ -257,7 +253,7 @@
 			thash: location.pathname.replace(/\x2F/g,""),
 			search: location.search,
 			// remove hash to enable refreshing the page with location.href
-			href: location.href.replace(location.hash,"").replace(/\#$/,""),
+			href: location.href.replace(location.hash,""),
 			title: d.title,
 			titleEnc: encodeURIComponent(d.title.replace(/\'/g,"_"))
 		};
@@ -394,7 +390,7 @@
 			// www.bt-chat.com/details.php?id=999999
 			// www.bt-chat.com/download.php?id=999999
 			directHref = href.replace(/\/details\.php/i, "/download.php");
-		} else if (is("1337x.org/")) {
+		} else if (is("1337x.org/") || is("1337x.to/")) {
 			// last checked 2012-05-13
 			// 1337x.org/torrent/999999/ubuntu-10-10-dvd-i386/
 			directHref = torCacheUrl;
@@ -541,23 +537,18 @@
 		var i = 0;
 		n = +n;
 		if (kind === "comments") {
-			if (n <= 0) { i = 0; }
-			else if (n <= 10) { i = n; }
-			else { i = 10; }
+			n = Math.round(n);
+			if (n <= 0) {
+				i = 0;
+			} else if (n <= 10) {
+				i = n;
+			} else {
+				i = 10;
+			}
 		} else if (kind === "ratio") {
-			if (n <= 1.74) { i = 0; }
-			else if (n <= 1.75) { i = 1; }
-			else if (n <= (1*0.125)+1.75) { i = 1; }
-			else if (n <= (2*0.125)+1.75) { i = 2; }
-			else if (n <= (3*0.125)+1.75) { i = 3; }
-			else if (n <= (4*0.125)+1.75) { i = 4; }
-			else if (n <= (5*0.125)+1.75) { i = 5; }
-			else if (n <= (6*0.125)+1.75) { i = 6; }
-			else if (n <= (7*0.125)+1.75) { i = 7; }
-			else if (n <= (8*0.125)+1.75) { i = 8; }
-			else if (n <= (9*0.125)+1.75) { i = 9; }
-			else if (n <= 2.99) { i = 9; }
-			else if (n >= 3) { i = 10; }
+			for (i = 10; i; i--) {
+				if (n >= ((i*0.125)+(1.75-0.125))) break;
+			}
 		}
 		return cache.voteCssClasses[i].replace(/_bg$/, "");
 	}
@@ -611,11 +602,11 @@
 		if (navigator.cookieEnabled && typeof d.cookie === "string") {
 			// 2014-05-31 Added navigator.cookieEnabled test and sessionStorage
 			// test to stop any infinite reloads for non-cookie users
-			if (sessionStorage.getItem(tz.env.slug+"_SS_cookietest_3") !== "true") {
+			if (sessionStorage.getItem(tzCl+"_SS_cookietest_3") !== "true") {
 				d.cookie = "wm_popundertz="+ckVal;
 				d.cookie = "tz="+ckVal;
 				d.cookie = "wgm="+ckVal;
-				sessionStorage.setItem(tz.env.slug+"_SS_cookietest_3", "true");
+				sessionStorage.setItem(tzCl+"_SS_cookietest_3", "true");
 				location.reload();
 			}
 		}
@@ -623,8 +614,6 @@
 	function handlePopStates (data) {
 		// This solves the issue in <= v2.2.7 where you couldn't use
 		// the browsers back/forward buttons.
-		// webkit popstate "fire on load" fix
-		if (!hpPopped && d.location.href == hpInitialURL) return;
 		if (data.state && data.state.tz_aio_ajax && data.state.url) {
 			// If this history state contains an tz_aio_ajax url, go to it
 			d.location.href = data.state.url;
@@ -653,8 +642,15 @@
 	function doDirectTorrentLink (index, link) {
 		var dlink = link && link.href ? getDirectTorrentLinks(link.href) : null;
 		if (dlink) {
-			$(link).before("<a href='"+dlink+"' class='"+tz.env.slug+
-				"_dllink' target='_blank'><em>Download&#160;.torrent</em></a>");
+			$(link).before($("<em/>", {
+				"text": "Download .torrent"
+			}).appendTo($("<a/>", {
+				"href": dlink,
+				"class": tzCl+"_dllink",
+				"attr": {
+					"target": "_blank"
+				}
+			})).parent());
 		}
 	}
 	function removeOldStorageProps (obj) {
@@ -770,7 +766,7 @@
 	}
 	function genUserSRInputs (callback) {
 		var srObj = tz.usc.searchResultColors,
-			cls = tz.env.slug+"_user_sr_color",
+			cls = tzCl+"_user_sr_color",
 			collection = $(),
 			x,
 			makeAdder = function (sr, i) {
@@ -813,7 +809,7 @@
 	function genSearchColorCSS (arr) {
 		var clrArr = [];
 		arr.forEach(function (sr) {
-			clrArr.push("."+(tz.env.bodyClass.replace(/\s/, "."))+"."+tz.env.slug+
+			clrArr.push("."+(tz.env.bodyClass.replace(/\s/, "."))+"."+tzCl+
 				"_colorized .results dl."+sr.name.toLowerCase().replace(/^sr/,"")+
 				" { background-color: "+sr.color+" !important; }");
 		});
@@ -842,34 +838,98 @@
 		return meta+JSON.stringify(o);
 	}
 	function getHelpHtml () {
-		var htmlArr = [ "<p><b>"+tz.env.name+" UserScript</b></p>",
-			"<ul id='"+tz.env.slug+"_help'>",
-			"<li>Installed: v"+tz.env.version+"</li>",
-			"<li>Homepage: <a href='"+tz.env.link+"'>"+tz.env.link+"</a></li>",
-			"<li>On Github: <a href='"+tz.env.gitHub+"'>"+tz.env.gitHub+"</a></li>",
-			"<li>Changelog: <a href='"+tz.env.gitHub+"blob/master/Changelog.md'>",
-			tz.env.gitHub+"blob/master/Changelog.md</a></li>",
-			"<li>Report issues and feature requests here: <a href='"+tz.env.gitHubIssues+"'>",
-			tz.env.gitHubIssues+"</a></li>",
-			"<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, ",
-			"<a href='http://underscorejs.org/'>underscore.js</a>, ",
-			"<a href='http://github.com/cowboy/jquery-replacetext/'>",
-			"jQuery replaceText</a> &amp; ",
-			"<a href='https://github.com/bgrins/spectrum'>Spectrum Colorpicker</a></li>",
-			"<li>Keyboard Shortcuts<ul>",
-			"<li><kbd>'C'</kbd> : "+(typeof GM_setClipboard === "function"
-				? "Copy all the trackers" : "Toggle the tracker box")+".</li>",
-			"<li><kbd>'D'</kbd> : Trigger the Magnet-link.</li>",
-			"<li><kbd>'SHIFT&nbsp;+&nbsp;D'</kbd> : Download a randomly selected direct "+
-				"torrent-file listed.</li>",
-			"<li><kbd>'&larr; &rarr;'</kbd> : Navigate search results pages ",
-			"(Left arrow Right arrow).</li>",
-			"<li><kbd>'SHIFT&nbsp;+&nbsp;&rarr;'</kbd> : Next episode/season.</li>",
-			"<li><kbd>'SHIFT&nbsp;+&nbsp;&larr;'</kbd> : Previous episode/season.</li>",
-			"<li><kbd>'ESC'</kbd> : General exit/close.</li>",
-			"</ul></li></ul>"
-		];
-		return htmlArr.join("");
+		// return heading.add(list);
+		var heading = $("<b/>", {
+				"text": tz.env.name+" UserScript"
+			}).appendTo($("<p/>")).parent(),
+			list = $("<ul/>"),
+			sublist = $("<ul/>", {
+				"id": tzCl+"_keyboard_shortcuts"
+			});
+		$("<li/>", {
+			"text": "Installed: v"+tz.env.version
+		}).appendTo(list);
+		$("<a/>", {
+			"href": tz.env.link,
+			"text": tz.env.link
+		}).appendTo($("<li/>", {
+			"text": "Homepage: "
+		})).parent().appendTo(list);
+		$("<a/>", {
+			"href": tz.env.gitHub,
+			"text": tz.env.gitHub
+		}).appendTo($("<li/>", {
+			"text": "On Github: "
+		})).parent().appendTo(list);
+		$("<a/>", {
+			"href": tz.env.gitHub+"/blob/master/Changelog.md",
+			"text": tz.env.gitHub+"/blob/master/Changelog.md"
+		}).appendTo($("<li/>", {
+			"text": "Changelog: "
+		})).parent().appendTo(list);
+		$("<a/>", {
+			"href": tz.env.gitHubIssues,
+			"text": tz.env.gitHubIssues
+		}).appendTo($("<li/>", {
+			"text": "Report issues and feature requests here: "
+		})).parent().appendTo(list);
+		makeTextNode("Built using ").add(
+		$("<a/>", {
+			"href": "http://www.jquery.com/",
+			"text": "jQuery"
+		})).add(
+		makeTextNode(", ")).add(
+		$("<a/>", {
+			"href": "http://underscorejs.org/",
+			"text": "underscore.js"
+		})).add(
+		makeTextNode(", ")).add(
+		$("<a/>", {
+			"href": "http://github.com/cowboy/jquery-replacetext/",
+			"text": "jQuery replaceText"
+		})).add(
+		makeTextNode(" & ")).add(
+		$("<a/>", {
+			"href": "https://github.com/bgrins/spectrum",
+			"text": "Spectrum Colorpicker"
+		})).appendTo($("<li/>")).parent().appendTo(list);
+		$("<kbd/>", {
+			"text": "'C'"
+		}).add(
+		makeTextNode(" : "+(typeof GM_setClipboard === "function" ? "Copy all the trackers" : "Toggle the tracker box")
+			+".")).appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'D'"
+		}).add(
+		makeTextNode(" : Trigger the Magnet-link.")).appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'SHIFT + D'"
+		}).add(
+		makeTextNode(" : Download a randomly selected direct torrent-file listed."))
+			.appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'← →'"
+		}).add(
+		makeTextNode(" : Navigate search results pages (Left arrow Right arrow)."))
+			.appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'SHIFT + →'"
+		}).add(
+		makeTextNode(" : Next episode/season.")).appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'SHIFT + ←'"
+		}).add(
+		makeTextNode(" : Previous episode/season.")).appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'ESC'"
+		}).add(
+		makeTextNode(" : General exit/close.")).appendTo($("<li/>")).parent().appendTo(sublist);
+		sublist.appendTo($("<li/>", {
+			"text": "Keyboard Shortcuts"
+		})).parent("li").appendTo(list);
+		return $("<a/>", {
+			"name": tzCl+"_help"
+		}).add(heading).add(list);
 	}
 	function makeTextNode (txt) {
 		return $(document.createTextNode(txt));
@@ -1174,8 +1234,8 @@
 						if (refresh_page_reset) {
 							// Delete any and all saved values
 							setStorageOptions(false, function () {
-								sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
-								sessionStorage.removeItem(tz.env.slug+"_SS_cookietest_3");
+								sessionStorage.setItem(tzCl+"_SS_useroptions_saved", "true");
+								sessionStorage.removeItem(tzCl+"_SS_cookietest_3");
 								location.href = tz.page.href;
 							});
 						}
@@ -1248,12 +1308,18 @@
 		return votebox.find(".status")[0].style.color;
 	}
 	function setupCopyTextArea (arr) {
-		var textareaHTML = "<div id='"+tzCl+"_copy_tr_textarea' class='"+tzCl+"_copy_textarea'>"+
-				"<textarea readonly='readonly' cols='40' rows='10' wrap='off'></textarea></div>";
+		$("<textarea/>", {
+			"attr": {
+				"readonly": true,
+				"cols": 40,
+				"rows": 10
+			}
+		}).val(arr.join("")).appendTo($("<div/>", {
+			"id": tzCl+"_copy_tr_textarea",
+			"class": tzCl+"_copy_textarea"
+		})).parent().appendTo(els.$body);
 		cache.copyTrackersLinkHeight = els.$copyTrackersLink.outerHeight();
-		els.$body.append(textareaHTML);
 		els.$copyTextArea = $("#"+tzCl+"_copy_tr_textarea");
-		els.$copyTextArea.find("textarea").val(arr.join(""));
 	}
 	function setupSelectToSearch () {
 		if (tz.usc.searchTabs) {
@@ -1266,9 +1332,12 @@
 		}
 	}
 	function handleMagnetClicks (event) {
-		if (!event && !isAnyInputFocused()) {
-			location.href = els.$magnetLink[0].href;
-			return false;
+		if (!event) {
+		 	els.$magnetLink.addClass("active");
+			if (!isAnyInputFocused()) {
+				location.href = els.$magnetLink[0].href;
+				return false;
+			}
 		}
 	}
 	function ajaxResultsHandler (event) {
@@ -1309,7 +1378,7 @@
 			seValid,
 			exValid;
 		els.$settingsForm.find(":checkbox").each(function (index, element) {
-			var settingName = element.id.replace(tz.env.slug+"_",""),
+			var settingName = element.id.replace(tzCl+"_",""),
 				settingValue = $(element).is(":checked");
 			submittedOptions[settingName] = settingValue;
 		});
@@ -1352,7 +1421,7 @@
 						"you have.");
 					sendLog(thisWasSaved);
 					if (thisWasSaved) {
-						sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
+						sessionStorage.setItem(tzCl+"_SS_useroptions_saved", "true");
 						location.href = tz.page.href;
 					} else {
 						disabledInput.prop("disabled", false);
@@ -1396,7 +1465,7 @@
 		json = __.defaults(json, tz.usc);
 		return setStorageOptions(json, function (thisWasImported) {
 			if (thisWasImported) {
-				sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
+				sessionStorage.setItem(tzCl+"_SS_useroptions_saved", "true");
 				sendLog(thisWasImported);
 				sendLog("This was imported, please add the following output to any issue report you have.");
 				location.href = tz.page.href;
@@ -1422,7 +1491,7 @@
 					loadingInt,
 					$html,
 					newTitle;
-				if ($this[0].href) {
+				if ($this[0].href && $this[0].hostname === tz.page.host) {
 					relMatch = $this[0].href.match(/https?\:\/\/[^\/]+(\/.*)/);
 					// prevent leaking of unwanted ajax links, shouldn't happen but it's good to remember
 					validLink = relMatch && relMatch.length === 2 && relMatch[1] && relMatch[1]
@@ -1496,14 +1565,14 @@
 	function lastAction () {
 		if (!cache.lastActionDone) {
 			cache.lastActionDone = true;
-			if (sessionStorage.getItem(tz.env.slug+"_SS_useroptions_saved") === "true") {
+			if (sessionStorage.getItem(tzCl+"_SS_useroptions_saved") === "true") {
 				// scroll up bacause user just saved options and window is def. scrolled down a bit
 				els.$bodyANDhtml.animate({ scrollTop : 1 }, 0, function () {
-					sessionStorage.removeItem(tz.env.slug+"_SS_useroptions_saved");
+					sessionStorage.removeItem(tzCl+"_SS_useroptions_saved");
 					if (!cache.freshUser) {
-						els.$body.addClass(tz.env.slug+"_settings_saved");
+						els.$body.addClass(tzCl+"_settings_saved");
 						setTimeout(function () {
-							els.$body.removeClass(tz.env.slug+"_settings_saved");
+							els.$body.removeClass(tzCl+"_settings_saved");
 						}, 5000);
 					}
 					els.$bodyANDhtml.animate({ scrollTop: 0 }, 0);
@@ -1564,11 +1633,12 @@
 			key = +e.which,
 			safePlace = !isAnyInputFocused(),
 			newTabOpt,
+			randEl,
 			torrentLinks,
 			nextPrevLink;
 		if (!isNaN(key) && safePlace) {
 			if (key === 27 && noMods) {
-				// 'ESCAPE'
+				// 'ESC'
 				if (els.$settingsForm && els.$settingsForm.hasClass("expand")) {
 					els.$settingsLink.trigger("click");
 					els.$bodyANDhtml.animate({
@@ -1581,16 +1651,20 @@
 					els.$titleEl.trigger("mousedown");
 					toggleCopyBox(2);
 				}
+				els.$magnetLink.removeClass("active");
 			} else if (cache.isSingle) {
+				// 'SHIFT + d'
 				if (key === 68 && __.isEqual(e.shiftKey, true)) {
 					torrentLinks = $("."+tzCl+"_dllink");
 					if (torrentLinks.length) {
 						newTabOpt = isTM ? { active: true, insert: true } : isSC ? true : null;
 						// trigger a random torrent link each time
 						if (!cache.randomDirectLinks.length) {
+							torrentLinks.removeClass("visited");
 							cache.randomDirectLinks = shuffledArray(torrentLinks.length);
 						}
-						return GM_openInTab(torrentLinks[cache.randomDirectLinks.pop()].href, newTabOpt);
+						GM_openInTab((randEl=torrentLinks[cache.randomDirectLinks.pop()]).href, newTabOpt);
+						return $(randEl).addClass("visited");
 					} else {
 						return window.alert("No .torrent file to download!");
 					}
@@ -1641,6 +1715,7 @@
 				".SimpleAcceptableTextAds",
 				".PleaseDontDisableTheAutoSuggestScriptThePopCodeIsNotThere"
 			],
+			viewMeAdLink,
 			frontPageAd;
 		if (tz.usc.removeAds) {
 			if (page === "common") {
@@ -1680,6 +1755,12 @@
 				}
 				element.prev().has("a img").addClass(adRemovedClass);
 				els.$body.find(" > div.sponsored").addClass(adRemovedClass);
+				// 2014-09-15 ViewMe Link
+				if ((viewMeAdLink=element.find("p:last a:eq(0)")).length) {
+					if (viewMeAdLink[0].hostname.indexOf("viewme.com") !== -1) {
+						viewMeAdLink.addClass(adRemovedClass);
+					}
+				}
 			} else if (page === "splash") {
 				// Old Ads that might popup later again
 				frontPageAd = els.$body.find(" > p a img");
@@ -1703,29 +1784,47 @@
 		}
 	}
 	function genSearchEnginesLinks (str) {
-		var htmlStr = "";
-		if (!str || !tz.usc.searchEngines.length) return htmlStr;
+		var html = $();
+		if (!str || !tz.usc.searchEngines.length) return html;
 		// Remove search terms like size:12334, added < 3d, site:domain.com etc.
 		str = str.replace(cache.cleanSearchQPatt, "$1")
 			.replace(cache.invalidQCharsPatt," ").replace(/\s+/g, " ").trim();
-		if (!str) return htmlStr;
+		if (!str) return html;
 		tz.usc.searchEngines.forEach(function (item) {
 			var arr = item.split("|");
-			htmlStr = htmlStr+"<a class='search_link' rel='noreferrer' href='"+
-				// Unescape html first (legacy), then escape
-				// search string must be encoded separatly
-				getNoReferrerUrl(__.escape(__.unescape(arr[1]).replace(/%s/g, encodeURIComponent(str))))+
-				"'>"+__.escape(arr[0].replace(/_/g, " "))+"</a>";
+			html = html.add(
+				$("<a/>", {
+					"text": arr[0].replace(/_/g, " "),
+					// Unescape html first (legacy)
+					// search string must be encoded separatly
+					"href": __.unescape(getNoReferrerUrl(__.unescape(arr[1]).replace(/%s/g, encodeURIComponent(str)))),
+					"class": "search_link",
+					"attr": {
+						"rel": "noreferrer"
+					}
+				})
+			);
 		});
-		htmlStr = htmlStr+"<a href='/feed?q="+__.escape(encodeURIComponent(str))+"'><img src='"+
-			cache.RSSIMG+"' width='16' height='16'></a>";
-		return htmlStr;
+		html = html.add($("<img/>", {
+			"src": cache.RSSIMG,
+			"attr": {
+				"width": 16,
+				"height": 16,
+				"alt": ""
+			}
+		}).appendTo($("<a/>", {
+			"href": "/feed?q="+encodeURIComponent(str)
+		})).parent());
+		return html;
 	}
 	function genSearchTabs ($box) {
 		var $tabBox, currVal;
 		if (!$("div."+tzCl+"_searchtabs").length) {
 			$("form.search").css("margin-bottom", "0px")
-				.after("<div class='"+tzCl+"_searchtabs'></div>");
+				.after($("<div/>", {
+					"class": tzCl+"_searchtabs"
+				}))
+			;
 		}
 		$tabBox = $("div."+tzCl+"_searchtabs");
 		currVal = $box.val();
@@ -1855,6 +1954,7 @@
 		});
 	}
 	function makeMainMagnetLink (color, tr) {
+		myAddStyler("."+(tz.env.bodyClass.replace(/\s/, "."))+" a."+tzCl+"_mlink:link { color: "+color+"; }");
 		return $("<a/>", {
 			"href": "#", // Set later and applied to all magnetlinks on the page
 			"class": tzCl+"_mlink",
@@ -1865,7 +1965,7 @@
 			on: {
 				"click": handleMagnetClicks
 			}
-		}).css("color", color);
+		});
 	}
 	function makeCopyTrackerList (tr) {
 		return $("<a/>", {
@@ -1933,13 +2033,16 @@
 	function getFilesInfo (callback) {
 		var wmvPatt = /\.wmv$/i,
 			filesDiv = els.$body.find("div.files:eq(0)"),
-			fileLinks = filesDiv.find("li"),
-			folderLinks = filesDiv.find("li.t"),
-			fileLinksLen = fileLinks.length-(folderLinks.length*2),
+			fileLinks = filesDiv.find(" > ul li > span"),
+			fileLinksLen = fileLinks.length,
 			fileLinksLenI = fileLinksLen,
 			filesSizeText = filesDiv.find("div:contains('Size:'):eq(0)").text().replace("Size: ",""),
 			wmvWarning = false;
-		filesDiv.before("<a name='files_"+tzCl+"'></a>");
+		filesDiv.before($("<a/>", {
+			"attr": {
+				"name": "files_"+tzCl
+			}
+		}));
 		if (fileLinksLen && fileLinksLen <= 1000) {
 			// Not important enough to be able to break everything
 			try {
@@ -1997,10 +2100,19 @@
 					$(element).attr("href", magnetUrl);
 				});
 				if (els.$comments.length) {
-					commentDiv.before("<a name='comments_"+tzCl+"'></a>");
+					commentDiv.before($("<a/>", {
+						"attr": {
+							"name": "comments_"+tzCl
+						}
+					}));
 				} else {
 					els.$body.find("form.profile[method='post']:eq(0) fieldset")
-						.before("<a name='write_comment_"+tzCl+"'></a>");
+						.before($("<a/>", {
+							"attr": {
+								"name": "write_comment_"+tzCl
+							}
+						}))
+					;
 					commentDiv.find(" > h2:eq(0)").replaceText(/\(\d+\)/, "(0)");
 				}
 				if (typeof callback === "function") {
@@ -2052,6 +2164,7 @@
 			} else {
 				torrLink = torrLinks[0];
 			}
+			// Should be faster (50x) than making them using $("<a/>", {...})
 			torrHash = torrLink.href.match(linkPatt)[0];
 			torrTitle = torrLink.textContent;
 			spanMagnet = d.createElement("SPAN");
@@ -2370,13 +2483,10 @@
 			epm = queryMatch && queryMatch.length === 2
 				? queryMatch[1].match(cache.validEpisodePatt) : null,
 			legacym = queryMatch && queryMatch.length === 2
+				// Notify about using sNNeNN - don't assume and replace!
 				? queryMatch[1].match(cache.validLegacyEpPatt) : null,
 			ymdMatch,
-			nEpLinkCl = "class='"+tzCl+"_tv_next_episode'",
-			pEpLinkCl = "class='"+tzCl+"_tv_prev_episode'",
-			nSeLinkCl = "class='"+tzCl+"_tv_next_season'",
-			pSeLinkCl = "class='"+tzCl+"_tv_prev_season'",
-			htmlStr = "",
+			html = $(),
 			ep = {},
 			dp = {};
 		if (datem && datem.length === 17) {
@@ -2386,13 +2496,18 @@
 			dp.day = ymdMatch[3];
 			dp.nextDate = getValidDate([dp.year, dp.month, dp.day], 1);
 			dp.prevDate = getValidDate([dp.year, dp.month, dp.day], -1);
-			htmlStr = "<b><a "+pEpLinkCl+" href='"+
-				makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.prevDate.nice+"\x22")+
-				"'>&lt; "+dp.prevDate.nice+"</a></b>";
+			html = html.add($("<a/>", {
+				"text": "< "+dp.prevDate.nice,
+				"href": makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.prevDate.nice+"\x22"),
+				"class": tzCl+"_tv_prev_episode"
+			}).appendTo($("<b/>")).parent());
 			if (dp.nextDate.ms && (dp.nextDate.ms - (new Date().getTime())) < 0) {
-				htmlStr = htmlStr+" | <b><a "+nEpLinkCl+" href='"+
-					makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.nextDate.nice+"\x22")+
-					"'>"+dp.nextDate.nice+" &gt;</a></b>";
+				html = html.add(makeTextNode(" | "));
+				html = html.add($("<a/>", {
+					"text": dp.nextDate.nice+" >",
+					"href": makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.nextDate.nice+"\x22"),
+					"class": tzCl+"_tv_next_episode'"
+				}).appendTo($("<b/>")).parent());
 			}
 		} else if (epm && epm.length === 8) {
 			ep.episode = epm[5] && epm[5] !== "0" ? +epm[5].replace(/^0/,"") : 0;
@@ -2403,33 +2518,41 @@
 			ep.nextSeason = "S"+padZeroes((ep.season+1), 2);
 			ep.prevSeason = ep.season > 1 ? "S"+padZeroes((ep.season-1), 2) : "";
 			if (ep.prevSeason) {
-				htmlStr = htmlStr+"<a "+pSeLinkCl+" href='"+
-					makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4]
-					? ep.prevSeason+"E01" : ep.prevSeason))+"'>&laquo; "+ep.prevSeason+"</a> ";
+				html = html.add($("<a/>", {
+					"text": "« "+ep.prevSeason,
+					"href": makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.prevSeason+"E01" : ep.prevSeason)),
+					"class": tzCl+"_tv_prev_season"
+				})).add(makeTextNode(" "));
 			}
 			if (epm[4] && ep.prevEpisode) {
-				htmlStr = htmlStr+"<a "+pEpLinkCl+" href='"+
-					makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.prevEpisode)+
-					"'><b>&lt; "+ep.prevEpisode+"</b></a> ";
+				html = html.add($("<a/>", {
+					"text": "< "+ep.prevEpisode,
+					"href": makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.prevEpisode),
+					"class": tzCl+"_tv_prev_episode"
+				}).appendTo($("<b/>")).parent()).add(makeTextNode(" "));
 			}
 			if ((ep.prevSeason) || (epm[4] && ep.prevEpisode)) {
-				htmlStr = htmlStr+"| ";
+				html = html.add(makeTextNode("| "));
 			}
 			if (epm[4] && ep.nextEpisode) {
-				htmlStr = htmlStr+"<a "+nEpLinkCl+" href='"+
-					makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.nextEpisode)+
-					"'><b>"+ep.nextEpisode+" &gt;</b></a> ";
+				html = html.add($("<a/>", {
+					"text": ep.nextEpisode+" >",
+					"href": makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.nextEpisode),
+					"class": tzCl+"_tv_next_episode"
+				}).appendTo($("<b/>")).parent()).add(makeTextNode(" "));
 			}
 			if (ep.nextSeason) {
-				htmlStr = htmlStr+"<a "+nSeLinkCl+" href='"+
-					makeSearchQuery(epm[1], epm[2], epm[6], epm[7],
-						(epm[4] ? ep.nextSeason+"E01" : ep.nextSeason))+
-					"'>"+ep.nextSeason+" &raquo;</a>";
+				html = html.add($("<a/>", {
+					"text": ep.nextSeason+" »",
+					"href": makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.nextSeason+"E01" : ep.nextSeason)),
+					"class": tzCl+"_tv_next_season"
+				}));
 			}
 		} else if (legacym) {
-			htmlStr = "Use s<b>NN</b>e<b>NN</b> to search for episodes";
+			html = html.add(makeTextNode("Use s")).add($("<b/>", { "text": "NN" })).add(makeTextNode("e"))
+				.add($("<b/>", { "text": "NN" })).add(makeTextNode(" to search for episodes"));
 		}
-		return htmlStr;
+		return html;
 	}
 	function initSearchPage ($resultsEl, callback) {
 		var searchParameters= tz.page.search.match(/^\?f\=(.+)$/i),
@@ -2442,19 +2565,27 @@
 			// Add rss link for "approximate match" and no results
 			if ($resultsEl.length === 1 && searchParameters && searchParameters.length >= 2
 				&& searchParameters[1] && resultsH2.length && !resultsH2.has("img[src*='rss.png']").length) {
-				resultsH2.append("<a class='approximate_rss_link' href='/feed_anyA?q="+
-					String(searchParameters[1])+"'>&nbsp;<img width='16' height='16' src='"+
-					cache.RSSIMG+"' title='This RSS feed is empty'></a>");
+				resultsH2.append($("<img/>", {
+					"src": cache.RSSIMG,
+					"attr": {
+						"width": 16,
+						"height": 16,
+						"alt": ""
+					}
+				}).appendTo($("<a/>", {
+					"href": "/feed_anyA?q="+String(searchParameters[1]),
+					"class": "approximate_rss_link"
+				})).parent());
 			}
 			if (cache.isSearch && tz.page.path !== "/i" && !cache.isSingle) {
 				$filterBar = $resultsEl.find(" > h3:eq(0)");
 				tvToolbarLinks = getTvToolbarHtml(tz.page.search);
-				if (tvToolbarLinks && $filterBar.length) {
+				if (tvToolbarLinks.size() && $filterBar.length) {
 					$("<span/>", {
 						"html": tvToolbarLinks,
 						"class": tzCl+"_episode_nav_links"
 					}).prependTo($filterBar);
-				} else if (tvToolbarLinks && !$filterBar.length) {
+				} else if (tvToolbarLinks.size() && !$filterBar.length) {
 					noResultsTitle = $resultsEl.find(" > h2:eq(0):contains('No Torrents Found')");
 					if (noResultsTitle.length) {
 						noResultsTitle.after($("<h3/>", {
@@ -2474,13 +2605,14 @@
 							$result = $(finishedResult),
 							dmcaClass = tz.usc.searchHighlight ? "meta-info colorizeme" : "meta-info",
 							$lastDl = $result.find(" > dl:last"),
+							exclDl = {},
 							dmcaText,
 							$logEl;
 						// insert empty <p/> as the curved spacer for colored results
 						if (tz.usc.searchHighlight && (cache.isSearch || cache.isSingle)
 							&& tz.usc.searchHighlight && $resultsEl.find("dl").length
 							&& $resultsEl.find(" > p").length === 0) {
-							$("<p/>").html(" ").appendTo($resultsEl);
+							$("<p/>", { "text": " "}).appendTo($resultsEl);
 						}
 						if ($lastDl.length) {
 							if ($lastDl.hasClass("meta-info")) {
@@ -2492,9 +2624,16 @@
 							if (tz.usc.excludeFilter) {
 								excludeCount = cache.deletedByFilterCount || 0;
 								cache.deletedByFilterCount = 0; // reset cache value
-								$lastDl.after("<dl class='"+dmcaClass+"'>"+
-									"<dt style='text-align: right'><span class='"+tzCl+
-									"_exclude_filter_count'></span></dt><dd></dd></dl>");
+								exclDl.dl = $("<dl/>", { "class": dmcaClass });
+								exclDl.dt = $("<dt/>");
+								exclDl.span = $("<span/>", {
+									"class": tzCl+"_exclude_filter_count"
+								});
+								exclDl.span.appendTo(exclDl.dt);
+								exclDl.dt.appendTo(exclDl.dl);
+								exclDl.dd = $("<dd/>");
+								exclDl.dd.appendTo(exclDl.dl);
+								$lastDl.after(exclDl.dl);
 								$logEl = $result.find("span."+tzCl+"_exclude_filter_count");
 								updateExcludeLog($logEl, excludeCount);
 							}
@@ -2539,8 +2678,13 @@
 		});
 	}
 	function initSettingsPanel (callback) {
-		var settingsButton = "<li class='"+tzCl+"_settings'>"+
-				"<a href='#' title='Change TzAio Settings'>TzAio</a>";
+		var settingsButton = $("<a/>", {
+			"text": "TzAio",
+			"href": "#",
+			"title": "Change TzAio Settings"
+		}).appendTo($("<li/>", {
+			"class": tzCl+"_settings"
+		})).parent();
 		removeAds("common");
 		els.$topDiv = els.$body.find("div.top:eq(0)");
 		els.$settingsEl = els.$topDiv.find(" > ul").prepend(settingsButton).end();
@@ -2584,7 +2728,7 @@
 					});
 					$("#"+tzCl+"_removeAds").attr("checked", tz.usc.removeAds);
 					$("#"+tzCl+"_searchHighlight").change(function () {
-						var $colors = $("div."+tz.env.slug+"_user_sr_paragraph");
+						var $colors = $("div."+tzCl+"_user_sr_paragraph");
 						if (this.checked) {
 							$colors.stop().fadeTo(0.5, 1);
 						} else {
@@ -2593,7 +2737,16 @@
 					}).attr("checked", tz.usc.searchHighlight);
 					$("#"+tzCl+"_searchHighlight").trigger("change");
 					$("#"+tzCl+"_linkComments").attr("checked", tz.usc.linkComments);
-					$("#"+tzCl+"_searchTabs").attr("checked", tz.usc.searchTabs);
+					$("#"+tzCl+"_searchTabs").change(function () {
+						if (this.checked) {
+							$("#"+tzCl+"_default_searchengines_textarea").attr("readonly", false)
+								.stop().fadeTo(0.5, 1);
+						} else {
+							$("#"+tzCl+"_default_searchengines_textarea").attr("readonly", true)
+								.stop().fadeTo(0.5, 0.33);
+						}
+					}).attr("checked", tz.usc.searchTabs);
+					$("#"+tzCl+"_searchTabs").trigger("change");
 					cache.settingsInserted = true;
 				}
 				if (els.$settingsForm.hasClass("expand")) {
@@ -2608,7 +2761,7 @@
 				els.$scriptInfoP.toggleClass("expand");
 				els.$settingsForm.toggleClass("expand");
 				els.$settingsLink.parent("li")
-					.toggleClass(tz.env.slug+"_settings_open");
+					.toggleClass(tzCl+"_settings_open");
 				els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum("hide");
 				toggleCopyBox(2);
 			});
@@ -2796,6 +2949,10 @@
 							if (tz.page.path !== "/i") {
 								if (tz.usc.ajaxedSorting) {
 									if (history.pushState) {
+										history.replaceState({
+											tz_aio_ajax: true,
+											url: tz.page.href
+										}, tz.page.title, tz.page.href);
 										// listen for popstate events
 										window.onpopstate = handlePopStates;
 									}

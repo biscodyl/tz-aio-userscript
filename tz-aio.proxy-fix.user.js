@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One Proxy Fix
 // @description   Does everything you wish Torrentz.eu could do! (This script does not auto update!)
-// @version       2.6.4
-// @date          2014-09-11
+// @version       2.7.0
+// @date          2014-09-15
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
@@ -18,7 +18,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-6-4-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-0-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -105,10 +105,6 @@
 		execStartMS,
 		startLogMsg,
 		d = document,
-		// start webkit popstate "fire on load" fix
-		hpPopped = ("state" in history && history.state !== null),
-		hpInitialURL = d.location.href,
-		// end fix
 		scriptSource = isGM ? GM_info.scriptMetaStr : isTM ? GM_info.scriptSource : "",
 		userScriptEnv = function () {
 			var usEnv = {};
@@ -127,7 +123,7 @@
 				: getMeta(new RegExp("//\\s*@icon\\s+(\\S+)","i"), 1);
 			usEnv.gitHubIssues = isSC ? GM_getMetadata("supporturl")[0]
 				: getMeta(new RegExp("//\\s*@supportURL\\s+(\\S+)","i"), 1);
-			usEnv.gitHub = usEnv.gitHubIssues.replace(/issues\/?$/,"");
+			usEnv.gitHub = usEnv.gitHubIssues.replace(/\/issues\/?$/,"");
 			return usEnv;
 		},
 		defaultOpts = function (use) {
@@ -256,7 +252,7 @@
 			thash: location.pathname.replace(/\x2F/g,""),
 			search: location.search,
 			// remove hash to enable refreshing the page with location.href
-			href: location.href.replace(location.hash,"").replace(/\#$/,""),
+			href: location.href.replace(location.hash,""),
 			title: d.title,
 			titleEnc: encodeURIComponent(d.title.replace(/\'/g,"_"))
 		};
@@ -393,7 +389,7 @@
 			// www.bt-chat.com/details.php?id=999999
 			// www.bt-chat.com/download.php?id=999999
 			directHref = href.replace(/\/details\.php/i, "/download.php");
-		} else if (is("1337x.org/")) {
+		} else if (is("1337x.org/") || is("1337x.to/")) {
 			// last checked 2012-05-13
 			// 1337x.org/torrent/999999/ubuntu-10-10-dvd-i386/
 			directHref = torCacheUrl;
@@ -540,23 +536,18 @@
 		var i = 0;
 		n = +n;
 		if (kind === "comments") {
-			if (n <= 0) { i = 0; }
-			else if (n <= 10) { i = n; }
-			else { i = 10; }
+			n = Math.round(n);
+			if (n <= 0) {
+				i = 0;
+			} else if (n <= 10) {
+				i = n;
+			} else {
+				i = 10;
+			}
 		} else if (kind === "ratio") {
-			if (n <= 1.74) { i = 0; }
-			else if (n <= 1.75) { i = 1; }
-			else if (n <= (1*0.125)+1.75) { i = 1; }
-			else if (n <= (2*0.125)+1.75) { i = 2; }
-			else if (n <= (3*0.125)+1.75) { i = 3; }
-			else if (n <= (4*0.125)+1.75) { i = 4; }
-			else if (n <= (5*0.125)+1.75) { i = 5; }
-			else if (n <= (6*0.125)+1.75) { i = 6; }
-			else if (n <= (7*0.125)+1.75) { i = 7; }
-			else if (n <= (8*0.125)+1.75) { i = 8; }
-			else if (n <= (9*0.125)+1.75) { i = 9; }
-			else if (n <= 2.99) { i = 9; }
-			else if (n >= 3) { i = 10; }
+			for (i = 10; i; i--) {
+				if (n >= ((i*0.125)+(1.75-0.125))) break;
+			}
 		}
 		return cache.voteCssClasses[i].replace(/_bg$/, "");
 	}
@@ -610,11 +601,11 @@
 		if (navigator.cookieEnabled && typeof d.cookie === "string") {
 			// 2014-05-31 Added navigator.cookieEnabled test and sessionStorage
 			// test to stop any infinite reloads for non-cookie users
-			if (sessionStorage.getItem(tz.env.slug+"_SS_cookietest_3") !== "true") {
+			if (sessionStorage.getItem(tzCl+"_SS_cookietest_3") !== "true") {
 				d.cookie = "wm_popundertz="+ckVal;
 				d.cookie = "tz="+ckVal;
 				d.cookie = "wgm="+ckVal;
-				sessionStorage.setItem(tz.env.slug+"_SS_cookietest_3", "true");
+				sessionStorage.setItem(tzCl+"_SS_cookietest_3", "true");
 				location.reload();
 			}
 		}
@@ -622,8 +613,6 @@
 	function handlePopStates (data) {
 		// This solves the issue in <= v2.2.7 where you couldn't use
 		// the browsers back/forward buttons.
-		// webkit popstate "fire on load" fix
-		if (!hpPopped && d.location.href == hpInitialURL) return;
 		if (data.state && data.state.tz_aio_ajax && data.state.url) {
 			// If this history state contains an tz_aio_ajax url, go to it
 			d.location.href = data.state.url;
@@ -652,8 +641,15 @@
 	function doDirectTorrentLink (index, link) {
 		var dlink = link && link.href ? getDirectTorrentLinks(link.href) : null;
 		if (dlink) {
-			$(link).before("<a href='"+dlink+"' class='"+tz.env.slug+
-				"_dllink' target='_blank'><em>Download&#160;.torrent</em></a>");
+			$(link).before($("<em/>", {
+				"text": "Download .torrent"
+			}).appendTo($("<a/>", {
+				"href": dlink,
+				"class": tzCl+"_dllink",
+				"attr": {
+					"target": "_blank"
+				}
+			})).parent());
 		}
 	}
 	function removeOldStorageProps (obj) {
@@ -767,19 +763,38 @@
 		s = cache.magnetURI+hash+"&dn="+encodeURIComponent(title)+"&tr="+trackers;
 		return s;
 	}
-	function genUserSRInputs () {
+	function genUserSRInputs (callback) {
 		var srObj = tz.usc.searchResultColors,
-			cls = tz.env.slug+"_user_sr_color",
-			htmlStr = "";
-		srObj.forEach(function (sr) {
-			var srName = sr.name.toLowerCase()
-				.replace(/^sr/,"")
-				.replace(/^[a-z]/i, function (a) { return a.toUpperCase(); })
-				.replace(/^pink$/i, "xxx");
-			htmlStr = htmlStr+"<div class='"+cls+"_box'><em class='"+cls+"_title'>"+srName+
-				"</em><input data-color='"+sr.color+"' class='"+cls+"' "+"data-color_name='"+sr.name+"' /></div>";
-		});
-		return htmlStr;
+			cls = tzCl+"_user_sr_color",
+			collection = $(),
+			x,
+			makeAdder = function (sr, i) {
+				var srName = sr.name.toLowerCase()
+					.replace(/^sr/,"")
+					.replace(/^[a-z]/i, function (a) { return a.toUpperCase(); })
+					.replace(/^pink$/i, "xxx"),
+					elem;
+				elem = $("<div/>", { "class": cls+"_box" });
+				$("<em/>", {
+					"text": srName,
+					"class": cls+"_title"
+				}).appendTo(elem);
+				$("<input/>", {
+					"attr": {
+						"data-color": sr.color+"",
+						"data-color_name": sr.name+""
+					},
+					"class": cls
+				}).appendTo(elem);
+				collection = collection.add(elem);
+				if ((i+1) === srObj.length) {
+					return callback(collection);
+				}
+			};
+		if (!srObj.length) return callback(collection);
+		for (x = 0; x < srObj.length; x++) {
+			makeAdder(srObj[x], x);
+		}
 	}
 	function genSearchColorPalette () {
 		var userColors = tz.usc.searchResultColors.map(function (x) { return x.color; }),
@@ -793,7 +808,7 @@
 	function genSearchColorCSS (arr) {
 		var clrArr = [];
 		arr.forEach(function (sr) {
-			clrArr.push("."+(tz.env.bodyClass.replace(/\s/, "."))+"."+tz.env.slug+
+			clrArr.push("."+(tz.env.bodyClass.replace(/\s/, "."))+"."+tzCl+
 				"_colorized .results dl."+sr.name.toLowerCase().replace(/^sr/,"")+
 				" { background-color: "+sr.color+" !important; }");
 		});
@@ -822,149 +837,446 @@
 		return meta+JSON.stringify(o);
 	}
 	function getHelpHtml () {
-		var htmlArr = [ "<p><b>"+tz.env.name+" UserScript</b></p>",
-			"<ul id='"+tz.env.slug+"_help'>",
-			"<li>Installed: v"+tz.env.version+"</li>",
-			"<li>Homepage: <a href='"+tz.env.link+"'>"+tz.env.link+"</a></li>",
-			"<li>On Github: <a href='"+tz.env.gitHub+"'>"+tz.env.gitHub+"</a></li>",
-			"<li>Changelog: <a href='"+tz.env.gitHub+"blob/master/Changelog.md'>",
-			tz.env.gitHub+"blob/master/Changelog.md</a></li>",
-			"<li>Report issues and feature requests here: <a href='"+tz.env.gitHubIssues+"'>",
-			tz.env.gitHubIssues+"</a></li>",
-			"<li>Built using <a href='http://www.jquery.com/'>jQuery</a>, ",
-			"<a href='http://underscorejs.org/'>underscore.js</a>, ",
-			"<a href='http://github.com/cowboy/jquery-replacetext/'>",
-			"jQuery replaceText</a> &amp; ",
-			"<a href='https://github.com/bgrins/spectrum'>Spectrum Colorpicker</a></li>",
-			"<li>Keyboard Shortcuts<ul>",
-			"<li><kbd>'C'</kbd> : "+(typeof GM_setClipboard === "function"
-				? "Copy all the trackers" : "Toggle the tracker box")+".</li>",
-			"<li><kbd>'D'</kbd> : Trigger the Magnet-link.</li>",
-			"<li><kbd>'SHIFT&nbsp;+&nbsp;D'</kbd> : Download a randomly selected direct "+
-				"torrent-file listed.</li>",
-			"<li><kbd>'&larr; &rarr;'</kbd> : Navigate search results pages ",
-			"(Left arrow Right arrow).</li>",
-			"<li><kbd>'SHIFT&nbsp;+&nbsp;&rarr;'</kbd> : Next episode/season.</li>",
-			"<li><kbd>'SHIFT&nbsp;+&nbsp;&larr;'</kbd> : Previous episode/season.</li>",
-			"<li><kbd>'ESC'</kbd> : General exit/close.</li>",
-			"</ul></li></ul>"
-		];
-		return htmlArr.join("");
+		// return heading.add(list);
+		var heading = $("<b/>", {
+				"text": tz.env.name+" UserScript"
+			}).appendTo($("<p/>")).parent(),
+			list = $("<ul/>"),
+			sublist = $("<ul/>", {
+				"id": tzCl+"_keyboard_shortcuts"
+			});
+		$("<li/>", {
+			"text": "Installed: v"+tz.env.version
+		}).appendTo(list);
+		$("<a/>", {
+			"href": tz.env.link,
+			"text": tz.env.link
+		}).appendTo($("<li/>", {
+			"text": "Homepage: "
+		})).parent().appendTo(list);
+		$("<a/>", {
+			"href": tz.env.gitHub,
+			"text": tz.env.gitHub
+		}).appendTo($("<li/>", {
+			"text": "On Github: "
+		})).parent().appendTo(list);
+		$("<a/>", {
+			"href": tz.env.gitHub+"/blob/master/Changelog.md",
+			"text": tz.env.gitHub+"/blob/master/Changelog.md"
+		}).appendTo($("<li/>", {
+			"text": "Changelog: "
+		})).parent().appendTo(list);
+		$("<a/>", {
+			"href": tz.env.gitHubIssues,
+			"text": tz.env.gitHubIssues
+		}).appendTo($("<li/>", {
+			"text": "Report issues and feature requests here: "
+		})).parent().appendTo(list);
+		makeTextNode("Built using ").add(
+		$("<a/>", {
+			"href": "http://www.jquery.com/",
+			"text": "jQuery"
+		})).add(
+		makeTextNode(", ")).add(
+		$("<a/>", {
+			"href": "http://underscorejs.org/",
+			"text": "underscore.js"
+		})).add(
+		makeTextNode(", ")).add(
+		$("<a/>", {
+			"href": "http://github.com/cowboy/jquery-replacetext/",
+			"text": "jQuery replaceText"
+		})).add(
+		makeTextNode(" & ")).add(
+		$("<a/>", {
+			"href": "https://github.com/bgrins/spectrum",
+			"text": "Spectrum Colorpicker"
+		})).appendTo($("<li/>")).parent().appendTo(list);
+		$("<kbd/>", {
+			"text": "'C'"
+		}).add(
+		makeTextNode(" : "+(typeof GM_setClipboard === "function" ? "Copy all the trackers" : "Toggle the tracker box")
+			+".")).appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'D'"
+		}).add(
+		makeTextNode(" : Trigger the Magnet-link.")).appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'SHIFT + D'"
+		}).add(
+		makeTextNode(" : Download a randomly selected direct torrent-file listed."))
+			.appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'← →'"
+		}).add(
+		makeTextNode(" : Navigate search results pages (Left arrow Right arrow)."))
+			.appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'SHIFT + →'"
+		}).add(
+		makeTextNode(" : Next episode/season.")).appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'SHIFT + ←'"
+		}).add(
+		makeTextNode(" : Previous episode/season.")).appendTo($("<li/>")).parent().appendTo(sublist);
+		$("<kbd/>", {
+			"text": "'ESC'"
+		}).add(
+		makeTextNode(" : General exit/close.")).appendTo($("<li/>")).parent().appendTo(sublist);
+		sublist.appendTo($("<li/>", {
+			"text": "Keyboard Shortcuts"
+		})).parent("li").appendTo(list);
+		return $("<a/>", {
+			"name": tzCl+"_help"
+		}).add(heading).add(list);
 	}
-	function getSettingsHtml (trackersString) {
-		var checkHighlight = tz.usc.searchHighlight ? " checked='checked' " : " ",
-			checkAds = tz.usc.removeAds ? " checked='checked' " : " ",
-			checkCommentLinks = tz.usc.linkComments ? " checked='checked' " : " ",
-			checkAjaxSorting = tz.usc.ajaxedSorting ? " checked='checked' " : " ",
-			checkForceHTTPS = tz.usc.forceHTTPS ? " checked='checked' " : " ",
-			checkSearchTabs = tz.usc.searchTabs ? " checked='checked' " : " ",
-			copyBuiltInTrLink = typeof GM_setClipboard === "function"
-				? " <em>If you need the built-in list that is baked into"+
-				" the userscript, <a id='"+tzCl+"_copy_built_in_trackerlist' href='#'>click here</a>"+
-				" to copy that list.</em>" : "",
-			versionStr = tz.env.version+" ("+tz.env.date+")",
-			htmlArr = [ "<p class='generic "+tzCl+"_info_p' style='",
-				"background-image:url("+tz.env.icon+");'>",
-				"<a href='"+tz.env.link+"'>Torrentz All-in-One</a> ",
-				versionStr+" &mdash; Keyboard shortcuts? Learn about them <a href='",
-				"/help#"+tzCl+"_help'>here</a>. <br>",
-				"This userscript can be installed from ",
-				"<a href='https://openuserjs.org/?q=torrentz' title='",
-				"Search for Torrentz All-in-One'>openuserjs.org</a>, ",
-				"<a href='https://greasyfork.org/scripts/search?q=torrentz' title='",
-				"Search for Torrentz All-in-One'>greasyfork.org</a> and ",
-				"<br><a title='Search for Torrentz All-in-One' href='",
-				"https://monkeyguts.com/index.php?search=torrentz'>monkeyguts.com</a>. ",
-				"Get the sourcecode on <a href='"+tz.env.gitHub+"'>GitHub</a>, report any ",
-				"issues <a href='"+tz.env.gitHubIssues+"'>here</a>.</p>",
-				"<form id='"+tzCl+"_settings_submit' class='",
-				tzCl+"_settings_form profile' method='get' action='",
-				tz.page.path+"'><fieldset><legend>TzAio Settings</legend>",
-				"<label>Activated Features</label>",
-				"<p class='"+tzCl+"_main_radioselect'>",
-				"<input type='checkbox' value='forceHTTPS'"+checkForceHTTPS+"id='",
-				tzCl+"_forceHTTPS' />",
-				"<label for='"+tzCl+"_forceHTTPS' title='This will redirect all pages to ",
-				"secure SSL, beware that if HTTPS is unavailable, you have to try another mirror ",
-				"and turn this option off again. ",
-				"That`s why this option is turned off by default. Also note that this will ",
-				"not be applied if you`re on a proxy.'>Force HTTPS</label>",
-				"<input type='checkbox' value='removeAds'"+checkAds+"id='"+tzCl+"_removeAds' />",
-				"<label for='"+tzCl+"_removeAds' title='This will hide all ads, including ",
-				"image ads, flash-based ads, and linked text ads. If you still see an ad, ",
-				"it is probably brand new and still not known to this script.'>Hide Ads</label>",
-				"<input type='checkbox' value='searchHighlight' ",
-				"id='"+tzCl+"_searchHighlight'"+checkHighlight+" />",
-				"<label for='"+tzCl+"_searchHighlight' title='This is what highlights all ",
-				"results and makes the background for each row change color. All results ",
-				"will still have a magnetlink.'>Colorful results</label>",
-				"<input type='checkbox' value='ajaxedSorting'",
-				checkAjaxSorting+"id='"+tzCl+"_ajaxedSorting'>",
-				"<label for='"+tzCl+"_ajaxedSorting' title='This feature turns on ajax for ",
-				"paged searchresults, sorting and episode links. The advantage is that it ",
-				"is some what faster, and puts less stress on the webserver.",
-				"'>Ajaxed sorting</label>",
-				"<input type='checkbox' value='linkComments'",
-				checkCommentLinks+"id='"+tzCl+"_linkComments'>",
-				"<label for='"+tzCl+"_linkComments' title='This feature looks for any link-like ",
-				"text in each user comment and converts it to real, clickable links.",
-				"'>Comment links</label>",
-				"<input type='checkbox' value='searchTabs'",
-				checkSearchTabs+"id='"+tzCl+"_searchTabs'>",
-				"<label for='"+tzCl+"_searchTabs' title='Show links underneith the searchbox ",
-				"for your search-engines, when applicable.'>Show Search Tabs</label></p>",
-				"<label>Search Result Colors</label>",
-				"<div class='"+tzCl+"_user_sr_paragraph'>"+(genUserSRInputs())+"</div>",
-				"<label for='"+tzCl+"_default_trackers_textarea'>Default trackerlist</label>",
-				"<textarea rows='6' class='i' id='"+tzCl+"_default_trackers_textarea' wrap='off'>",
-				trackersString+"</textarea><p>Optional. Default trackerlist ",
-				"(these are added to all torrents\' ",
-				"trackers, if absent). Note that these are combined with the torrents own trackers, and ",
-				"after that duplicates are removed, they get sorted by domain, and finally grouped ",
-				"with any http backup protocols."+copyBuiltInTrLink+"</p>",
-				"<label for='"+tzCl+"_default_searchengines_textarea'>Search engines list</label>",
-				"<textarea id='"+tzCl+"_default_searchengines_textarea' wrap='off' ",
-				"rows='6' class='i'>"+__.escape(tz.usc.searchEngines.join("\n")),
-				"</textarea><p>Optional. Search engines for the <b>Search Tabs</b> feature ",
-				"(title|url formatting, use <code>%s</code> to indicate keyword, and <code>_</code> ",
-				"to indicate a space). ",
-				"<em>How do I use them?</em> &mdash; If you have <b>Show Search Tabs</b> enabled, ",
-				"anything written in the search box will turned into links for these engines, ",
-				"and appear as tabs underneith.</p>",
-				"<label for='"+tzCl+"_custom_css_textarea'>Custom CSS</label>",
-				"<textarea id='"+tzCl+"_custom_css_textarea' wrap='off' rows='6' ",
-				"class='i'>"+__.escape(tz.usc.customCss.join("\n"))+"</textarea>",
-				"<p>Optional. Edit this if you want to change the layout further, applies to all ",
-				"pages.</p><label for='"+tzCl+"_exclude_filter_input'>Exclude filter</label>",
-				"<input type='text' class='i' id='"+tzCl+"_exclude_filter_input' ",
-				"value='"+tz.usc.excludeFilter+"' ",
-				"placeholder='keyword1,keyword2,keyword3' /><p>Optional. If you want to hide ",
-				"certain torrents (based on name), enter some key phrases here (comma seperated).",
-				" Remember that they are <em>not</em> case-sensitive, and that spaces will match ",
-				"any letter. Also note that before applying the filter, any 2 or more spaces in ",
-				"the title are replaced by one, that makes things a whole lot easier. Advanced: ",
-				"This supports ",
-				"<a href='http://www.regular-expressions.info/javascript.html' target='_blank'>RegExp</a> ",
-				"too, to use it, type your pattern inside 2 forward slashes, ex: ",
-				"<code>/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/</code></p>",
-				"<label class='"+tzCl+"_importer_forms' for='"+tzCl+"_import_settings_form'>",
-				"Import Settings</label><textarea class='"+tzCl+"_importer_forms' id='",
-				tzCl+"_import_settings_form' wrap='on' rows='6'>",
-				"</textarea><p class='"+tzCl+"_importer_forms'>Paste in your previously exported ",
-				"settings in this box and click <button>Import</button></p>",
-				"<label class='"+tzCl+"_exporter_forms' for='"+tzCl+"_export_settings_form'>",
-				"Exported Settings</label><textarea onfocus='this.select()' onclick='this.select()' ",
-				"class='"+tzCl+"_exporter_forms' id='"+tzCl+"_export_settings_form' ",
-				"readonly='readonly' wrap='on' rows='6'>",
-				__.escape(genExportedSettings())+"</textarea><p class='"+tzCl+"_exporter_forms'>",
-				"Copy and save it somewhere safe. Use the Importer to restore these values ",
-				"later. And remember: <b>do not alter!</b></p><div class='s'>",
-				"<a href='#' id='"+tzCl+"_settings_reset'><span>Reset</span></a> | ",
-				"<a href='#' id='"+tzCl+"_settings_export_link'><span>Export</span></a> | ",
-				"<a href='#' id='"+tzCl+"_settings_import_link'><span>Import</span></a>",
-				"<input type='submit' value='Save'></div></fieldset></form>"
-			];
-		return htmlArr.join("");
+	function makeTextNode (txt) {
+		return $(document.createTextNode(txt));
+	}
+	function makeSettParagraph () {
+		var p = $("<p/>", {
+			"class": "generic "+tzCl+"_info_p"
+		}).css("background-image", "url("+tz.env.icon+")");
+		$("<a/>", {
+			"href": tz.env.link,
+			"text": "Torrentz All-in-One"
+		}).appendTo(p);
+		makeTextNode(" "+tz.env.version+" ("+tz.env.date+") — Keyboard shortcuts? Learn about them ").appendTo(p);
+		$("<a/>", {
+			"href": "/help#"+tzCl+"_help",
+			"text": "here"
+		}).appendTo(p);
+		makeTextNode(". ").appendTo(p);
+		$("<br/>").appendTo(p);
+		makeTextNode("This userscript can be installed from ").appendTo(p);
+		$("<a/>", {
+			"href": "https://openuserjs.org/?q=torrentz",
+			"title": "Search for Torrentz All-in-One",
+			"text": "openuserjs.org"
+		}).appendTo(p);
+		makeTextNode(", ").appendTo(p);
+		$("<a/>", {
+			"href": "https://greasyfork.org/scripts/search?q=torrentz",
+			"title": "Search for Torrentz All-in-One",
+			"text": "greasyfork.org"
+		}).appendTo(p);
+		makeTextNode(" and ").appendTo(p);
+		$("<br/>").appendTo(p);
+		$("<a/>", {
+			"href": "https://monkeyguts.com/index.php?search=torrentz",
+			"title": "Search for Torrentz All-in-One",
+			"text": "monkeyguts.com"
+		}).appendTo(p);
+		makeTextNode(". Get the sourcecode on ").appendTo(p);
+		$("<a/>", {
+			"href": tz.env.gitHub,
+			"text": "GitHub"
+		}).appendTo(p);
+		makeTextNode(", report any issues ").appendTo(p);
+		$("<a/>", {
+			"href": tz.env.gitHubIssues,
+			"text": "here"
+		}).appendTo(p);
+		makeTextNode(".").appendTo(p);
+		return p;
+	}
+	function getSettingsHtml (trackersString, callback) {
+		if (cache.settingsInserted) return callback(null);
+		var submitDiv = $("<div/>", { "class": "s" }),
+			form = $("<fieldset/>").appendTo($("<form/>", {
+			"id": tzCl+"_settings_submit",
+			"class": tzCl+"_settings_form profile",
+			"attr": {
+				"method": "get",
+				"action": tz.page.path
+			}
+		}));
+		$("<legend/>", { "text": "TzAio Settings" }).appendTo(form);
+		$("<label/>", { "text": "Activated Features" }).appendTo(form);
+		$("<input/>", {
+			"id": tzCl+"_forceHTTPS",
+			"attr": { "type": "checkbox", "value": "forceHTTPS" },
+			"checked": tz.usc.forceHTTPS
+		}).add(
+		$("<label/>", {
+			"text": "Force HTTPS",
+			"attr": {
+				"for": tzCl+"_forceHTTPS",
+				"title": "This will redirect all pages to secure SSL, beware that if HTTPS is unavailable, you have to "+
+					"try another mirror and turn this option off again. That`s why this option is turned off by default."+
+					" Also note that this will not be applied if you`re on a proxy."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_removeAds",
+			"attr": { "type": "checkbox", "value": "removeAds" },
+			"checked": tz.usc.removeAds
+		})).add(
+		$("<label/>", {
+			"text": "Hide Ads",
+			"attr": {
+				"for": tzCl+"_removeAds",
+				"title": "This will hide all ads, including image ads, flash-based ads, and linked text ads. If you still "+
+					"see an ad, it is probably brand new and still not known to this script."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_searchHighlight",
+			"attr": { "type": "checkbox", "value": "searchHighlight" },
+			"checked": tz.usc.searchHighlight
+		})).add(
+		$("<label/>", {
+			"text": "Colorful results",
+			"attr": {
+				"for": tzCl+"_searchHighlight",
+				"title": "This is what highlights all results and makes the background for each row change color. "+
+					"All results will still have a magnetlink."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_ajaxedSorting",
+			"attr": { "type": "checkbox", "value": "ajaxedSorting" },
+			"checked": tz.usc.ajaxedSorting
+		})).add(
+		$("<label/>", {
+			"text": "Ajaxed sorting",
+			"attr": {
+				"for": tzCl+"_ajaxedSorting",
+				"title": "This feature turns on ajax for paged searchresults, sorting and episode links. The advantage is "+
+					"that it's some what faster, and puts less stress on the webserver."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_linkComments",
+			"attr": { "type": "checkbox", "value": "linkComments" },
+			"checked": tz.usc.linkComments
+		})).add(
+		$("<label/>", {
+			"text": "Comment links",
+			"attr": {
+				"for": tzCl+"_linkComments",
+				"title": "This feature looks for any link-like text in each user comment and converts it to real, "+
+					"clickable links."
+			}
+		})).add(
+		$("<input/>", {
+			"id": tzCl+"_searchTabs",
+			"attr": { "type": "checkbox", "value": "searchTabs" },
+			"checked": tz.usc.searchTabs
+		})).add(
+		$("<label/>", {
+			"text": "Show Search Tabs",
+			"attr": {
+				"for": tzCl+"_searchTabs",
+				"title": "Show links underneith the searchbox for your search-engines, when applicable."
+			}
+		})).appendTo($("<p/>", { "class": tzCl+"_main_radioselect" })).parent().appendTo(form);
+		$("<label/>", { "text": "Search Result Colors" }).appendTo(form);
+		genUserSRInputs(function (colorDivs) {
+			colorDivs.appendTo($("<div/>", { "class": tzCl+"_user_sr_paragraph" })).parent().appendTo(form);
+			$("<label/>", {
+				"text": "Default trackerlist",
+				"attr": {
+					"for": tzCl+"_default_trackers_textarea"
+				}
+			}).appendTo(form);
+			$("<textarea/>", {
+				"attr": {
+					"rows": 6
+				},
+				"class": "i",
+				"id": tzCl+"_default_trackers_textarea"
+			}).val(trackersString).appendTo(form);
+			makeTextNode("Optional. Default trackerlist (these are added to all torrents\' "+
+				"trackers, if absent). Note that these are combined with the torrents own trackers, and "+
+				"after that duplicates are removed, they get sorted by domain, and finally grouped "+
+				"with any http backup protocols. If you need the built-in list that is baked into"+
+				" the userscript, ").add(
+			$("<a/>", {
+				"href": "#",
+				"id": tzCl+"_copy_built_in_trackerlist",
+				"text": "click here",
+				on: {
+					"click": function () {
+						var sortedOriginal = tz.trackers(false).join("");
+						if (typeof GM_setClipboard !== "function") {
+							return window.alert("Your scriptengine does not support copying with GM_setClipboard");
+						}
+						sendLog(sortedOriginal);
+						if (isWindowsOS()) {
+							sortedOriginal = sortedOriginal.replace(/\r?\n/g,"\r\n");
+						}
+						GM_setClipboard(sortedOriginal);
+						$(this).css("opacity", "0.5");
+						return false;
+					}
+				}
+			})).add(makeTextNode(" to copy that list.")).appendTo($("<p/>")).parent().appendTo(form);
+			$("<label/>", {
+				"text": "Search engines list",
+				"attr": {
+					"for": tzCl+"_default_searchengines_textarea"
+				}
+			}).appendTo(form);
+			$("<textarea/>", {
+				"id": tzCl+"_default_searchengines_textarea",
+				"attr": {
+					"rows": 6,
+					"class": "i"
+				}
+			}).val(tz.usc.searchEngines.join("\n")).appendTo(form);
+			makeTextNode("Optional. Search engines for the ").add(
+			$("<b/>", {"text": "Search Tabs"})).add(
+			makeTextNode(" feature (title|url formatting, use ")).add(
+			$("<code/>", {"text": "%s"})).add(
+			makeTextNode(" to indicate keyword, and ")).add(
+			$("<code/>", {"text": "_"})).add(
+			makeTextNode(" to indicate a space). ")).add(
+			$("<em/>", {"text": "How do I use them?"})).add(
+			makeTextNode(" — If you have ")).add(
+			$("<b/>", {"text": "Show Search Tabs"})).add(
+			makeTextNode(" enabled, anything written in the search box will turned into links for these engines, "+
+				"and appear as tabs underneith.")).appendTo($("<p/>")).parent().appendTo(form);
+			$("<label/>", {
+				"text": "Custom CSS",
+				"attr": {
+					"for": tzCl+"_custom_css_textarea"
+				}
+			}).appendTo(form);
+			$("<textarea/>", {
+				"id": tzCl+"_custom_css_textarea",
+				"class": "i",
+				"attr": {
+					"rows": 6
+				}
+			}).val(tz.usc.customCss.join("\n")).appendTo(form);
+			$("<p/>", {"text": "Optional. Edit this if you want to change the layout further, applies to all pages."})
+				.appendTo(form);
+			$("<label/>", {
+				"text": "Exclude filter",
+				"attr": {
+					"for": tzCl+"_exclude_filter_input"
+				}
+			}).appendTo(form);
+			$("<input/>", {
+				"id": tzCl+"_exclude_filter_input",
+				"class": "i",
+				"attr": {
+					"type": "text",
+					"placeholder": "keyword1,keyword2,keyword3"
+				}
+			}).val(tz.usc.excludeFilter).appendTo(form);
+			makeTextNode("Optional. If you want to hide certain torrents (based on name), enter some key phrases here "+
+				"(comma seperated). Remember that they are ").add(
+			$("<em/>", "text", "not")).add(
+			makeTextNode(" case-sensitive, and that spaces will match any letter. Also note that before applying the "+
+				"filter, any 2 or more spaces in the title are replaced by one, that makes things a whole lot easier. "+
+				"Advanced: This supports ")).add(
+			$("<a/>", {
+				"href": "http://www.regular-expressions.info/javascript.html",
+				"attr": { "target": "_blank" },
+				"text": "RegExp"
+			})).add(
+			makeTextNode(" too, to use it, type your pattern inside 2 forward slashes, ex: ")).add(
+			$("<code/>", {"text": "/(EpicMealTime|\\s(hd)?Cam(rip)?(\\s|$))/"})).appendTo($("<p/>")).parent().appendTo(form);
+			$("<label/>", {
+				"text": "Import Settings",
+				"class": tzCl+"_importer_forms",
+				"attr": {
+					"for": tzCl+"_import_settings_form"
+				}
+			}).appendTo(form);
+			$("<textarea/>", {
+				"class": tzCl+"_importer_forms",
+				"id": tzCl+"_import_settings_form",
+				"attr": {
+					"rows": 6
+				}
+			}).appendTo(form);
+			$("<button/>", { "text": "Import" }).appendTo($("<p/>", {
+				"class": tzCl+"_importer_forms",
+				"text": "Paste in your previously exported settings in this box and click "
+			})).parent().appendTo(form);
+
+			$("<label/>", {
+				"text": "Exported Settings",
+				"class": tzCl+"_exporter_forms",
+				"attr": {
+					"for": tzCl+"_export_settings_form"
+				}
+			}).appendTo(form);
+			$("<textarea/>", {
+				"onfocus": "this.select()",
+				"onclick": "this.select()",
+				"class": tzCl+"_exporter_forms",
+				"id": tzCl+"_export_settings_form",
+				"attr": {
+					"readonly": true,
+					"rows": 6
+				}
+			}).val(genExportedSettings()).appendTo(form);
+			$("<b>", {
+				"text": "do not alter!"
+			}).appendTo($("<p/>", {
+				"class": tzCl+"_exporter_forms",
+				"text": "Copy and save it somewhere safe. Use the Importer to restore these values later. And remember: "
+			})).parent().appendTo(form);
+			$("<span/>", { "text": "Reset" })
+			.appendTo($("<a/>", {
+				"href": "#",
+				"id": tzCl+"_settings_reset",
+				on: {
+					"click": function (event) {
+						var refresh_page_reset = window.confirm("This will erase all your custom settings!"+
+							"\nReset settings and reload the page?");
+						event.preventDefault();
+						if (refresh_page_reset) {
+							// Delete any and all saved values
+							setStorageOptions(false, function () {
+								sessionStorage.setItem(tzCl+"_SS_useroptions_saved", "true");
+								sessionStorage.removeItem(tzCl+"_SS_cookietest_3");
+								location.href = tz.page.href;
+							});
+						}
+						return false;
+					}
+				}
+			})).parent().appendTo(submitDiv);
+			makeTextNode(" | ").appendTo(submitDiv);
+			$("<span/>", { "text": "Export" })
+			.appendTo($("<a/>", {
+				"href": "#",
+				"id": tzCl+"_settings_export_link",
+				on: {
+					"click": function () {
+						$("."+tzCl+"_importer_forms").addClass("hide");
+						$("."+tzCl+"_exporter_forms").removeClass("hide");
+						return false;
+					}
+				}
+			})).parent().appendTo(submitDiv);
+			makeTextNode(" | ").appendTo(submitDiv);
+			$("<span/>", { "text": "Import" })
+			.appendTo($("<a/>", {
+				"href": "#",
+				"id": tzCl+"_settings_import_link",
+				on: {
+					"click": function () {
+						$("."+tzCl+"_exporter_forms").addClass("hide");
+						$("."+tzCl+"_importer_forms").removeClass("hide");
+						return false;
+					}
+				}
+			})).parent().appendTo(submitDiv);
+			$("<input/>", {
+				"attr": {
+					"type": "submit",
+					"value": "Save"
+				}
+			}).appendTo(submitDiv);
+			submitDiv.appendTo(form);
+			return callback(form.parent());
+		});
 	}
 	function getSelected () {
 		var t = "";
@@ -995,12 +1307,18 @@
 		return votebox.find(".status")[0].style.color;
 	}
 	function setupCopyTextArea (arr) {
-		var textareaHTML = "<div id='"+tzCl+"_copy_tr_textarea' class='"+tzCl+"_copy_textarea'>"+
-				"<textarea readonly='readonly' cols='40' rows='10' wrap='off'></textarea></div>";
+		$("<textarea/>", {
+			"attr": {
+				"readonly": true,
+				"cols": 40,
+				"rows": 10
+			}
+		}).val(arr.join("")).appendTo($("<div/>", {
+			"id": tzCl+"_copy_tr_textarea",
+			"class": tzCl+"_copy_textarea"
+		})).parent().appendTo(els.$body);
 		cache.copyTrackersLinkHeight = els.$copyTrackersLink.outerHeight();
-		els.$body.append(textareaHTML);
 		els.$copyTextArea = $("#"+tzCl+"_copy_tr_textarea");
-		els.$copyTextArea.find("textarea").val(arr.join(""));
 	}
 	function setupSelectToSearch () {
 		if (tz.usc.searchTabs) {
@@ -1013,9 +1331,12 @@
 		}
 	}
 	function handleMagnetClicks (event) {
-		if (!event && !isAnyInputFocused()) {
-			location.href = els.$magnetLink[0].href;
-			return false;
+		if (!event) {
+		 	els.$magnetLink.addClass("active");
+			if (!isAnyInputFocused()) {
+				location.href = els.$magnetLink[0].href;
+				return false;
+			}
 		}
 	}
 	function ajaxResultsHandler (event) {
@@ -1056,7 +1377,7 @@
 			seValid,
 			exValid;
 		els.$settingsForm.find(":checkbox").each(function (index, element) {
-			var settingName = element.id.replace(tz.env.slug+"_",""),
+			var settingName = element.id.replace(tzCl+"_",""),
 				settingValue = $(element).is(":checked");
 			submittedOptions[settingName] = settingValue;
 		});
@@ -1099,7 +1420,7 @@
 						"you have.");
 					sendLog(thisWasSaved);
 					if (thisWasSaved) {
-						sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
+						sessionStorage.setItem(tzCl+"_SS_useroptions_saved", "true");
 						location.href = tz.page.href;
 					} else {
 						disabledInput.prop("disabled", false);
@@ -1143,7 +1464,7 @@
 		json = __.defaults(json, tz.usc);
 		return setStorageOptions(json, function (thisWasImported) {
 			if (thisWasImported) {
-				sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
+				sessionStorage.setItem(tzCl+"_SS_useroptions_saved", "true");
 				sendLog(thisWasImported);
 				sendLog("This was imported, please add the following output to any issue report you have.");
 				location.href = tz.page.href;
@@ -1169,7 +1490,7 @@
 					loadingInt,
 					$html,
 					newTitle;
-				if ($this[0].href) {
+				if ($this[0].href && $this[0].hostname === tz.page.host) {
 					relMatch = $this[0].href.match(/https?\:\/\/[^\/]+(\/.*)/);
 					// prevent leaking of unwanted ajax links, shouldn't happen but it's good to remember
 					validLink = relMatch && relMatch.length === 2 && relMatch[1] && relMatch[1]
@@ -1243,14 +1564,14 @@
 	function lastAction () {
 		if (!cache.lastActionDone) {
 			cache.lastActionDone = true;
-			if (sessionStorage.getItem(tz.env.slug+"_SS_useroptions_saved") === "true") {
+			if (sessionStorage.getItem(tzCl+"_SS_useroptions_saved") === "true") {
 				// scroll up bacause user just saved options and window is def. scrolled down a bit
 				els.$bodyANDhtml.animate({ scrollTop : 1 }, 0, function () {
-					sessionStorage.removeItem(tz.env.slug+"_SS_useroptions_saved");
+					sessionStorage.removeItem(tzCl+"_SS_useroptions_saved");
 					if (!cache.freshUser) {
-						els.$body.addClass(tz.env.slug+"_settings_saved");
+						els.$body.addClass(tzCl+"_settings_saved");
 						setTimeout(function () {
-							els.$body.removeClass(tz.env.slug+"_settings_saved");
+							els.$body.removeClass(tzCl+"_settings_saved");
 						}, 5000);
 					}
 					els.$bodyANDhtml.animate({ scrollTop: 0 }, 0);
@@ -1274,7 +1595,7 @@
 					// TamperMonkey (on Linux and Windows) < v3.4.3525 seems to remove \r ([CR])
 					// chars, a fix for this has been released in their latest Beta
 					// http://tampermonkey.net/changelog.php?version=3.4.3525&ext=gcal
-					copyThis = copyThis.replace(/\n/g,"\r\n");
+					copyThis = copyThis.replace(/\r?\n/g,"\r\n");
 				}
 				GM_setClipboard(copyThis);
 				if (els.$copyTrackersLink && els.$copyTrackersLink.length) {
@@ -1311,11 +1632,12 @@
 			key = +e.which,
 			safePlace = !isAnyInputFocused(),
 			newTabOpt,
+			randEl,
 			torrentLinks,
 			nextPrevLink;
 		if (!isNaN(key) && safePlace) {
 			if (key === 27 && noMods) {
-				// 'ESCAPE'
+				// 'ESC'
 				if (els.$settingsForm && els.$settingsForm.hasClass("expand")) {
 					els.$settingsLink.trigger("click");
 					els.$bodyANDhtml.animate({
@@ -1328,16 +1650,20 @@
 					els.$titleEl.trigger("mousedown");
 					toggleCopyBox(2);
 				}
+				els.$magnetLink.removeClass("active");
 			} else if (cache.isSingle) {
+				// 'SHIFT + d'
 				if (key === 68 && __.isEqual(e.shiftKey, true)) {
 					torrentLinks = $("."+tzCl+"_dllink");
 					if (torrentLinks.length) {
 						newTabOpt = isTM ? { active: true, insert: true } : isSC ? true : null;
 						// trigger a random torrent link each time
 						if (!cache.randomDirectLinks.length) {
+							torrentLinks.removeClass("visited");
 							cache.randomDirectLinks = shuffledArray(torrentLinks.length);
 						}
-						return GM_openInTab(torrentLinks[cache.randomDirectLinks.pop()].href, newTabOpt);
+						GM_openInTab((randEl=torrentLinks[cache.randomDirectLinks.pop()]).href, newTabOpt);
+						return $(randEl).addClass("visited");
 					} else {
 						return window.alert("No .torrent file to download!");
 					}
@@ -1388,6 +1714,7 @@
 				".SimpleAcceptableTextAds",
 				".PleaseDontDisableTheAutoSuggestScriptThePopCodeIsNotThere"
 			],
+			viewMeAdLink,
 			frontPageAd;
 		if (tz.usc.removeAds) {
 			if (page === "common") {
@@ -1427,6 +1754,12 @@
 				}
 				element.prev().has("a img").addClass(adRemovedClass);
 				els.$body.find(" > div.sponsored").addClass(adRemovedClass);
+				// 2014-09-15 ViewMe Link
+				if ((viewMeAdLink=element.find("p:last a:eq(0)")).length) {
+					if (viewMeAdLink[0].hostname.indexOf("viewme.com") !== -1) {
+						viewMeAdLink.addClass(adRemovedClass);
+					}
+				}
 			} else if (page === "splash") {
 				// Old Ads that might popup later again
 				frontPageAd = els.$body.find(" > p a img");
@@ -1450,29 +1783,47 @@
 		}
 	}
 	function genSearchEnginesLinks (str) {
-		var htmlStr = "";
-		if (!str || !tz.usc.searchEngines.length) return htmlStr;
+		var html = $();
+		if (!str || !tz.usc.searchEngines.length) return html;
 		// Remove search terms like size:12334, added < 3d, site:domain.com etc.
 		str = str.replace(cache.cleanSearchQPatt, "$1")
 			.replace(cache.invalidQCharsPatt," ").replace(/\s+/g, " ").trim();
-		if (!str) return htmlStr;
+		if (!str) return html;
 		tz.usc.searchEngines.forEach(function (item) {
 			var arr = item.split("|");
-			htmlStr = htmlStr+"<a class='search_link' rel='noreferrer' href='"+
-				// Unescape html first (legacy), then escape
-				// search string must be encoded separatly
-				getNoReferrerUrl(__.escape(__.unescape(arr[1]).replace(/%s/g, encodeURIComponent(str))))+
-				"'>"+__.escape(arr[0].replace(/_/g, " "))+"</a>";
+			html = html.add(
+				$("<a/>", {
+					"text": arr[0].replace(/_/g, " "),
+					// Unescape html first (legacy)
+					// search string must be encoded separatly
+					"href": __.unescape(getNoReferrerUrl(__.unescape(arr[1]).replace(/%s/g, encodeURIComponent(str)))),
+					"class": "search_link",
+					"attr": {
+						"rel": "noreferrer"
+					}
+				})
+			);
 		});
-		htmlStr = htmlStr+"<a href='/feed?q="+__.escape(encodeURIComponent(str))+"'><img src='"+
-			cache.RSSIMG+"' width='16' height='16'></a>";
-		return htmlStr;
+		html = html.add($("<img/>", {
+			"src": cache.RSSIMG,
+			"attr": {
+				"width": 16,
+				"height": 16,
+				"alt": ""
+			}
+		}).appendTo($("<a/>", {
+			"href": "/feed?q="+encodeURIComponent(str)
+		})).parent());
+		return html;
 	}
 	function genSearchTabs ($box) {
 		var $tabBox, currVal;
 		if (!$("div."+tzCl+"_searchtabs").length) {
 			$("form.search").css("margin-bottom", "0px")
-				.after("<div class='"+tzCl+"_searchtabs'></div>");
+				.after($("<div/>", {
+					"class": tzCl+"_searchtabs"
+				}))
+			;
 		}
 		$tabBox = $("div."+tzCl+"_searchtabs");
 		currVal = $box.val();
@@ -1602,6 +1953,7 @@
 		});
 	}
 	function makeMainMagnetLink (color, tr) {
+		myAddStyler("."+(tz.env.bodyClass.replace(/\s/, "."))+" a."+tzCl+"_mlink:link { color: "+color+"; }");
 		return $("<a/>", {
 			"href": "#", // Set later and applied to all magnetlinks on the page
 			"class": tzCl+"_mlink",
@@ -1612,7 +1964,7 @@
 			on: {
 				"click": handleMagnetClicks
 			}
-		}).css("color", color);
+		});
 	}
 	function makeCopyTrackerList (tr) {
 		return $("<a/>", {
@@ -1680,13 +2032,16 @@
 	function getFilesInfo (callback) {
 		var wmvPatt = /\.wmv$/i,
 			filesDiv = els.$body.find("div.files:eq(0)"),
-			fileLinks = filesDiv.find("li"),
-			folderLinks = filesDiv.find("li.t"),
-			fileLinksLen = fileLinks.length-(folderLinks.length*2),
+			fileLinks = filesDiv.find(" > ul li > span"),
+			fileLinksLen = fileLinks.length,
 			fileLinksLenI = fileLinksLen,
 			filesSizeText = filesDiv.find("div:contains('Size:'):eq(0)").text().replace("Size: ",""),
 			wmvWarning = false;
-		filesDiv.before("<a name='files_"+tzCl+"'></a>");
+		filesDiv.before($("<a/>", {
+			"attr": {
+				"name": "files_"+tzCl
+			}
+		}));
 		if (fileLinksLen && fileLinksLen <= 1000) {
 			// Not important enough to be able to break everything
 			try {
@@ -1744,10 +2099,19 @@
 					$(element).attr("href", magnetUrl);
 				});
 				if (els.$comments.length) {
-					commentDiv.before("<a name='comments_"+tzCl+"'></a>");
+					commentDiv.before($("<a/>", {
+						"attr": {
+							"name": "comments_"+tzCl
+						}
+					}));
 				} else {
 					els.$body.find("form.profile[method='post']:eq(0) fieldset")
-						.before("<a name='write_comment_"+tzCl+"'></a>");
+						.before($("<a/>", {
+							"attr": {
+								"name": "write_comment_"+tzCl
+							}
+						}))
+					;
 					commentDiv.find(" > h2:eq(0)").replaceText(/\(\d+\)/, "(0)");
 				}
 				if (typeof callback === "function") {
@@ -1799,6 +2163,7 @@
 			} else {
 				torrLink = torrLinks[0];
 			}
+			// Should be faster (50x) than making them using $("<a/>", {...})
 			torrHash = torrLink.href.match(linkPatt)[0];
 			torrTitle = torrLink.textContent;
 			spanMagnet = d.createElement("SPAN");
@@ -2117,13 +2482,10 @@
 			epm = queryMatch && queryMatch.length === 2
 				? queryMatch[1].match(cache.validEpisodePatt) : null,
 			legacym = queryMatch && queryMatch.length === 2
+				// Notify about using sNNeNN - don't assume and replace!
 				? queryMatch[1].match(cache.validLegacyEpPatt) : null,
 			ymdMatch,
-			nEpLinkCl = "class='"+tzCl+"_tv_next_episode'",
-			pEpLinkCl = "class='"+tzCl+"_tv_prev_episode'",
-			nSeLinkCl = "class='"+tzCl+"_tv_next_season'",
-			pSeLinkCl = "class='"+tzCl+"_tv_prev_season'",
-			htmlStr = "",
+			html = $(),
 			ep = {},
 			dp = {};
 		if (datem && datem.length === 17) {
@@ -2133,13 +2495,18 @@
 			dp.day = ymdMatch[3];
 			dp.nextDate = getValidDate([dp.year, dp.month, dp.day], 1);
 			dp.prevDate = getValidDate([dp.year, dp.month, dp.day], -1);
-			htmlStr = "<b><a "+pEpLinkCl+" href='"+
-				makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.prevDate.nice+"\x22")+
-				"'>&lt; "+dp.prevDate.nice+"</a></b>";
+			html = html.add($("<a/>", {
+				"text": "< "+dp.prevDate.nice,
+				"href": makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.prevDate.nice+"\x22"),
+				"class": tzCl+"_tv_prev_episode"
+			}).appendTo($("<b/>")).parent());
 			if (dp.nextDate.ms && (dp.nextDate.ms - (new Date().getTime())) < 0) {
-				htmlStr = htmlStr+" | <b><a "+nEpLinkCl+" href='"+
-					makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.nextDate.nice+"\x22")+
-					"'>"+dp.nextDate.nice+" &gt;</a></b>";
+				html = html.add(makeTextNode(" | "));
+				html = html.add($("<a/>", {
+					"text": dp.nextDate.nice+" >",
+					"href": makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.nextDate.nice+"\x22"),
+					"class": tzCl+"_tv_next_episode'"
+				}).appendTo($("<b/>")).parent());
 			}
 		} else if (epm && epm.length === 8) {
 			ep.episode = epm[5] && epm[5] !== "0" ? +epm[5].replace(/^0/,"") : 0;
@@ -2150,33 +2517,41 @@
 			ep.nextSeason = "S"+padZeroes((ep.season+1), 2);
 			ep.prevSeason = ep.season > 1 ? "S"+padZeroes((ep.season-1), 2) : "";
 			if (ep.prevSeason) {
-				htmlStr = htmlStr+"<a "+pSeLinkCl+" href='"+
-					makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4]
-					? ep.prevSeason+"E01" : ep.prevSeason))+"'>&laquo; "+ep.prevSeason+"</a> ";
+				html = html.add($("<a/>", {
+					"text": "« "+ep.prevSeason,
+					"href": makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.prevSeason+"E01" : ep.prevSeason)),
+					"class": tzCl+"_tv_prev_season"
+				})).add(makeTextNode(" "));
 			}
 			if (epm[4] && ep.prevEpisode) {
-				htmlStr = htmlStr+"<a "+pEpLinkCl+" href='"+
-					makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.prevEpisode)+
-					"'><b>&lt; "+ep.prevEpisode+"</b></a> ";
+				html = html.add($("<a/>", {
+					"text": "< "+ep.prevEpisode,
+					"href": makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.prevEpisode),
+					"class": tzCl+"_tv_prev_episode"
+				}).appendTo($("<b/>")).parent()).add(makeTextNode(" "));
 			}
 			if ((ep.prevSeason) || (epm[4] && ep.prevEpisode)) {
-				htmlStr = htmlStr+"| ";
+				html = html.add(makeTextNode("| "));
 			}
 			if (epm[4] && ep.nextEpisode) {
-				htmlStr = htmlStr+"<a "+nEpLinkCl+" href='"+
-					makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.nextEpisode)+
-					"'><b>"+ep.nextEpisode+" &gt;</b></a> ";
+				html = html.add($("<a/>", {
+					"text": ep.nextEpisode+" >",
+					"href": makeSearchQuery(epm[1], epm[2], epm[6], epm[7], ep.nextEpisode),
+					"class": tzCl+"_tv_next_episode"
+				}).appendTo($("<b/>")).parent()).add(makeTextNode(" "));
 			}
 			if (ep.nextSeason) {
-				htmlStr = htmlStr+"<a "+nSeLinkCl+" href='"+
-					makeSearchQuery(epm[1], epm[2], epm[6], epm[7],
-						(epm[4] ? ep.nextSeason+"E01" : ep.nextSeason))+
-					"'>"+ep.nextSeason+" &raquo;</a>";
+				html = html.add($("<a/>", {
+					"text": ep.nextSeason+" »",
+					"href": makeSearchQuery(epm[1], epm[2], epm[6], epm[7], (epm[4] ? ep.nextSeason+"E01" : ep.nextSeason)),
+					"class": tzCl+"_tv_next_season"
+				}));
 			}
 		} else if (legacym) {
-			htmlStr = "Use s<b>NN</b>e<b>NN</b> to search for episodes";
+			html = html.add(makeTextNode("Use s")).add($("<b/>", { "text": "NN" })).add(makeTextNode("e"))
+				.add($("<b/>", { "text": "NN" })).add(makeTextNode(" to search for episodes"));
 		}
-		return htmlStr;
+		return html;
 	}
 	function initSearchPage ($resultsEl, callback) {
 		var searchParameters= tz.page.search.match(/^\?f\=(.+)$/i),
@@ -2189,19 +2564,27 @@
 			// Add rss link for "approximate match" and no results
 			if ($resultsEl.length === 1 && searchParameters && searchParameters.length >= 2
 				&& searchParameters[1] && resultsH2.length && !resultsH2.has("img[src*='rss.png']").length) {
-				resultsH2.append("<a class='approximate_rss_link' href='/feed_anyA?q="+
-					String(searchParameters[1])+"'>&nbsp;<img width='16' height='16' src='"+
-					cache.RSSIMG+"' title='This RSS feed is empty'></a>");
+				resultsH2.append($("<img/>", {
+					"src": cache.RSSIMG,
+					"attr": {
+						"width": 16,
+						"height": 16,
+						"alt": ""
+					}
+				}).appendTo($("<a/>", {
+					"href": "/feed_anyA?q="+String(searchParameters[1]),
+					"class": "approximate_rss_link"
+				})).parent());
 			}
 			if (cache.isSearch && tz.page.path !== "/i" && !cache.isSingle) {
 				$filterBar = $resultsEl.find(" > h3:eq(0)");
 				tvToolbarLinks = getTvToolbarHtml(tz.page.search);
-				if (tvToolbarLinks && $filterBar.length) {
+				if (tvToolbarLinks.size() && $filterBar.length) {
 					$("<span/>", {
 						"html": tvToolbarLinks,
 						"class": tzCl+"_episode_nav_links"
 					}).prependTo($filterBar);
-				} else if (tvToolbarLinks && !$filterBar.length) {
+				} else if (tvToolbarLinks.size() && !$filterBar.length) {
 					noResultsTitle = $resultsEl.find(" > h2:eq(0):contains('No Torrents Found')");
 					if (noResultsTitle.length) {
 						noResultsTitle.after($("<h3/>", {
@@ -2221,13 +2604,14 @@
 							$result = $(finishedResult),
 							dmcaClass = tz.usc.searchHighlight ? "meta-info colorizeme" : "meta-info",
 							$lastDl = $result.find(" > dl:last"),
+							exclDl = {},
 							dmcaText,
 							$logEl;
 						// insert empty <p/> as the curved spacer for colored results
 						if (tz.usc.searchHighlight && (cache.isSearch || cache.isSingle)
 							&& tz.usc.searchHighlight && $resultsEl.find("dl").length
 							&& $resultsEl.find(" > p").length === 0) {
-							$("<p/>").html(" ").appendTo($resultsEl);
+							$("<p/>", { "text": " "}).appendTo($resultsEl);
 						}
 						if ($lastDl.length) {
 							if ($lastDl.hasClass("meta-info")) {
@@ -2239,9 +2623,16 @@
 							if (tz.usc.excludeFilter) {
 								excludeCount = cache.deletedByFilterCount || 0;
 								cache.deletedByFilterCount = 0; // reset cache value
-								$lastDl.after("<dl class='"+dmcaClass+"'>"+
-									"<dt style='text-align: right'><span class='"+tzCl+
-									"_exclude_filter_count'></span></dt><dd></dd></dl>");
+								exclDl.dl = $("<dl/>", { "class": dmcaClass });
+								exclDl.dt = $("<dt/>");
+								exclDl.span = $("<span/>", {
+									"class": tzCl+"_exclude_filter_count"
+								});
+								exclDl.span.appendTo(exclDl.dt);
+								exclDl.dt.appendTo(exclDl.dl);
+								exclDl.dd = $("<dd/>");
+								exclDl.dd.appendTo(exclDl.dl);
+								$lastDl.after(exclDl.dl);
 								$logEl = $result.find("span."+tzCl+"_exclude_filter_count");
 								updateExcludeLog($logEl, excludeCount);
 							}
@@ -2286,114 +2677,93 @@
 		});
 	}
 	function initSettingsPanel (callback) {
-		var settingsButton = "<li class='"+tzCl+"_settings'>"+
-				"<a href='#' title='Change TzAio Settings'>TzAio</a>";
+		var settingsButton = $("<a/>", {
+			"text": "TzAio",
+			"href": "#",
+			"title": "Change TzAio Settings"
+		}).appendTo($("<li/>", {
+			"class": tzCl+"_settings"
+		})).parent();
 		removeAds("common");
 		els.$topDiv = els.$body.find("div.top:eq(0)");
 		els.$settingsEl = els.$topDiv.find(" > ul").prepend(settingsButton).end();
 		els.$settingsLink = els.$topDiv.find(" > ul > li."+tzCl+"_settings a");
 		els.$settingsLink.on("click", function (event) {
 			event.preventDefault();
-			if (!cache.settingsInserted) {
-				// Only insert once needed to save on reflows ans load time
-				els.$topDiv.after(getSettingsHtml(tz.trackers().join("")));
-				els.$scriptInfoP = els.$topDiv.next("p.generic");
-				els.$settingsForm = $("#"+tzCl+"_settings_submit").on("submit", handleSettingsSubmit);
-				els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum({
-					showInput: true,
-					showInitial: true,
-					showPalette: true,
-					showButtons: false,
-					allowEmpty: false,
-					showSelectionPalette: true,
-					preferredFormat: "hex",
-					localStorageKey: tzCl+".spectrum.colors",
-					palette: genSearchColorPalette(),
-					change: function (color) {
-						return setStoredResultColor(color, this);
-					}
-				});
-				els.$resetEl = $("#"+tzCl+"_settings_reset");
-				els.$importAreas = $("."+tzCl+"_importer_forms");
-				els.$exportAreas = $("."+tzCl+"_exporter_forms");
-				els.$importSubmit = els.$importAreas.find("button");
-				els.$importArea = $("#"+tzCl+"_import_settings_form");
-				els.$exportArea = $("#"+tzCl+"_export_settings_form");
-				els.$importLink = $("#"+tzCl+"_settings_import_link");
-				els.$exportLink = $("#"+tzCl+"_settings_export_link");
-				els.$exportLink.on("click", function () {
-					els.$importAreas.addClass("hide");
-					els.$exportAreas.removeClass("hide");
-					return false;
-				});
-				els.$importLink.on("click", function () {
-					els.$exportAreas.addClass("hide");
-					els.$importAreas.removeClass("hide");
-					return false;
-				});
-				els.$importSubmit.on("click", function (event) {
-					event.stopPropagation();
-					event.preventDefault();
-					parseImportedSettings(els.$importArea.val());
-					return false;
-				});
-				$("#"+tzCl+"_removeAds").attr("checked", tz.usc.removeAds);
-				$("#"+tzCl+"_searchHighlight").change(function () {
-					var $colors = $("div."+tz.env.slug+"_user_sr_paragraph");
-					if (this.checked) {
-						$colors.stop().fadeTo(0.5, 1);
-					} else {
-						$colors.stop().fadeTo(0.5, 0.33);
-					}
-				}).attr("checked", tz.usc.searchHighlight);
-				$("#"+tzCl+"_searchHighlight").trigger("change");
-				$("#"+tzCl+"_linkComments").attr("checked", tz.usc.linkComments);
-				$("#"+tzCl+"_searchTabs").attr("checked", tz.usc.searchTabs);
-				els.$resetEl.on("click", function (event) {
-					var refresh_page_reset = window.confirm("This will erase all your custom settings!"+
-						"\nReset settings and reload the page?");
-					event.preventDefault();
-					if (refresh_page_reset) {
-						// Delete any and all saved values
-						setStorageOptions(false, function () {
-							sessionStorage.setItem(tz.env.slug+"_SS_useroptions_saved", "true");
-							sessionStorage.removeItem(tz.env.slug+"_SS_cookietest_3");
-							location.href = tz.page.href;
-						});
-					}
-					return false;
-				});
-				els.$copyBuiltInListLink = $("#"+tzCl+"_copy_built_in_trackerlist");
-				if (els.$copyBuiltInListLink.length) {
-					els.$copyBuiltInListLink.on("click", function () {
-						// we know this exists now
-						var sortedOriginal = tz.trackers(false).join("");
-						sendLog(sortedOriginal);
-						if (isWindowsOS()) {
-							sortedOriginal = sortedOriginal.replace(/\n/g,"\r\n");
+			// Only insert once needed to save on reflows ans load time
+			getSettingsHtml(tz.trackers().join(""), function (formEl) {
+				if (formEl) {
+					els.$topDiv.after(formEl);
+					els.$topDiv.after(makeSettParagraph());
+					els.$scriptInfoP = els.$topDiv.next("p.generic");
+					els.$settingsForm = $("#"+tzCl+"_settings_submit").on("submit", handleSettingsSubmit);
+					els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum({
+						showInput: true,
+						showInitial: true,
+						showPalette: true,
+						showButtons: false,
+						allowEmpty: false,
+						showSelectionPalette: true,
+						preferredFormat: "hex",
+						localStorageKey: tzCl+".spectrum.colors",
+						palette: genSearchColorPalette(),
+						change: function (color) {
+							return setStoredResultColor(color, this);
 						}
-						GM_setClipboard(sortedOriginal);
-						$(this).css("opacity", "0.5");
+					});
+					els.$resetEl = $("#"+tzCl+"_settings_reset");
+					els.$importAreas = $("."+tzCl+"_importer_forms");
+					els.$exportAreas = $("."+tzCl+"_exporter_forms");
+					els.$importSubmit = els.$importAreas.find("button");
+					els.$importArea = $("#"+tzCl+"_import_settings_form");
+					els.$exportArea = $("#"+tzCl+"_export_settings_form");
+					els.$importLink = $("#"+tzCl+"_settings_import_link");
+					els.$exportLink = $("#"+tzCl+"_settings_export_link");
+					els.$importSubmit.on("click", function (event) {
+						event.stopPropagation();
+						event.preventDefault();
+						parseImportedSettings(els.$importArea.val());
 						return false;
 					});
+					$("#"+tzCl+"_removeAds").attr("checked", tz.usc.removeAds);
+					$("#"+tzCl+"_searchHighlight").change(function () {
+						var $colors = $("div."+tzCl+"_user_sr_paragraph");
+						if (this.checked) {
+							$colors.stop().fadeTo(0.5, 1);
+						} else {
+							$colors.stop().fadeTo(0.5, 0.33);
+						}
+					}).attr("checked", tz.usc.searchHighlight);
+					$("#"+tzCl+"_searchHighlight").trigger("change");
+					$("#"+tzCl+"_linkComments").attr("checked", tz.usc.linkComments);
+					$("#"+tzCl+"_searchTabs").change(function () {
+						if (this.checked) {
+							$("#"+tzCl+"_default_searchengines_textarea").attr("readonly", false)
+								.stop().fadeTo(0.5, 1);
+						} else {
+							$("#"+tzCl+"_default_searchengines_textarea").attr("readonly", true)
+								.stop().fadeTo(0.5, 0.33);
+						}
+					}).attr("checked", tz.usc.searchTabs);
+					$("#"+tzCl+"_searchTabs").trigger("change");
+					cache.settingsInserted = true;
 				}
-				cache.settingsInserted = true;
-			}
-			if (els.$settingsForm.hasClass("expand")) {
-				els.$settingsForm.find("."+tzCl+"_user_sr_color").each(function (i, el) {
-					$(el).spectrum("set", $(el).data("color"));
-					return setStoredResultColor($(el).data("color"), el);
-				});
-			} else {
-				els.$importAreas.addClass("hide");
-				els.$exportAreas.addClass("hide");
-			}
-			els.$scriptInfoP.toggleClass("expand");
-			els.$settingsForm.toggleClass("expand");
-			els.$settingsLink.parent("li")
-				.toggleClass(tz.env.slug+"_settings_open");
-			els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum("hide");
-			toggleCopyBox(2);
+				if (els.$settingsForm.hasClass("expand")) {
+					els.$settingsForm.find("."+tzCl+"_user_sr_color").each(function (i, el) {
+						$(el).spectrum("set", $(el).data("color"));
+						return setStoredResultColor($(el).data("color"), el);
+					});
+				} else {
+					els.$importAreas.addClass("hide");
+					els.$exportAreas.addClass("hide");
+				}
+				els.$scriptInfoP.toggleClass("expand");
+				els.$settingsForm.toggleClass("expand");
+				els.$settingsLink.parent("li")
+					.toggleClass(tzCl+"_settings_open");
+				els.$settingsForm.find("."+tzCl+"_user_sr_color").spectrum("hide");
+				toggleCopyBox(2);
+			});
 			return false;
 		});
 		if (typeof callback === "function") {
@@ -2572,6 +2942,10 @@
 							if (tz.page.path !== "/i") {
 								if (tz.usc.ajaxedSorting) {
 									if (history.pushState) {
+										history.replaceState({
+											tz_aio_ajax: true,
+											url: tz.page.href
+										}, tz.page.title, tz.page.href);
 										// listen for popstate events
 										window.onpopstate = handlePopStates;
 									}

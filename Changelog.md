@@ -1,5 +1,15 @@
 # Changelog
 
+**2.7.0** (2014-09-15)
+
+* One new ad link detected.
+* Added link for 1337x.to.
+* No more html strings; stabler html generation using `jQuery("<elem/>")`.
+* Small CSS improvments.
+* Smarter settings.
+* General code cleanup.
+* Sorry about all the smaller unplanned 2.6.x releases that should have been given more thought.
+
 **2.6.4** (2014-09-11)
 
 * Another stupid pos fix for `2.6.3`.

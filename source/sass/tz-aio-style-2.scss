@@ -154,15 +154,26 @@ $blinkto:   0.0;
 
 		a {
 			color: $GREENUNVERIFIED;
+			&:hover, &:active {
+				text-decoration: none;
+				color: $GRAY;
+			}
+			&:active, &.active {
+				top: 1px;
+				color: $BLACK !important;
+			}
 		}
 
 		.tz_aio_copylink {
 			cursor: pointer;
 		}
+		.tz_aio_mlink {
+			text-shadow: 1px 1px 2px #FEFEFE;
+		}
 		.tz_aio_mlink, .tz_aio_copylink {
 			overflow: visible;
 			position: relative;
-			&:hover {
+			&:active, &:hover, &.active {
 				text-decoration: underline;
 			}
 		}
@@ -173,14 +184,6 @@ $blinkto:   0.0;
 
 		.tz_aio_seed_black {
 			color: $GREENUNVERIFIED;
-		}
-		a:hover, a:active {
-			text-decoration: none;
-			color: $GRAY;
-		}
-		a:active {
-			top: 1px;
-			color: $BLACK;
 		}
 		.divided {
 			padding: 0 2px;
@@ -281,6 +284,9 @@ $blinkto:   0.0;
 		}
 		&:active {
 			top: 2px;
+		}
+		&.visited em {
+			color: $BLACK;
 		}
 	}
 	// Reset default background
@@ -654,6 +660,7 @@ $blinkto:   0.0;
 		cursor: pointer;
 	}
 	.approximate_rss_link {
+		margin-left: 10px;
 		color: rgba(0,0,0,0);
 		img {
 			opacity: 0.5;
@@ -663,7 +670,19 @@ $blinkto:   0.0;
 		}
 	}
 }
-
+.tz_aio_b.tz_aio_v2 .results {
+	.meta-info {
+		&.colorizeme, &.colorizeme:hover {
+			background-color: $DMCA;
+			border-bottom-color: $DMCA;
+			@include box-shadow(none);
+			position: static;
+		}
+		dt {
+			text-align: right;
+		}
+	}
+}
 .tz_aio_b.tz_aio_v2.tz_aio_colorized .results {
 	.meta-dmca {
 		color: $TZRED;
@@ -675,12 +694,6 @@ $blinkto:   0.0;
 	> dl:hover {
 		border-bottom-color: $WHITE;
 		@include box-shadow(0 -1px 0 #DCDCDC, inset 1px 0 1px $WHITE, inset -1px 0 0 $WHITE);
-	}
-	.meta-info.colorizeme, .meta-info.colorizeme:hover {
-		background-color: $DMCA;
-		border-bottom-color: $DMCA;
-		@include box-shadow(none);
-		position: static;
 	}
 	dl.inactive * {
 		opacity: 0.6;
