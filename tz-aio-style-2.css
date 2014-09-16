@@ -91,10 +91,12 @@
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_new_version_msg, .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_update_message { font-size: 16px; }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_new_version_msg mark, .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_update_message mark { background-color: #f4de7a; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; display: inline-block; padding: 8px 10px; -webkit-box-shadow: 3px 3px 0 #333333; -moz-box-shadow: 3px 3px 0 #333333; box-shadow: 3px 3px 0 #333333; }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_new_version_msg mark.tz_aio_alt_msg, .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_update_message mark.tz_aio_alt_msg { background-color: #ffb090; }
-.tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_user_sr_paragraph { overflow: hidden; }
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_user_sr_paragraph { overflow: hidden; position: relative; }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_user_sr_color_box { float: left; width: 10%; }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_user_sr_color_box:last-of-type { width: 9.999%; }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_user_sr_color_title { font-size: 14px; font-style: normal; display: block; text-indent: 5px; }
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_user_colors_shield { background: rgba(0, 0, 0, 0); display: none; }
+.tz_aio_b.tz_aio_v2 .tz_aio_settings_form .tz_aio_user_colors_shield.shield { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 5; }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form input[type='text'] { font-family: monospace; margin-bottom: 0; background-color: white; }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form textarea { height: 195px; border: 1px solid #bcc6cf; padding: 10px; background-color: white; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 .tz_aio_b.tz_aio_v2 .tz_aio_settings_form p label { margin-right: 15px; display: inline-block; }

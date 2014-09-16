@@ -1,5 +1,10 @@
 # Changelog
 
+**2.7.1** (2014-09-16)
+
+* Demonoid.ph added to dl-list.
+* Disabled color-pickers are now truely disabled.
+
 **2.7.0** (2014-09-15)
 
 * One new ad link detected.

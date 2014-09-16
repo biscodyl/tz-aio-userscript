@@ -529,6 +529,7 @@ $blinkto:   0.0;
 
 		.tz_aio_user_sr_paragraph {
 			overflow: hidden;
+			position: relative;
 		}
 
 		.tz_aio_user_sr_color_box {
@@ -544,6 +545,18 @@ $blinkto:   0.0;
 		 	font-style: normal;
 		 	display: block;
 		 	text-indent: 5px;
+		 }
+
+		 .tz_aio_user_colors_shield {
+			background: rgba(0,0,0,0);
+			display: none;
+		 	&.shield {
+		 		display: block;
+		 		position: absolute;
+		 		top: 0; bottom: 0;
+		 		left: 0; right: 0;
+		 		z-index: 5;
+		 	}
 		 }
 
 		input[type='text'] {
