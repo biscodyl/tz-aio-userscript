@@ -555,6 +555,10 @@
 			for (i = 10; i; i--) {
 				if (n >= ((i*0.125)+(1.75-0.125))) break;
 			}
+		} else if (kind === "peers") {
+			for (i = 10; i; i--) {
+				if (n >= ((i*40)+(100-40))) break;
+			}
 		}
 		return cache.voteCssClasses[i].replace(/_bg$/, "");
 	}
@@ -2013,10 +2017,16 @@
 		numEl.appendTo(spanEl);
 		return spanEl;
 	}
-	function makePeersSpan (min) {
-		return $("<span/>", {
-			"text": "Peers: "+formatNumbers(min, true)
-		});
+	function makePeersSpan (peers) {
+		var numEl = $("<span/>", {
+				"text": formatNumbers(peers, true)+"",
+				"class": tzCl+getVerifiedColor(peers, "peers")
+			}),
+			spanEl = $("<span/>", {
+				"text": "Peers: "
+			});
+		numEl.appendTo(spanEl);
+		return spanEl;
 	}
 	function makeCommentLink (n) {
 		return $("<a/>", {
