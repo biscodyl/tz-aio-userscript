@@ -72,8 +72,11 @@
 */
 
 "use strict";
+
+var proxyFix = true;
+
 (function ($, __, loadStartMS) {
-	if ( !$(".top a:contains('iTorrentz')").length ) return;
+	if (proxyFix && !$(".top a:contains('iTorrentz')").length) return;
 	if (typeof __ !== "function" || typeof $ !== "function" || typeof sessionStorage !== "object"
 		||(typeof GM_info !== "object" && typeof GM_getMetadata !== "function") // added for Scriptish
 		|| typeof GM_log !== "function"
@@ -288,11 +291,11 @@
 				name: "picture",
 				pattern: /(?:picture|images|gallery|wallpaper|(?:\W|_|\s)jpe?g(?:\W|_|\s))/i
 			},{
-				name: "movie",
-				pattern: /(?:1440p|1080p|720p|bluray|blueray|480p|wmv|avi|matroska|mkv|highres|264|dvdr(?:ip)?|xvid|divx|bdrip|brrip|hdrip|documentar(?:y|ies))/i
-			},{
 				name: "anime",
 				pattern: /(?:\W|_|\s)(?:anime|hentai)(?:\W|_|\s|$)/i
+			},{
+				name: "movie",
+				pattern: /(?:1440p|1080p|720p|bluray|blueray|480p|wmv|avi|matroska|mkv|highres|264|dvdr(?:ip)?|xvid|divx|bdrip|brrip|hdrip|documentar(?:y|ies))/i
 			},{
 				name: "misc",
 				pattern: /(?:\W|_|\s|^)(?:other|siterip|misc(?:ellaneous)?|un(?:sorted|known|defined))(?:\W|_|\s|$)/i
@@ -539,27 +542,28 @@
 		return returnStr;
 	}
 	function getVerifiedColor (n, kind) {
-		var i = 0;
+		var i = 10, a, nk;
+		if ((nk=typeof n) !== "number" && nk !== "string") n = 0;
 		n = +n;
-		if (kind === "comments") {
+		if (kind === "comments" || kind === "votes") {
 			n = Math.round(n);
-			if (n <= 0) {
-				i = 0;
-			} else if (n <= 10) {
-				i = n;
-			} else {
-				i = 10;
-			}
+			a = [2,3,4,5,6,7,8,9,10,11];
 		} else if (kind === "ratio") {
-			for (i = 10; i; i--) {
-				if (n >= ((i*0.125)+(1.75-0.125))) break;
-			}
+			n = n.toFixed(3);
+			a = [1.875, 2, 2.125, 2.25, 2.375, 2.5, 2.625, 2.75, 2.875, 3];
 		} else if (kind === "peers") {
-			for (i = 10; i; i--) {
-				if (n >= ((i*40)+(100-40))) break;
-			}
+			n = Math.round(n);
+			a = [100,200,300,400,500,600,700,800,900,1000];
 		}
-		return cache.voteCssClasses[i].replace(/_bg$/, "");
+		if (kind === "votes" && (n < -1 || !!(els.$downloadDiv.next(".error").text().match(/active\s+locations?/i)))) {
+			i = 11;
+		} else if (n < a[0]) {
+			i = 0;
+		}
+		for (; i > 0; i--) {
+			if (n >= a[i-1]) break;
+		}
+		return i === 0 ? "" : tzCl+cache.voteCssClasses[i].replace(/_bg$/, "");
 	}
 	function shuffledArray (len) {
 		var arr = [],
@@ -1315,9 +1319,6 @@
 			;
 		return href;
 	}
-	function getVoteStatus (votebox) {
-		return votebox.find(".status")[0].style.color;
-	}
 	function setupCopyTextArea (arr) {
 		$("<textarea/>", {
 			"attr": {
@@ -1901,6 +1902,8 @@
 			trackerLen = 0,
 			allTrackers,
 			dhtElsMax,
+			votes = new Array(2),
+			voted,
 			_up = [],
 			_down = [];
 		// Get trackerlist for single torrent
@@ -1957,18 +1960,37 @@
 		} else if (seedTleach >= 100) {
 			seedMeter = Math.round(seedTleach);
 		}
+		// Votes
+		voted = $(".votebox:eq(0) .status:eq(0)").text().match(/-?\d+/);
+		if (voted) {
+			voted = +voted[0];
+			if (voted < 0) voted = 0;
+		} else {
+			voted = 0;
+		}
+		if (voted >= 1 && voted <= 9) voted += 1;
+		$(".votebox").find("> .up, > .replist > a").each(function (i, el) {
+			var m;
+			if (i === 0) {
+				votes[0] = (m=el.textContent.match(/\d+/)) ? +m[0] : 0;
+				votes[1] = 0;
+			} else {
+				votes[1] = votes[1]+((m=el.textContent.match(/\d+/)) ? +m[0] : 0);
+			}
+		});
 		return callback({
 			"seedMeter": seedMeter,
 			"minPeers": minPeers,
 			"trackerLen": trackerLen,
-			"allTrackers": allTrackers
+			"allTrackers": allTrackers,
+			"voted": voted,
+			"votes": votes
 		});
 	}
-	function makeMainMagnetLink (color, tr) {
-		myAddStyler("."+(tz.env.bodyClass.replace(/\s/, "."))+" a."+tzCl+"_mlink:link { color: "+color+"; }");
+	function makeMainMagnetLink (voted, tr) {
 		return $("<a/>", {
 			"href": "#", // Set later and applied to all magnetlinks on the page
-			"class": tzCl+"_mlink",
+			"class": tzCl+"_mlink "+getVerifiedColor(voted, "votes"),
 			"id": tzCl+"_magnet_link",
 			"text": "Magnet Link",
 			"title": "Fully qualified magnet URI for newer BitTorrent clients, includes"+
@@ -1993,6 +2015,16 @@
 			}
 		});
 	}
+	function makeVotesInfo (votes) {
+		var numEl = $("<span/>", {
+				"html": votes[0]+"&frasl;"+votes[1]
+			}),
+			spanEl = $("<span/>", {
+				"text": "Votes: "
+			});
+		numEl.appendTo(spanEl);
+		return spanEl;
+	}
 	function makeInfoBarContainer () {
 		return $("<dl/>", {
 			"id": tzCl,
@@ -2008,7 +2040,7 @@
 	function makeRatioSpan (ratio) {
 		var numEl = $("<span/>", {
 				"text": ratio+"",
-				"class": tzCl+getVerifiedColor(ratio, "ratio")
+				"class": getVerifiedColor(ratio, "ratio")
 			}),
 			spanEl = $("<span/>", {
 				"text": "Ratio: "
@@ -2019,7 +2051,7 @@
 	function makePeersSpan (peers) {
 		var numEl = $("<span/>", {
 				"text": formatNumbers(peers, true)+"",
-				"class": tzCl+getVerifiedColor(peers, "peers")
+				"class": getVerifiedColor(peers, "peers")
 			}),
 			spanEl = $("<span/>", {
 				"text": "Peers: "
@@ -2031,13 +2063,13 @@
 		return $("<a/>", {
 			"href": n ? "#comments_"+tzCl : "#write_comment_"+tzCl,
 			"html": "&#x270e; "+n,
-			"class": tzCl+getVerifiedColor(n, "comments")
+			"class": getVerifiedColor(n, "comments")
 		});
 	}
 	function makeFilesLink (s, n) {
 		return $("<a/>", {
 			"href": "#files_"+tzCl,
-			"html": "Size: "+s+" &frasl; "+n+" File"+getPlural(n),
+			"html": "Size: "+s+" "+n+" File"+getPlural(n),
 			"title": "NOT including folders"
 		});
 	}
@@ -2078,20 +2110,20 @@
 		});
 	}
 	function makeStatsBar (callback) {
-		var notActive = !!(els.$downloadDiv.next(".error").text()
-				.match(/active\s+locations?/i)),
-			statusColor = notActive ? "#FF5511" : getVoteStatus(els.$body.find(".votebox")),
-			commentDiv = els.$body.find("div.comments"),
+		var commentDiv = els.$body.find("div.comments"),
 			infoBar,
 			magnetUrl;
 
 		infoBar = makeInfoBarContainer();
 		return getPeerStats(function (stats) {
 			// Magnet Link
-			makeMainMagnetLink(statusColor, stats.trackerLen).appendTo(infoBar);
+			makeMainMagnetLink(stats.voted, stats.trackerLen).appendTo(infoBar);
 			makeDivider().appendTo(infoBar);
 			// Copy N Trackers
 			makeCopyTrackerList(stats.trackerLen).appendTo(infoBar);
+			makeDivider().appendTo(infoBar);
+			// Voted N
+			makeVotesInfo(stats.votes).appendTo(infoBar);
 			makeDivider().appendTo(infoBar);
 			// Peers:
 			makePeersSpan(stats.minPeers).appendTo(infoBar);
@@ -2814,7 +2846,13 @@
 		// Re-use .usc
 		tz.usc = newSettings;
 		newSettings = null;
-		return callback();
+		if (!proxyFix && tz.usc.forceHTTPS && tz.page.protocol === "http:"
+			&& tz.page.domain.toLowerCase().indexOf("proxy") === -1) {
+			// Redirect users with SSL forced, but try not to for proxies
+			d.location.href = d.location.href.replace(/^http:/, "https:");
+		} else {
+			return callback();
+		}
 	}
 
 	// build internal objects

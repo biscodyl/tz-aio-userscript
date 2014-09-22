@@ -34,7 +34,8 @@
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .divided { padding: 0 2px; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar img { vertical-align: text-top; border: 0; margin-right: 4px; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .warn { color: #cc0000; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); padding-left: 4px; -webkit-animation-name: blinker; -webkit-animation-iteration-count: 7; -webkit-animation-timing-function: cubic-bezier(1, 0, 0, 1); -webkit-animation-duration: 1.5s; -moz-animation-name: blinker; -moz-animation-iteration-count: 7; -moz-animation-timing-function: cubic-bezier(1, 0, 0, 1); -moz-animation-duration: 1.5s; animation-name: blinker; animation-iteration-count: 7; animation-timing-function: cubic-bezier(1, 0, 0, 1); animation-duration: 1.5s; }
-.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_sep { color: rgba(255, 255, 255, 0); padding: 0 10px; display: inline-block; box-sizing: border-box; max-width: 20px; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_sep { color: rgba(255, 255, 255, 0); padding: 0 5px; display: inline-block; box-sizing: border-box; max-width: 16px; }
+.tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_unverified_dl { color: #e3c2b5; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_one_dl { color: #a2eb80; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_two_dl { color: #a2eb80; }
 .tz_aio_b.tz_aio_v2 .tz_aio_info_bar .tz_aio_three_dl { color: #8ddd69; }
