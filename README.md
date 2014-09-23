@@ -57,6 +57,7 @@ _All these settings are accessed by clicking 'TzAio' at the top of each page, an
 ### More features worth mentioning
 
 * `.wmv` file warning.
+* Adds an rss feed link for empty search results.
 * Passes AdBlocker default blacklist.
 * Works with Autopager (thx [roshambo](https://userscripts.org/users/143015) for the fix).
 * As of **v2.4.0** no longer needs `unsafeWindow`.
