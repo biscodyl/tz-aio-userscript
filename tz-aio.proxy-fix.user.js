@@ -73,11 +73,21 @@
 
 "use strict";
 
+if (!Date.now) {
+	Date.now = function now() {
+		return new Date().getTime();
+	};
+}
+if (!String.prototype.trim) {
+	String.prototype.trim = function () {
+		return this.replace(/^\s+|\s+$/gm, "");
+	};
+}
 var proxyFix = true;
 
 (function ($, __, loadStartMS) {
 	if (proxyFix && !$(".top a:contains('iTorrentz')").length) return;
-	if (typeof __ !== "function" || typeof $ !== "function" || typeof sessionStorage !== "object"
+	if (typeof __ !== "function" || typeof sessionStorage !== "object"
 		||(typeof GM_info !== "object" && typeof GM_getMetadata !== "function") // added for Scriptish
 		|| typeof GM_log !== "function"
 		|| typeof GM_deleteValue !== "function"
@@ -86,11 +96,6 @@ var proxyFix = true;
 		|| typeof GM_getValue !== "function"
 		|| typeof GM_openInTab !== "function") {
 		throw new Error("Missing functions or window! Please report this error if you're reading this!");
-	}
-	if (!String.prototype.trim) {
-		String.prototype.trim = function () {
-			return this.replace(/^\s+|\s+$/g, "");
-		};
 	}
 	var cache,
 		tzCl,
@@ -1362,11 +1367,11 @@ var proxyFix = true;
 					&& node.tagName && node.tagName === "DIV") {
 					cachedSearchEl = $(node);
 					if (cachedSearchEl.find(".meta-info").length) return;
-					cache.ajaxTimer = (new Date().getTime());
+					cache.ajaxTimer = Date.now();
 					return initSearchPage(cachedSearchEl, function (target) {
 						// DEBUG callback
 						return sendLog((target.length)+" ajaxed div."+target[0].className+
-							" - Exec: "+((new Date().getTime())-cache.ajaxTimer)+"ms");
+							" - Exec: "+(Date.now()-cache.ajaxTimer)+"ms");
 					});
 				}
 			});
@@ -1511,7 +1516,7 @@ var proxyFix = true;
 						? relMatch[1] : undefined;
 					if (validLink) {
 						absLink = relMatch[0];
-						cache.ajaxTimer = new Date().getTime();
+						cache.ajaxTimer = Date.now();
 						currBGColor = $this.css("background-color");
 						$this.css("background-color","#ffff00");
 						loadingInt = setInterval(function() {
@@ -1565,7 +1570,7 @@ var proxyFix = true;
 								}
 								bindAjaxLinks(target);
 								sendLog((target.length)+" ajaxed div."+target[0].className+
-									" - Load+Exec: "+((new Date().getTime())-cache.ajaxTimer)+"ms");
+									" - Load+Exec: "+(Date.now()-cache.ajaxTimer)+"ms");
 							});
 						});
 						return false;
@@ -1590,7 +1595,7 @@ var proxyFix = true;
 					els.$bodyANDhtml.animate({ scrollTop: 0 }, 0);
 				});
 			}
-			return sendLog("Exec: "+((new Date().getTime())-execStartMS)+"ms (not inc ajax)");
+			return sendLog("Exec: "+(Date.now()-execStartMS)+"ms (not inc ajax)");
 		}
 	}
 	function toggleCopyBox (cmd) {
@@ -2356,7 +2361,7 @@ var proxyFix = true;
 			torrDateTitle = torrDateEl ? torrDateEl.title : "",
 			torrDate = torrDateTitle ? new Date(torrDateTitle).getTime() : 0,
 			// less than one month old
-			isNew = (((new Date().getTime() - torrDate) / 1000 / 60 / 60 / 24) <= 31),
+			isNew = (((Date.now() - torrDate) / 1000 / 60 / 60 / 24) <= 31),
 			seeders,
 			leachers;
 		if (!isNew && seedsEl && leachEl) {
@@ -2550,7 +2555,7 @@ var proxyFix = true;
 				"href": makeSearchQuery(datem[1], datem[2], datem[15], datem[16], "\x22"+dp.prevDate.nice+"\x22"),
 				"class": tzCl+"_tv_prev_episode"
 			}).appendTo($("<b/>")).parent());
-			if (dp.nextDate.ms && (dp.nextDate.ms - (new Date().getTime())) < 0) {
+			if (dp.nextDate.ms && (dp.nextDate.ms-Date.now()) < 0) {
 				html = html.add(makeTextNode(" | "));
 				html = html.add($("<a/>", {
 					"text": dp.nextDate.nice+" >",
@@ -2918,14 +2923,14 @@ var proxyFix = true;
 	$(d).ready(function () {
 
 		// Start exec timer
-		execStartMS = (new Date().getTime());
+		execStartMS = Date.now();
 
 		els.$body = $("body").addClass(tz.env.bodyClass);
 		els.$bodyANDhtml = els.$body.add($("html"));
 
 		startLogMsg = "Starting "+tz.env.name+" v"+tz.env.version+" "+
 			tz.env.date+"\n"+tz.env.link+"\nEnv.: "+
-			environment+"\nLoad: "+((new Date().getTime())-loadStartMS)+"ms";
+			environment+"\nLoad: "+(Date.now()-loadStartMS)+"ms";
 
 		// init calls
 		return sendLog(startLogMsg, function () {
@@ -3035,7 +3040,7 @@ var proxyFix = true;
 
 	});
 
-}(jQuery, _, new Date().getTime()));
+}(jQuery, _, Date.now()));
 
 /***************************************************************************************************
  * jQuery replaceText
