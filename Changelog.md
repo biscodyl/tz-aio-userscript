@@ -1,5 +1,11 @@
 # Changelog
 
+**2.7.2** (2014-09-23)
+
+* Added **Votes** to infobar.
+* Other small infobar improvements.
+* `Date().getTime()` replaced w/ `Date.now()`.
+
 **2.7.1** (2014-09-16)
 
 * Demonoid.ph added to dl-list.
