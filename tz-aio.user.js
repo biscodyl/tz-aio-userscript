@@ -866,9 +866,12 @@ var proxyFix = false;
 			sublist = $("<ul/>", {
 				"id": tzCl+"_keyboard_shortcuts"
 			});
-		$("<li/>", {
-			"text": "Installed: v"+tz.env.version
-		}).appendTo(list);
+		$("<a/>", {
+			"href":tz.env.gitHub+"/releases/tag/"+tz.env.version,
+			"text": "v"+tz.env.version
+		}).appendTo($("<li/>", {
+			"text": "Installed: "
+		})).parent().appendTo(list);
 		$("<a/>", {
 			"href": tz.env.link,
 			"text": tz.env.link
