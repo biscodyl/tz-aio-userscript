@@ -1,5 +1,9 @@
 # Changelog
 
+### [v2.7.3](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.3) (2014-09-30)
+
+* Minor link updates.
+
 ### [v2.7.2](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.2) (2014-09-23)
 
 * Added **Votes** to infobar.
