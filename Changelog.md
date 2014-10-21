@@ -1,6 +1,6 @@
 # Changelog
 
-### [v2.7.4](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.3) (2014-10-21)
+### [v2.7.4](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.4) (2014-10-21)
 
 * [Greasyfork](https://greasyfork.org/en/scripts/search?q=torrentz) link change.
 * ViewMe ad-link selector updated to `results.find("p a[href*='viewme.com/']")`.
