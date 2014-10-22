@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.7.4
-// @date          2014-10-21
+// @version       2.7.5
+// @date          2014-10-22
 // @author        elundmark
 // @contact       mail@elundmark.se
+// @license       MIT; http://opensource.org/licenses/MIT
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
 // @namespace     http://elundmark.se/code/tz-aio/
 // @homepage      https://github.com/elundmark/tz-aio-userscript

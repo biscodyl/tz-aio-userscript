@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.7.4
-// @date          2014-10-21
+// @version       2.7.5
+// @date          2014-10-22
 // @author        elundmark
 // @contact       mail@elundmark.se
+// @license       MIT; http://opensource.org/licenses/MIT
 // @license       CC0 1.0 Universal; http://creativecommons.org/publicdomain/zero/1.0/
 // @namespace     http://elundmark.se/code/tz-aio/
 // @homepage      https://github.com/elundmark/tz-aio-userscript
@@ -35,6 +36,11 @@
 // ==/UserScript==
 
 /*
+	# License
+
+	This UserScript is Dual licensed under The MIT License (MIT) - http://opensource.org/licenses/MIT
+	and CC0 1.0 Univeral License - https://creativecommons.org/publicdomain/zero/1.0/
+
 	# Compatibility
 
 	Tested in Firefox v32+ (GreaseMonkey 2.2+, Scriptish v0.1.12),
@@ -56,7 +62,6 @@
 
 	# Legality
 
-	Released under CC0 1.0 Universal (http://creativecommons.org/publicdomain/zero/1.0/).
 	The author of this script takes no responsibility for any potetial harm
 	done to any hamsters, servers, browsers or wallets. While browsing
 	affected sites with this script is fully legal,

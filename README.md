@@ -103,7 +103,7 @@ The following resources are fetched externally by this userscript.
 * `@resource	https://cdn.jsdelivr.net/jquery.spectrum/1.x.x/spectrum.css`
 * `@resource	http://elundmark.se/_files/js/tz-aio/tz-aio-style-x.css`
 
-Licences:
+## Licences for included software
 
 * [jQuery](http://jquery.com/) JavaScript Library v2.1.0. Includes Sizzle.js [http://sizzlejs.com/](http://sizzlejs.com/). Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors, released under the MIT license [jquery.org/license](http://jquery.org/license).
 * [Spectrum Colorpicker](https://github.com/bgrins/spectrum) v1.3.3. Copyright (c) 2014 [Brian Grinstead](http://briangrinstead.com). [License](https://github.com/bgrins/spectrum/blob/master/LICENSE).
@@ -116,5 +116,7 @@ Nothing planned.
 
 ## Legality
 
-Released under [CC0 1.0 Universal (CC0 1.0)](http://creativecommons.org/publicdomain/zero/1.0/).
+This UserScript is Dual licensed under The MIT License (MIT) - [http://opensource.org/licenses/MIT](http://opensource.org/licenses/MIT)
+and CC0 1.0 Univeral License - [https://creativecommons.org/publicdomain/zero/1.0/](https://creativecommons.org/publicdomain/zero/1.0/)
+
 The author of this script takes no responsibility for any potetial harm done to any hamsters, servers, browsers or wallets. While browsing affected sites with this script is fully legal, downloading illegal copyrighted material still isn't.

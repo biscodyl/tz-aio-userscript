@@ -1,5 +1,11 @@
 # Changelog
 
+### [v2.7.5](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.5) (2014-10-22)
+
+* Changed the single [CC0 Universal 1.0 License](https://creativecommons.org/publicdomain/zero/1.0/) to dual license with the [MIT](http://elundmark.se/_files/js/tz-aio/license.txt) due to [conflict](https://github.com/elundmark/tz-aio-userscript/issues/7) with OSI - first couple of versions of this had an MIT license which i foolishly changed without thinking.
+* Updated [license.txt](https://github.com/elundmark/tz-aio-userscript/blob/master/license.txt).
+* No other changes in the code.
+
 ### [v2.7.4](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.4) (2014-10-21)
 
 * [Greasyfork](https://greasyfork.org/en/scripts/search?q=torrentz) link change.
