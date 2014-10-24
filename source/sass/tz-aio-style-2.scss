@@ -116,6 +116,9 @@ $blinkto:   0.0;
 	&.no_ads .SimpleAcceptableTextAds,
 	&.no_ads .PleaseDontDisableTheAutoSuggestScriptThePopCodeIsNotThere {
 		display: none !important;
+		opacity: 0 !important;
+		visibility: hidden !important;
+		height: 0 !important;
 	}
 
 	.tz_aio_settings_form textarea,
