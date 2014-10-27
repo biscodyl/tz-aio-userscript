@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.7.6
-// @date          2014-10-24
+// @version       2.7.7
+// @date          2014-10-27
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT; http://opensource.org/licenses/MIT
@@ -21,7 +21,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-6-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-7-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -90,12 +90,14 @@ if (!String.prototype.trim) {
 		return this.replace(/^\s+|\s+$/gm, "");
 	};
 }
-// Setting this true will prevent forceSSL to ever apply, see
+// Setting this true will prevent forceSSL from applying ever:
 // https://github.com/elundmark/tz-aio-userscript/blob/master/tz-aio.proxy-fix.user.js
 var proxyFix = false;
 
 (function ($, __, loadStartMS) {
-	if (proxyFix && !$(".top a:contains('iTorrentz')").length) return;
+	if (proxyFix && $(".top:eq(0) a:contains('iTorrentz')").length === 0 && $(".top:eq(0) a:contains('myTorrentz')").length === 0) {
+		return;
+	}
 	if (typeof __ !== "function" || typeof sessionStorage !== "object"
 		||(typeof GM_info !== "object" && typeof GM_getMetadata !== "function") // added for Scriptish
 		|| typeof GM_log !== "function"
@@ -143,6 +145,7 @@ var proxyFix = false;
 			usEnv.gitHub = usEnv.gitHubIssues.replace(/\/issues\/?$/,"");
 			return usEnv;
 		},
+		numFormatPatt = /(\d+)(\d{3})$/,
 		defaultOpts = function (use) {
 			var opts = {};
 			opts.searchEngines = [
@@ -238,7 +241,7 @@ var proxyFix = false;
 			heads,
 			node,
 			i;
-		for (i = 0; i < args.length; i++) {
+		for (i = 0; i < args.length; i+=1) {
 			if (!args[i]) continue;
 			css += ($.isArray(args[i])?args[i].join("\n"):typeof args[i]==="string"?args[i]:"");
 		}
@@ -324,8 +327,8 @@ var proxyFix = false;
 	}
 	function getDirectTorrentLinks (href) {
 		var hash = tz.page.thash.toLowerCase(),
-			HASH = hash.toUpperCase(),
 			titleEnc = tz.page.titleEnc,
+			HASH = hash.toUpperCase(),
 			torCacheUrl = "http://torcache.net/torrent/"+HASH+".torrent?title="+titleEnc,
 			torRageUrl = "http://torrage.com/torrent/"+HASH+".torrent",
 			slashSplit = href.split("/"),
@@ -336,7 +339,7 @@ var proxyFix = false;
 			// last checked 2012-07-25
 			// movietorrents.eu/torrents-details.php?id=1421
 			// movietorrents.eu/download.php?id=1421&name=Ubuntu%20iso%20file.torrent
-			directMatch = href.match(/(\?|&)id=(\d+)/);
+			directMatch = href.match(cache.idQueryPatt);
 			directHref = directMatch && directMatch.length === 3 ? "http://movietorrents.eu/download.php?id="+
 				directMatch[2]+"&name="+titleEnc+".torrent" : null;
 		} else if (is("publichd.se/")) {
@@ -348,12 +351,12 @@ var proxyFix = false;
 			// last checked 2012-05-13
 			// www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent.html
 			// www.btmon.com/Applications/Unsorted/ubuntu-10.10-dvd-i386.iso.torrent
-			directHref = href.replace(/\.html$/i, "");
+			directHref = href.replace(cache.htmlExtPatt, "");
 		} else if (is("torrentdownloads.me/")) {
 			// last checked 2012-06-02
 			// www.torrentdownloads.me/torrent/1652094016/ubuntu-10+10-desktop-i386+iso
 			// www.torrentdownloads.me/download/1652094016/ubuntu-10+10-desktop-i386+iso
-			directHref = href.replace(/(\.me\/)torrent(\/)/i,"$1download$2");
+			directHref = href.replace(cache.tDlsMePatt,"$1download$2");
 		} else if (is("kat.ph/")
 			|| is("kickasstorrents.com/")
 			|| is("kickmirror.com/")
@@ -395,7 +398,7 @@ var proxyFix = false;
 			// last checked 2013-11-14
 			// extratorrent.com/torrent/9999999/Ubuntu-10-10-DVD-i386.html
 			// extratorrent.com/download/9999999/Ubuntu-10-10-DVD-i386.torrent
-			directHref = href.replace(/\.(com|cc)\/torrent/i, ".$1/download").replace(/\.html$/i, ".torrent");
+			directHref = href.replace(cache.extraMirrorPat, ".$1/download").replace(/\.html$/i, ".torrent");
 		} else if (is("bitsnoop.com/")) {
 			// last checked 2012-05-13
 			// bitsnoop.com/ubuntu-10-10-dvd-i386-q17900716.html
@@ -406,7 +409,7 @@ var proxyFix = false;
 			// Site was malware flagged so I don't know if this still works
 			// www.bt-chat.com/details.php?id=999999
 			// www.bt-chat.com/download.php?id=999999
-			directHref = href.replace(/\/details\.php/i, "/download.php");
+			directHref = href.replace(cache.btChatPatt, "/download.php");
 		} else if (is("1337x.org/") || is("1337x.to/")) {
 			// last checked 2012-05-13
 			// 1337x.org/torrent/999999/ubuntu-10-10-dvd-i386/
@@ -499,7 +502,7 @@ var proxyFix = false;
 			// rarbg.com/torrents/filmi/download/abcde12/torrent.html
 			// rarbg.com/torrent/abcde12
 			// rarbg.com/download.php?id=abcde12&f=Title+of+torrent[rarbg.com].torrent
-			if (href.match(/rarbg\.com\/torrents\/[^\/]+\/download\/[^\/]+\/torrent\.html$/i)) {
+			if (href.match(cache.rarBgPatt)) {
 				directHref = slashSplit && slashSplit.length === 8 ? "http://rarbg.com/download.php?id="+
 					slashSplit[6]+"&f="+titleEnc+"%5Brarbg.com%5D.torrent" : null;
 			} else if (href.match(/rarbg\.com\/torrent\/[^\/]+\/?/i)) {
@@ -511,13 +514,13 @@ var proxyFix = false;
 			// www.nyaa.eu/?page=view&tid=999999
 			// www.nyaa.eu/?page=download&tid=999999
 			directHref = slashSplit && slashSplit.length >= 4
-				? href.replace(/(\?|\&)page=view/,"$1page=download") : null;
+				? href.replace(cache.nyaaPatt,"$1page=download") : null;
 		} else if (is("demonoid.ph")) {
 			// last checked 2014-09-16
 			// www.demonoid.ph/files/details/3070584/005990534500/
 			// www.demonoid.ph/files/download/3070584/
 			directHref = slashSplit && slashSplit.length >= 6 && href.indexOf("details") !== -1
-				? href.replace(/\/details\//, "/download/").replace(/[^\/]+\/?$/i, "") : null;
+			? href.replace(cache.demonoidDetailsPatt, "/download/").replace(cache.demonoidTrailPatt, "") : null;
 		} else if (is("torrage.com/torrent")) {
 			// torrage.com/torrent/BAE62A9932EC69BC6687A6D399CCB9D89D00D455.torrent
 			directHref = href;
@@ -550,7 +553,7 @@ var proxyFix = false;
 					i = (500 * Math.round(i/500.0));
 				}
 			}
-			returnStr = (String(i).replace(/(\d+)(\d{3})$/,"$1,$2"));
+			returnStr = (String(i).replace(numFormatPatt,"$1,$2"));
 		} else {
 			returnStr = String(i);
 		}
@@ -586,7 +589,7 @@ var proxyFix = false;
 			ci,
 			tmp,
 			ri;
-		for (i = 0; i < len; i++) {
+		for (i = 0; i < len; i+=1) {
 			arr.push(i);
 		}
 		ci = arr.length;
@@ -734,7 +737,7 @@ var proxyFix = false;
 		// pass through empty values
 		if (urls.match(/\S/)) {
 			checkArray = __.compact(urls.trim().split(/\s+/));
-			for (i = 0; i < checkArray.length; i++) {
+			for (i = 0; i < checkArray.length; i+=1) {
 				if (!checkArray[i].trim().match(cache.matchUrlPatt)) {
 					returnBool = false;
 					break;
@@ -821,7 +824,7 @@ var proxyFix = false;
 				}
 			};
 		if (!srObj.length) return callback(collection);
-		for (x = 0; x < srObj.length; x++) {
+		for (x = 0; x < srObj.length; x+=1) {
 			makeAdder(srObj[x], x);
 		}
 	}
@@ -1510,6 +1513,8 @@ var proxyFix = false;
 		});
 	}
 	function bindAjaxLinks ($element) {
+		var fullUrlPatt = /https?\:\/\/[^\/]+(\/.*)/,
+			cssColorPatt = /rgb\(255\,\s*255\,\s*0\)|\#ffff00/;
 		els.$ajaxedResult = $element;
 		els.$ajaxLinks = $element.find(" > div:eq(0) a, > h3:eq(0) a, > p:last a")
 			.on("click", function () {
@@ -1522,10 +1527,10 @@ var proxyFix = false;
 					$html,
 					newTitle;
 				if ($this[0].href && $this[0].hostname === tz.page.host) {
-					relMatch = $this[0].href.match(/https?\:\/\/[^\/]+(\/.*)/);
+					relMatch = $this[0].href.match(fullUrlPatt);
 					// prevent leaking of unwanted ajax links, shouldn't happen but it's good to remember
 					validLink = relMatch && relMatch.length === 2 && relMatch[1] && relMatch[1]
-						.indexOf("/i?") !== 0 && relMatch[1].indexOf("/feed") !== 0
+						.indexOf("/i?") !== 0 && relMatch[1].indexOf("/my?") !== 0 && relMatch[1].indexOf("/feed") !== 0
 						? relMatch[1] : undefined;
 					if (validLink) {
 						absLink = relMatch[0];
@@ -1534,7 +1539,7 @@ var proxyFix = false;
 						$this.css("background-color","#ffff00");
 						loadingInt = setInterval(function() {
 							if (String($this.css("background-color")).toLowerCase()
-								.match(/rgb\(255\,\s*255\,\s*0\)|\#ffff00/)) {
+								.match(cssColorPatt)) {
 								$this.css("background-color", currBGColor||"inherit");
 							} else {
 								$this.css("background-color","#ffff00");
@@ -1851,7 +1856,9 @@ var proxyFix = false;
 		return html;
 	}
 	function genSearchTabs ($box) {
-		var $tabBox, currVal;
+		var $tabBox,
+			nonEmptyPatt = /\S/i,
+			currVal;
 		if (!$("div."+tzCl+"_searchtabs").length) {
 			$("form.search").css("margin-bottom", "0px")
 				.after($("<div/>", {
@@ -1861,13 +1868,13 @@ var proxyFix = false;
 		}
 		$tabBox = $("div."+tzCl+"_searchtabs");
 		currVal = $box.val();
-		if (currVal && currVal.match(/\S/i)) {
+		if (currVal && currVal.match(nonEmptyPatt)) {
 			$tabBox.html(genSearchEnginesLinks(currVal.trim()));
 		}
 		$box.on("keyup change blur focus", function () {
-			if (this.value && this.value !== currVal && this.value.match(/\S/i)) {
+			if (this.value && this.value !== currVal && this.value.match(nonEmptyPatt)) {
 				$tabBox.html(genSearchEnginesLinks(this.value.trim()));
-			} else if (!this.value || !this.value.match(/\S/i)) {
+			} else if (!this.value || !this.value.match(nonEmptyPatt)) {
 				$tabBox.empty();
 			}
 		});
@@ -1928,21 +1935,21 @@ var proxyFix = false;
 			_up = [],
 			_down = [];
 		// Get trackerlist for single torrent
-		while ((++trackerLinksI < trackerLinksLen)) {
+		while (((trackerLinksI+=1) < trackerLinksLen)) {
 			currTrackerList.push((trackerLinks[trackerLinksI].textContent||""));
 		}
 		allTrackers = tz.trackers(currTrackerList);
 		trackerLen = allTrackers.length;
 		// create seed leach ratio
-		while ((++upElemsLenI < upElemsLen)) {
+		while (((upElemsLenI+=1) < upElemsLen)) {
 			_up[upElemsLenI] = getNodeNumber(upElems[upElemsLenI], true);
 		}
-		while ((++downElemsLenI < downElemsLen)) {
+		while (((downElemsLenI+=1) < downElemsLen)) {
 			_down[downElemsLenI] = getNodeNumber(downElems[downElemsLenI], true);
 		}
 		_upLen = _up.length;
 		_downLen = _down.length;
-		for (i = 0; i < _upLen; i++) {
+		for (i = 0; i < _upLen; i+=1) {
 			upNum += _up[i];
 			if (i === 0) {
 				topUpNum = _up[i];
@@ -1950,7 +1957,7 @@ var proxyFix = false;
 				topUpNum = _up[i];
 			}
 		}
-		for (i = 0; i < _downLen; i++) {
+		for (i = 0; i < _downLen; i+=1) {
 			downNum += _down[i];
 			if (i === 0) {
 				topDownNum = _down[i];
@@ -1960,7 +1967,7 @@ var proxyFix = false;
 		}
 		minPeers = topDownNum+topUpNum;
 		if (dhtElsLen) {
-			while ((++dhtElsLenI < dhtElsLen)) {
+			while (((dhtElsLenI+=1) < dhtElsLen)) {
 				// DHT activity
 				dhtElsMax = getNodeNumber(dhtEls[dhtElsLenI], true);
 				if (dhtElsMax > minPeers) {
@@ -2217,7 +2224,7 @@ var proxyFix = false;
 		} else if (doColorize) {
 			doneResultClName = tzCl+"_colorized";
 		}
-		for (i = 0; i < dlElsLen; i++) {
+		for (i = 0; i < dlElsLen; i+=1) {
 			if (dlElements[i].textContent.match(cache.metaDLpatt)) {
 				dlElements[i].className = metaCl;
 				continue;
@@ -2322,7 +2329,7 @@ var proxyFix = false;
 			if (s.indexOf(",") !== -1) {
 				convPatt = "(";
 				commaArr = s.split(",");
-				for (i = 0; i < commaArr.length; i++) {
+				for (i = 0; i < commaArr.length; i+=1) {
 					convPatt += (i !== 0 ? "|"+commaArr[i] : commaArr[i]);
 				}
 				convPatt += ")";
@@ -2350,11 +2357,11 @@ var proxyFix = false;
 			dlText,
 			i;
 		if (tz.usc.excludeFilter) {
-			for (i = 0; i < dlsLen; i++) {
+			for (i = 0; i < dlsLen; i+=1) {
 				dlText = getResultTitle(dls[i]);
 				if (!dlText.match(cache.metaDLpatt)
 					&& dlText.match(makeExcludePatt(tz.usc.excludeFilter))) {
-					deletedByFilterCount++;
+					deletedByFilterCount+=1;
 					dls[i].style.display = "none";
 				}
 			}
@@ -2399,7 +2406,7 @@ var proxyFix = false;
 			x,
 			i;
 		if (dlTags) {
-			for (i = 0; i < sLen; i++) {
+			for (i = 0; i < sLen; i+=1) {
 				// add spaces to let \\b match
 				if (genres[i].pattern.test((" "+dlTags+" "))) {
 					coloredClName = genres[i].name;
@@ -2410,7 +2417,7 @@ var proxyFix = false;
 		if (!coloredClName) {
 			// Try matching link text
 			secondTryText = title.replace(cache.nonSafeChars," ");
-			for (x = 0; x < sLen; x++) {
+			for (x = 0; x < sLen; x+=1) {
 				if (genres[x].pattern.test((" "+secondTryText+" "))) {
 					coloredClName = genres[x].name;
 					break;
@@ -2453,7 +2460,7 @@ var proxyFix = false;
 			} else {
 				dir = dir+go;
 			}
-			i++;
+			i+=1;
 		}
 		return { nice: newDate, ms: tmpMS };
 	}
@@ -2484,11 +2491,11 @@ var proxyFix = false;
 		} else if (s.match(cache.trTwoPartDomainPatt)) {
 			s = s.match(cache.trDomainPatt)[1];
 		}
-		return s.replace(/^(https?|udp):\/\//).replace(/\/$/,"").replace(/:80\/?/,"");
+		return s.replace(cache.udpHttpPrtl, "").replace(cache.trailSlashPatt, "").replace(cache.httpPortPatt,"");
 	}
 	function getDividedTrackers (arr) {
 		var a = [], next = null, i;
-		for (i = 0; i < arr.length; i++) {
+		for (i = 0; i < arr.length; i+=1) {
 			next = (i+1) < arr.length ? arr[(i+1)] : "";
 			if (getCleanFullDomain(next) == getCleanFullDomain(arr[i])) {
 				a.push(arr[i]+"\n");
@@ -2647,7 +2654,7 @@ var proxyFix = false;
 					"class": "approximate_rss_link"
 				})).parent());
 			}
-			if (cache.isSearch && tz.page.path !== "/i" && !cache.isSingle) {
+			if (cache.isSearch && tz.page.path !== "/i" && tz.page.path !== "/my" && !cache.isSingle) {
 				$filterBar = $resultsEl.find(" > h3:eq(0)");
 				tvToolbarLinks = getTvToolbarHtml(tz.page.search);
 				if (tvToolbarLinks.size() && $filterBar.length) {
@@ -2890,6 +2897,15 @@ var proxyFix = false;
 		randomDirectLinks: [],
 		sKeywordPatt: /»\s+?(.*)$/i,
 		hashPatt: /[a-zA-Z0-9]{40}/,
+		idQueryPatt: /(\?|&)id=(\d+)/,
+		tDlsMePatt: /(\.me\/)torrent(\/)/i,
+		htmlExtPatt: /\.html$/i,
+		extraMirrorPat: /\.(com|cc)\/torrent/i,
+		btChatPatt: /\/details\.php/i,
+		rarBgPatt: /rarbg\.com\/torrents\/[^\/]+\/download\/[^\/]+\/torrent\.html$/i,
+		nyaaPatt: /(\?|\&)page=view/,
+		demonoidDetailsPatt: /\/details\//,
+		demonoidTrailPatt: /[^\/]+\/?$/i,
 		searchPagePatt: /^\/(?:search|any|verified|advanced|tracker_)/,
 		cleanSearchQPatt: /(^|\s)(?:site\:[-\.a-z0-9]+|(?:size|added)(?:\:[0-9dymgkt]+|\s*[<\>]\s*[0-9dymgkt]+)|(?:seed|leech|peer)\s*[<\>]\s*[0-9]+)/g,
 		invalidQCharsPatt: /(?:^|\s)file\:|_|\*|\||\^|<|\>|\"/g,
@@ -2913,6 +2929,9 @@ var proxyFix = false;
 		escapedQuotes: /(?:\%22|\x22)+/g,
 		nonNumberishPatt: /[^\-\+0-9]/gi,
 		numberFormulaPatt: /((?:\-|\+)?\d+)/,
+		udpHttpPrtl: /^(https?|udp):\/\//,
+		trailSlashPatt: /\/$/,
+		httpPortPatt: /:80\/?/,
 		// https://en.wikipedia.org/wiki/Magnet_URI_scheme
 		magnetURI: "magnet:?xt=urn:btih:",
 		bugReportMsg: "\n(If this problem persists, please get in touch and I'll fix it\n"+tz.env.link+")",
@@ -3008,7 +3027,7 @@ var proxyFix = false;
 							return lastAction();
 						});
 
-					} else if (tz.page.path === "/i"
+					} else if (tz.page.path === "/i" || tz.page.path === "/my"
 						|| tz.page.path.match(cache.searchPagePatt)
 						|| tz.page.path.match(/^\/[a-z]{2,}\//)) {
 
@@ -3017,7 +3036,7 @@ var proxyFix = false;
 
 						return initSearchPage(cache.$searchResults, function (results) {
 							var observer;
-							if (tz.page.path !== "/i") {
+							if (tz.page.path !== "/i" && tz.page.path !== "/my") {
 								if (tz.usc.ajaxedSorting) {
 									if (history.pushState) {
 										history.replaceState({
@@ -3029,7 +3048,7 @@ var proxyFix = false;
 									}
 									bindAjaxLinks(results);
 								}
-							} else if (tz.page.path === "/i") {
+							} else if (tz.page.path === "/i" || tz.page.path === "/my") {
 								observer = typeof MutationObserver === "function"
 									? new MutationObserver(ajaxResultsHandler)
 									// Older Chrome and Safari

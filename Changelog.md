@@ -1,5 +1,10 @@
 # Changelog
 
+### [v2.7.7](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.7) (2014-10-27)
+
+* Corrections made for new `/my` url.
+* Micro-optimizations of `for` and `while` loops.
+
 ### [v2.7.6](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.6) (2014-10-24)
 
 * Ad detected; fixed bad iframe ad condition.
