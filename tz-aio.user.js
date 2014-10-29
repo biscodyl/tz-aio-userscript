@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.7.7
-// @date          2014-10-27
+// @version       2.7.8
+// @date          2014-10-29
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT; http://opensource.org/licenses/MIT
@@ -12,7 +12,18 @@
 // @updateURL     http://elundmark.se/_files/js/tz-aio/tz-aio.meta.js
 // @downloadURL   http://elundmark.se/_files/js/tz-aio/tz-aio.user.js
 // @supportURL    https://github.com/elundmark/tz-aio-userscript/issues
-// @include       /^https?://(?:www\.)?(?:tz\.ai|torrents\.de|torrentz-proxy\.com|(?:torrentz\.(?:eu|ph|li|com|me|in|hk|ch)))/.*/
+// @include       http*://torrentz.eu/*
+// @include       http*://torrentz.ph/*
+// @include       http*://torrentz.li/*
+// @include       http*://torrentz.om/*
+// @include       http*://torrentz.me/*
+// @include       http*://torrentz.in/*
+// @include       http*://torrentz.hk/*
+// @include       http*://torrentz.ch/*
+// @include       http*://torrentz-proxy.com/*
+// @include       http*://torrents.de/*
+// @include       http*://tz.ai/*
+// @include       http*://torrentz.filesoup.com/*
 // @exclude       /^https?://[^/]+/feed(?:_[a-zA-Z]+)?\?.*/
 // @exclude       /^https?://[^/]+/announcelist_.*/
 // @exclude       /^https?://[^/]+/report_.*/
@@ -21,7 +32,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-7-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-8-0
 // @icon          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAABNVBMVEUAAAAlSm8lSnAlS3AmS3AmTHImTHMmTXQnTnYnT3coTHEoUXkpUnsqVH4qVYArT3MrV4IsWYUtWoguXIovXo0vX44wYJAwYZIxVHcxYpQxY5UyZJYyZZcyZZgzZpk0Z5k1Z5k2aJo3WXs3aZo8bJ09Xn8+bp5CcaBFZYRHdaJJdqNNeaVPbYtQe6dSfahVf6lYdJFbhKxchK1hiK9iibBjfZhnjLJvh6Bylbhzlrh6m7x8kqh8nb2KnrGNqcWRrMeYqbuYssuas8ymtcSovdOqv9SvwtawxNezv8y2yNq5ytu+ydTD0eDJ0tvJ1uPP2ubT2uLZ4uvc4efe5u7f5+7i6fDl6e3p7vPq7fHq7/Ts8PXu8vbw8vTx9Pf19vj2+Pr4+fr4+fv6+/z8/Pz8/P39/f3///871JlNAAAAAXRSTlMAQObYZgAAAXFJREFUeNrt20dPw0AQBeBs6DX0niGhhN57Db333kJn//9PYOdgCQlYEEJ5Ab13mhnb8nfwYSRrQyGBxr3fQiMEEEAAAW8BkrZ8DJA0hgACCCCAAAIIIIAAAgjwAuy346cvBRdRgC0wIHYFBsxaLGAghQWMnlskoG/12f4c4H1CvIknuoYn59dPrAYBCO4igAAA4H0IIIAAAggggAACCPh3AG+MIQALWDalqI9w/NHNdguLoiBAf8qNzlryGgQD6Dh1k9verBrBAFr3dTJhKgUE2NTBgikTEGBR++3s4igIMK3tUV1+o2AAIw+uu+nMqRUMoOfaNU9j4SrBABLH2syZcsEA4ntab5gSAQHWtDyIFDSBAEmtLtpz6wUDmHpxxf1guFowgKE7LWZMhWAA3ZfBCoABtB3aYAWAAJp37OcrgNgv8guAFRusAACAbykl4I8A+PecAAIIIIAAAggggAACMhQAEPC0HQEEEJBJAPjx/1f83wbVqAm3rAAAAABJRU5ErkJggg==
 // @grant         GM_info
 // @grant         GM_addStyle
@@ -1037,9 +1048,9 @@ var proxyFix = false;
 			"text": "Force HTTPS",
 			"attr": {
 				"for": tzCl+"_forceHTTPS",
-				"title": "This will redirect all pages to secure SSL, beware that if HTTPS is unavailable, you have to "+
-					"try another mirror and turn this option off again. That`s why this option is turned off by default."+
-					" Also note that this will not be applied if you`re on a proxy."
+				"title": "This will redirect all pages for the domains that supports https: - Beware that if https: is "+
+					"unavailable, you have to try another mirror and turn this option off again. That`s why this option "+
+					"is turned off by default. Also note that this will not be applied if you`re on a proxy."
 			}
 		})).add(
 		$("<input/>", {
@@ -2875,7 +2886,7 @@ var proxyFix = false;
 		tz.usc = newSettings;
 		newSettings = null;
 		if (!proxyFix && tz.usc.forceHTTPS && tz.page.protocol === "http:"
-			&& tz.page.domain.toLowerCase().indexOf("proxy") === -1) {
+			&& !tz.page.domain.toLowerCase().match(cache.proxyDomainsPatt)) {
 			// Redirect users with SSL forced, but try not to for proxies
 			d.location.href = d.location.href.replace(/^http:/, "https:");
 		} else {
@@ -2895,6 +2906,7 @@ var proxyFix = false;
 		freshUser: false,
 		settingsInserted: false,
 		randomDirectLinks: [],
+		proxyDomainsPatt: /torrentz\.filesoup\.com|.*?proxy.*/,
 		sKeywordPatt: /»\s+?(.*)$/i,
 		hashPatt: /[a-zA-Z0-9]{40}/,
 		idQueryPatt: /(\?|&)id=(\d+)/,

@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.7.7
-// @date          2014-10-27
+// @version       2.7.8
+// @date          2014-10-29
 // @author        elundmark
 // @contact       mail@elundmark.se
 // @license       MIT; http://opensource.org/licenses/MIT
@@ -16,8 +16,19 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-7-0
-// @include       /^https?://(?:www\.)?(?:tz\.ai|torrents\.de|torrentz-proxy\.com|(?:torrentz\.(?:eu|ph|li|com|me|in|hk|ch)))/.*/
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-8-0
+// @include       http*://torrentz.eu/*
+// @include       http*://torrentz.ph/*
+// @include       http*://torrentz.li/*
+// @include       http*://torrentz.om/*
+// @include       http*://torrentz.me/*
+// @include       http*://torrentz.in/*
+// @include       http*://torrentz.hk/*
+// @include       http*://torrentz.ch/*
+// @include       http*://torrentz-proxy.com/*
+// @include       http*://torrents.de/*
+// @include       http*://tz.ai/*
+// @include       http*://torrentz.filesoup.com/*
 // @exclude       /^https?://[^/]+/feed(?:_[a-zA-Z]+)?\?.*/
 // @exclude       /^https?://[^/]+/announcelist_.*/
 // @exclude       /^https?://[^/]+/report_.*/

@@ -1,5 +1,11 @@
 # Changelog
 
+### [v2.7.8](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.8) (2014-10-29)
+
+* Added support for the filesoup proxy domain.
+* Modified the conditional domain check for redirecting to `https:`.
+* Changed the RegExp pattern for the `@include` meta entry into one domain per row.
+
 ### [v2.7.7](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.7) (2014-10-27)
 
 * Corrections made for new `/my` url.
