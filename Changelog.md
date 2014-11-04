@@ -1,5 +1,9 @@
 # Changelog
 
+### [v2.7.9](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.9) (2014-11-04)
+
+* Change to search query, from `f=` to `q=`. Applies especially to the episode feature, fixing a bug I didn't realize existed.
+
 ### [v2.7.8](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.8) (2014-10-29)
 
 * Added support for the filesoup proxy domain.
