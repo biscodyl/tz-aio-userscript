@@ -1,5 +1,9 @@
 # Changelog
 
+### [v2.7.10](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.10) (2014-11-11)
+
+* New ad class detected `.SimpleAcceptebleTextAds`.
+
 ### [v2.7.9](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.9) (2014-11-04)
 
 * Change to search query, from `f=` to `q=`. Applies especially to the episode feature, fixing a bug I didn't realize existed.

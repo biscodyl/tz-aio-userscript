@@ -17,7 +17,7 @@
 .tz_aio_b.tz_aio_v2 a { outline: none; }
 .tz_aio_b.tz_aio_v2 input[type='submit']:hover { cursor: pointer; }
 .tz_aio_b.tz_aio_v2 #tz_aio_help li ul { list-style-type: square; margin: 0; padding: 4px 0 0 16px; }
-.tz_aio_b.tz_aio_v2.no_ads .SPECIFICELEMENT, .tz_aio_b.tz_aio_v2.no_ads .dontblockmebro, .tz_aio_b.tz_aio_v2.no_ads .dnotblcokmebro, .tz_aio_b.tz_aio_v2.no_ads .dnotblockmebro, .tz_aio_b.tz_aio_v2.no_ads .removed_ad, .tz_aio_b.tz_aio_v2.no_ads .SimpleAcceptableTextAds, .tz_aio_b.tz_aio_v2.no_ads .PleaseDontDisableTheAutoSuggestScriptThePopCodeIsNotThere { display: none !important; opacity: 0 !important; visibility: hidden !important; height: 0 !important; }
+.tz_aio_b.tz_aio_v2.no_ads .SPECIFICELEMENT, .tz_aio_b.tz_aio_v2.no_ads .dontblockmebro, .tz_aio_b.tz_aio_v2.no_ads .dnotblcokmebro, .tz_aio_b.tz_aio_v2.no_ads .dnotblockmebro, .tz_aio_b.tz_aio_v2.no_ads .removed_ad, .tz_aio_b.tz_aio_v2.no_ads .SimpleAcceptableTextAds, .tz_aio_b.tz_aio_v2.no_ads .SimpleAcceptebleTextAds, .tz_aio_b.tz_aio_v2.no_ads .PleaseDontDisableTheAutoSuggestScriptThePopCodeIsNotThere { display: none !important; opacity: 0 !important; visibility: hidden !important; height: 0 !important; }
 .tz_aio_b.tz_aio_v2 .autocomplete { z-index: 10; }
 .tz_aio_b.tz_aio_v2 .trackers a[href*='announcelist_']::after { content: " (doesn't include your default trackers)"; color: #6b3f2e; }
 .tz_aio_b.tz_aio_v2 .download dl { position: relative; }
