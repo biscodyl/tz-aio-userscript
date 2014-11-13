@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Torrentz All-in-One
 // @description   Does everything you wish Torrentz.eu could do!
-// @version       2.7.11
+// @version       2.7.12
 // @date          2014-11-13
 // @author        elundmark
 // @contact       mail@elundmark.se
@@ -16,7 +16,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js
 // @require       https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.js
 // @resource css1 https://cdn.jsdelivr.net/jquery.spectrum/1.3.3/spectrum.css
-// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-11-0
+// @resource css2 http://elundmark.se/_files/js/tz-aio/tz-aio-style-2.css?v=2-7-12-0
 // @include       http*://torrentz.eu/*
 // @include       http*://www.torrentz.eu/*
 // @include       http*://torrentz.ph/*
