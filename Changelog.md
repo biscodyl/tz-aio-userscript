@@ -1,5 +1,9 @@
 # Changelog
 
+### [v2.7.11](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.11) (2014-11-13)
+
+* Changed all `@include` rules to include `www.` - forgot to add them in after switching from a single regular expression rule since [v2.7.8](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.8).
+
 ### [v2.7.10](https://github.com/elundmark/tz-aio-userscript/releases/tag/2.7.10) (2014-11-11)
 
 * New ad class detected `.SimpleAcceptebleTextAds`.
